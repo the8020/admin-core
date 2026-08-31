@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "id": "package-versions",
+  "root": {
+    "id": "versions",
+    "type": "stack",
+    "children": [
+      {
+        "id": "selection-section",
+        "type": "section",
+        "title": "Selection",
+        "children": [
+          {
+            "id": "selection-fields",
+            "type": "field-group",
+            "title": "Desired package version",
+            "controls": ["source", "currentCommit", "selection"]
+          }
+        ]
+      },
+      {
+        "id": "history-section",
+        "type": "section",
+        "title": "Recent commits",
+        "children": [
+          {
+            "id": "versions-list",
+            "type": "list",
+            "bind": "versions",
+            "key": "commit",
+            "display": [
+              "commit",
+              "authoredAt",
+              "author",
+              "tags",
+              "current",
+              "selected",
+              "subject"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

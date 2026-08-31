@@ -1,0 +1,223 @@
+import type {
+  PackageInspectResult,
+  PackageListResult,
+  PackageRepositoryInspectResult,
+  SandboxHistoryInspectResult,
+  SandboxHistoryListResult,
+  SandboxInspectResult,
+  SandboxListResult,
+  ServiceInspectResult,
+  ServiceListResult,
+} from "./contracts.ts";
+
+export function packageRows(result: PackageListResult) {
+  return (result.packages ?? []).map((item) => ({
+    canonicalName: item.package_id,
+    valid: item.valid,
+    services: item.service_count,
+    description: item.description ?? item.validation_error ?? "",
+  }));
+}
+
+export function packageDetailModel(
+  result: PackageInspectResult,
+  repositoryResult: PackageRepositoryInspectResult,
+) {
+  const item = result.package;
+  const repository = repositoryResult.repository;
+  const services = item.services ?? [];
+  const programs = item.programs ?? [];
+  const files = item.files ?? [];
+  return {
+    packageId: item.package_id,
+    path: item.path,
+    description: item.description ?? "",
+    documentationUrl: item.documentation_url ?? "",
+    license: item.license ?? "",
+    valid: item.valid,
+    serviceCount: item.service_count,
+    programCount: programs.length,
+    fileCount: files.length,
+    validation: (item.validation_errors ?? []).join("; "),
+    inspection: [
+      ...(item.inspection_errors ?? []),
+      ...(item.contents_truncated
+        ? [`Content inventory stopped at ${files.length} visible files`]
+        : []),
+    ].join("; "),
+    repositoryStatus: repository.status,
+    activationReady: repository.activation_ready,
+    clean: repository.clean,
+    branch: repository.branch ?? "",
+    head: repository.head ?? "",
+    remoteName: repository.remote_name ?? "",
+    remoteUrl: repository.remote_url ?? "",
+    services: services.map((service) => ({
+      navigation: `service:${service.service_id}`,
+      serviceId: service.service_id,
+      path: service.path,
+      execution: service.execution_mode ?? "",
+      access: service.access_mode ?? "",
+      entrypoint: service.entrypoint ?? "",
+      valid: service.valid,
+      description: service.description ??
+        (service.validation_errors ?? []).join("; "),
+    })),
+    programs: programs.map((program) => ({
+      programId: program.program_id,
+      path: program.path,
+      entrypoint: program.entrypoint ?? "",
+      defaultLayout: program.default_layout ?? "",
+      discoverable: program.discoverable,
+      valid: program.valid,
+      description: program.description ??
+        (program.validation_errors ?? []).join("; "),
+    })),
+    files: files.map((file) => ({
+      path: file.path,
+      type: file.type,
+      size: file.size,
+    })),
+  };
+}
+
+export function serviceRows(result: ServiceListResult) {
+  return result.services.map((service) => ({
+    serviceId: service.service_id,
+    state: service.state,
+    enabled: service.enabled,
+    instances: service.instance_count,
+    workers: service.worker_count,
+    mode: service.execution_mode,
+    description: service.description ?? service.validation_error ?? "",
+  }));
+}
+
+export function serviceDetailModel(
+  result: ServiceInspectResult,
+) {
+  const service = result.service;
+  const configuration = service.effective_configuration;
+  return {
+    serviceId: service.service_id,
+    description: service.description ?? "",
+    path: service.canonical_base_path,
+    state: service.state,
+    enabled: service.enabled,
+    executionMode: service.execution_mode,
+    accessMode: service.access_mode,
+    desiredGeneration: service.desired_generation,
+    loadedGeneration: service.loaded_generation,
+    replicasMinimum: configuration.scaling.replicas_min,
+    replicasMaximum: configuration.scaling.replicas_max,
+    workersMinimum: configuration.scaling.workers_per_replica_min,
+    workersMaximum: configuration.scaling.workers_per_replica_max,
+    concurrencyPerWorker: configuration.execution.concurrency_per_worker,
+    targetUtilization: Math.round(
+      configuration.scaling.target_utilization * 100,
+    ),
+    keepAlive: formatDuration(configuration.execution.keep_alive),
+    sandboxGroup: configuration.placement.sandbox_group,
+    failure: service.validation_error ?? service.last_startup_error ??
+      service.capacity_reason ?? "",
+    sandboxes: service.instances.map((instance) => ({
+      navigation: `sandbox:${instance.sandbox_id}`,
+      sandboxId: instance.sandbox_id,
+      state: service.state,
+      workers: instance.worker_ids?.length ?? 0,
+      activeRequests: instance.active_requests,
+      activeExecutions: instance.active_executions,
+    })),
+  };
+}
+
+export function sandboxRows(result: SandboxListResult) {
+  return result.sandboxes.map((sandbox) => ({
+    sandboxId: sandbox.sandbox_id,
+    type: sandbox.workload_type,
+    state: sandbox.state,
+    reason: sandbox.reason,
+    workers: sandbox.worker_count,
+    failure: sandbox.failure ?? "",
+  }));
+}
+
+export function sandboxHistoryRows(result: SandboxHistoryListResult) {
+  return (result.sandboxes ?? []).map((sandbox) => ({
+    historyId: sandbox.history_id,
+    sandboxId: sandbox.sandbox_id,
+    type: sandbox.workload_type,
+    state: sandbox.state,
+    reason: sandbox.reason ?? sandbox.failure_reason ?? "",
+    archivedAt: sandbox.archived_at,
+    expiresAt: sandbox.expires_at,
+    logs: sandbox.log_files,
+    logBytes: sandbox.log_bytes,
+  }));
+}
+
+export function sandboxHistoryDetailModel(
+  result: SandboxHistoryInspectResult,
+) {
+  const history = result.sandbox_history;
+  const record = history.record;
+  return {
+    historyId: record.history_id,
+    sandboxId: record.spec.sandbox_id,
+    runtimeGroupId: record.spec.runtime_group_id,
+    type: record.spec.workload_type,
+    state: record.status.observed_state || record.status.desired_state,
+    reason: record.reason,
+    failure: record.status.failure_reason ?? "",
+    archivedAt: record.archived_at,
+    expiresAt: record.expires_at,
+    logs: (history.logs ?? []).map((log) => ({
+      name: log.name,
+      size: log.size,
+      truncated: log.truncated,
+      content: log.content,
+    })),
+  };
+}
+
+export function sandboxDetailModel(result: SandboxInspectResult) {
+  const sandbox = result.sandbox;
+  const resources = sandbox.status.resources ?? {};
+  return {
+    sandboxId: sandbox.spec.sandbox_id,
+    type: sandbox.spec.workload_type,
+    state: sandbox.status.observed_state || sandbox.status.desired_state,
+    reason: result.reason,
+    runtimeGroupId: sandbox.spec.runtime_group_id,
+    groupKey: sandbox.spec.placement_group ?? sandbox.spec.group_key,
+    workers: sandbox.status.worker_count,
+    failure: sandbox.status.failure_reason ?? "",
+    memoryBytes: resources.memory_current ?? 0,
+    cpuMicros: resources.cpu_usage_micros ?? 0,
+    pids: resources.pid_current ?? 0,
+    services: result.services.map((service) => ({
+      navigation: `service:${service.service_id}`,
+      serviceId: service.service_id,
+      state: service.state,
+      enabled: service.enabled,
+      instances: service.instance_count,
+      workers: service.worker_count,
+    })),
+  };
+}
+
+export function formatDuration(nanoseconds: number): string {
+  const units: Array<[number, string]> = [
+    [3_600_000_000_000, "h"],
+    [60_000_000_000, "m"],
+    [1_000_000_000, "s"],
+    [1_000_000, "ms"],
+    [1_000, "us"],
+  ];
+  for (const [size, suffix] of units) {
+    if (nanoseconds !== 0 && nanoseconds % size === 0) {
+      return `${nanoseconds / size}${suffix}`;
+    }
+  }
+  return `${nanoseconds}ns`;
+}

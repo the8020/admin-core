@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "id": "service-detail",
+  "root": {
+    "id": "service",
+    "type": "stack",
+    "children": [
+      {
+        "id": "identity",
+        "type": "detail",
+        "title": "Status",
+        "controls": [
+          "serviceId",
+          "description",
+          "path",
+          "state",
+          "enabled",
+          "executionMode",
+          "accessMode",
+          "desiredGeneration",
+          "loadedGeneration",
+          "failure"
+        ]
+      },
+      {
+        "id": "configuration-section",
+        "type": "section",
+        "title": "Configuration",
+        "children": [
+          {
+            "id": "configuration",
+            "type": "grid",
+            "columns": 3,
+            "responsive": "stack",
+            "children": [
+              {
+                "id": "instances",
+                "type": "field-group",
+                "title": "Instances",
+                "controls": [
+                  "replicasMinimum",
+                  "replicasMaximum"
+                ]
+              },
+              {
+                "id": "workers",
+                "type": "field-group",
+                "title": "Workers",
+                "controls": [
+                  "workersMinimum",
+                  "workersMaximum",
+                  "concurrencyPerWorker",
+                  "targetUtilization"
+                ]
+              },
+              {
+                "id": "runtime",
+                "type": "field-group",
+                "title": "Runtime",
+                "controls": [
+                  "keepAlive",
+                  "sandboxGroup"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sandboxes",
+        "type": "list",
+        "title": "Sandboxes",
+        "bind": "sandboxes",
+        "key": "navigation",
+        "display": [
+          "sandboxId",
+          "state",
+          "workers",
+          "activeRequests",
+          "activeExecutions"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+# Purpose
+
+- Provide first-party UUI programs for package, filesystem-service, and sandbox
+  administration.
+- This file is the root contract of the independent `the8020/admin-core` Git
+  repository.
+
+# Ownership
+
+- Own linked package list/detail/install/version/local-create, service
+  list/detail, live sandbox list/detail, and separate historical sandbox
+  list/detail screens plus their typed command-result models.
+- Do not own UUI-session administration, command behavior, authorization,
+  runtime lifecycle, program discovery, or browser rendering.
+
+# Local Contracts
+
+- `the8020/admin-core/packages`, `the8020/admin-core/services`, and
+  `the8020/admin-core/sandboxes` are parameterless programs backed only by
+  `@the8020/kernel` and the ordinary package mapping
+  `@packages/the8020/uui/mod.ts`.
+- Programs use the typed kernel command bus under the active authenticated
+  request. Collections stay compact; details own full status, relationships, and
+  service configuration mutations.
+- Package collection calls only `package.list`. Selecting one package calls
+  `package.inspect` and `package.repository.inspect`; only that detail path
+  reads Git status, manifests, and bounded non-Git file inventory.
+- Package list header actions open ordinary Install package and Create local
+  package screens. Install validates a public Git URL, displays detected
+  identity/branch/tag refs, writes the desired index, and may synchronize in one
+  action. Versions lists bounded commits/tags and saves latest, tag, or exact
+  commit before synchronization. Detail synchronization refreshes only the
+  selected package.
+- Management screens call the typed `kernel.packages` API, which delegates to
+  generic command-bus execution; they never read host paths or run Git.
+- Detail headings identify `Package <id>`, `Service <id>`, `Sandbox <id>`, or
+  `Archived sandbox <id>`. Unboxed H1 sections contain second-level detail,
+  list, or field-group cards.
+- Package/service navigation is bidirectional. Sandbox details show correlated
+  services but never discover or duplicate application-owned session state.
+- Service configuration exposes stateless/persistent mode, concurrency per
+  Worker, persistent keep-alive, replica/Worker bounds, target utilization, and
+  free-text sandbox group. It does not expose application protocol semantics.
+- Every screen uses shell-owned `BACK_EVENT`; refresh, history, paging,
+  service-state, restart, and save actions belong in the header.
+- Sandbox history is a bounded separate collection with direct immutable
+  metadata/log inspection. Nullable array results are treated as empty.
+
+# Work Guidance
+
+- Keep labels short, lists bounded to useful columns, and program code free of
+  application-specific runtime assumptions.
+- Source checks resolve the sibling `kernel` and `uui` repositories; deployed
+  Workers continue to resolve the canonical `@the8020/*` and `@packages/*`
+  mappings supplied by the runtime image.
+
+# Verification
+
+- `deno task check` formats, lints, and type-checks all three programs;
+  `deno task test` runs `view_test.ts`, which covers package summary/detail and
+  source/version selector mapping, utilization conversion, nullable
+  Worker/history arrays, and duration rendering. The explicit browser E2E
+  exercises navigation and service mutation.
+
+# Child DOX Index

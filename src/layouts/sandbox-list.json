@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "sandbox-list",
+  "root": {
+    "id": "sandboxes",
+    "type": "list",
+    "bind": "sandboxes",
+    "key": "sandboxId",
+    "display": ["sandboxId", "type", "state", "reason", "workers", "failure"]
+  }
+}

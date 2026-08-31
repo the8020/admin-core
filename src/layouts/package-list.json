@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "id": "package-list",
+  "root": {
+    "id": "packages",
+    "type": "list",
+    "bind": "packages",
+    "key": "canonicalName",
+    "display": ["canonicalName", "valid", "services", "description"]
+  }
+}

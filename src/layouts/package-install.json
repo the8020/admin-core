@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "id": "package-install",
+  "root": {
+    "id": "install",
+    "type": "stack",
+    "children": [
+      {
+        "id": "source-section",
+        "type": "section",
+        "title": "Source",
+        "children": [
+          {
+            "id": "source-fields",
+            "type": "field-group",
+            "title": "Git repository",
+            "controls": [
+              "source",
+              "author",
+              "repository",
+              "defaultBranch",
+              "version"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "references-section",
+        "type": "section",
+        "title": "Detected references",
+        "children": [
+          {
+            "id": "references",
+            "type": "list",
+            "bind": "references",
+            "key": "referenceKey",
+            "display": ["kind", "name", "commit"]
+          }
+        ]
+      }
+    ]
+  }
+}

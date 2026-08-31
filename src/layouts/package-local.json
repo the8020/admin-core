@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "id": "package-local",
+  "root": {
+    "id": "local-section",
+    "type": "section",
+    "title": "Package",
+    "children": [
+      {
+        "id": "local-fields",
+        "type": "field-group",
+        "title": "Identity",
+        "controls": ["author", "repository", "description"]
+      }
+    ]
+  }
+}

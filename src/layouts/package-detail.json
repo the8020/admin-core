@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "id": "package-detail",
+  "root": {
+    "id": "package",
+    "type": "stack",
+    "children": [
+      {
+        "id": "overview-section",
+        "type": "section",
+        "title": "Overview",
+        "children": [
+          {
+            "id": "overview",
+            "type": "grid",
+            "columns": 2,
+            "responsive": "stack",
+            "children": [
+              {
+                "id": "manifest",
+                "type": "field-group",
+                "title": "Package",
+                "controls": [
+                  "packageId",
+                  "path",
+                  "description",
+                  "documentationUrl",
+                  "license",
+                  "valid",
+                  "serviceCount",
+                  "programCount",
+                  "fileCount",
+                  "validation",
+                  "inspection"
+                ]
+              },
+              {
+                "id": "repository",
+                "type": "field-group",
+                "title": "Git repository",
+                "controls": [
+                  "repositoryStatus",
+                  "activationReady",
+                  "clean",
+                  "branch",
+                  "head",
+                  "remoteName",
+                  "remoteUrl"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "contents-section",
+        "type": "section",
+        "title": "Contents",
+        "children": [
+          {
+            "id": "contents",
+            "type": "stack",
+            "children": [
+              {
+                "id": "services",
+                "type": "list",
+                "title": "Services",
+                "bind": "services",
+                "key": "navigation",
+                "display": [
+                  "serviceId",
+                  "execution",
+                  "access",
+                  "entrypoint",
+                  "valid",
+                  "description"
+                ]
+              },
+              {
+                "id": "programs",
+                "type": "list",
+                "title": "Programs",
+                "bind": "programs",
+                "key": "programId",
+                "display": [
+                  "programId",
+                  "entrypoint",
+                  "defaultLayout",
+                  "discoverable",
+                  "valid",
+                  "description"
+                ]
+              },
+              {
+                "id": "files",
+                "type": "list",
+                "title": "Files",
+                "bind": "files",
+                "key": "path",
+                "display": ["path", "type", "size"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

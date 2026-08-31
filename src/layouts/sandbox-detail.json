@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "sandbox-detail",
+  "root": {
+    "id": "sandbox",
+    "type": "stack",
+    "children": [
+      {
+        "id": "identity",
+        "type": "detail",
+        "title": "Status",
+        "controls": [
+          "sandboxId",
+          "type",
+          "state",
+          "reason",
+          "runtimeGroupId",
+          "groupKey",
+          "workers",
+          "failure",
+          "memoryBytes",
+          "cpuMicros",
+          "pids"
+        ]
+      },
+      {
+        "id": "services",
+        "type": "list",
+        "title": "Services",
+        "bind": "services",
+        "key": "navigation",
+        "display": ["serviceId", "state", "enabled", "instances", "workers"]
+      }
+    ]
+  }
+}

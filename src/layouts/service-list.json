@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "id": "service-list",
+  "root": {
+    "id": "services",
+    "type": "list",
+    "bind": "services",
+    "key": "serviceId",
+    "display": [
+      "serviceId",
+      "state",
+      "enabled",
+      "instances",
+      "workers",
+      "mode",
+      "description"
+    ]
+  }
+}

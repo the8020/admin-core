@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "id": "sandbox-history-detail",
+  "root": {
+    "id": "history",
+    "type": "stack",
+    "children": [
+      {
+        "id": "archive-section",
+        "type": "section",
+        "title": "Archived sandbox",
+        "children": [
+          {
+            "id": "identity",
+            "type": "detail",
+            "controls": [
+              "historyId",
+              "sandboxId",
+              "runtimeGroupId",
+              "type",
+              "state",
+              "reason",
+              "failure",
+              "archivedAt",
+              "expiresAt"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "logs-section",
+        "type": "section",
+        "title": "Log tails",
+        "children": [
+          {
+            "id": "logs",
+            "type": "list",
+            "bind": "logs",
+            "key": "name",
+            "display": ["name", "size", "truncated", "content"]
+          }
+        ]
+      }
+    ]
+  }
+}
