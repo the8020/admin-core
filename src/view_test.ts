@@ -12,7 +12,13 @@ import type {
   SandboxInspectResult,
   ServiceInspectResult,
 } from "./contracts.ts";
-import { desiredVersion, sourceVersionOptions } from "./package-management.ts";
+import {
+  desiredVersion,
+  installSchema,
+  LocalPackage,
+  requiredText,
+  sourceVersionOptions,
+} from "./package-management.ts";
 import {
   formatDuration,
   packageDetailModel,
@@ -132,6 +138,33 @@ Deno.test("package source references become explicit version selectors", () => {
       { value: "tag:v1.0.0", label: "Tag v1.0.0" },
     ],
   );
+});
+
+Deno.test("blank package forms render before required values are entered", () => {
+  assertEquals(
+    installSchema().safeParse({
+      source: "",
+      author: "",
+      repository: "",
+      defaultBranch: "",
+      version: "latest",
+      references: [],
+    }).success,
+    true,
+  );
+  assertEquals(
+    LocalPackage.safeParse({ author: "", repository: "", description: "" })
+      .success,
+    true,
+  );
+  assertEquals(requiredText("  the8020 ", "Author"), "the8020");
+  let message = "";
+  try {
+    requiredText("  ", "Git URL");
+  } catch (error) {
+    message = error instanceof Error ? error.message : String(error);
+  }
+  assertEquals(message, "Git URL is required");
 });
 
 Deno.test("service detail maps editable configuration and sandbox links", () => {

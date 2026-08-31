@@ -37,7 +37,7 @@ interface InstallModel {
   }>;
 }
 
-function installSchema(inspection?: PackageSourceInspection) {
+export function installSchema(inspection?: PackageSourceInspection) {
   const Reference = z.object({
     referenceKey: z.string(),
     kind: z.string(),
@@ -45,7 +45,7 @@ function installSchema(inspection?: PackageSourceInspection) {
     commit: z.string(),
   });
   return z.object({
-    source: field(z.string().min(1), {
+    source: field(z.string(), {
       label: "Git URL",
       length: "long",
       placeholder: "https://github.com/author/repository.git",
@@ -75,12 +75,12 @@ function installSchema(inspection?: PackageSourceInspection) {
   });
 }
 
-const LocalPackage = z.object({
-  author: field(z.string().min(1), {
+export const LocalPackage = z.object({
+  author: field(z.string(), {
     label: "Author",
     length: "medium",
   }),
-  repository: field(z.string().min(1), {
+  repository: field(z.string(), {
     label: "Repository",
     length: "medium",
   }),
@@ -155,12 +155,14 @@ export async function packageInstall(): Promise<ScreenResult> {
     if (event.action === BACK_EVENT) return { view: "back" };
     try {
       if (event.action === "detect") {
+        model.source = requiredText(model.source, "Git URL");
         inspection = await kernel.packages.source.inspect(model.source);
         applyInspection(model, inspection);
         showNotification(`Detected ${inspection.package_id}`, "success");
         continue;
       }
       if (event.action === "save" || event.action === "save-sync") {
+        model.source = requiredText(model.source, "Git URL");
         if (
           inspection === undefined ||
           inspection.source !== normalizedURL(model.source)
@@ -284,7 +286,11 @@ export async function packageLocal(): Promise<ScreenResult> {
     if (event.action === BACK_EVENT) return { view: "back" };
     if (event.action !== "create") continue;
     try {
-      const created = await kernel.packages.local.create(model);
+      const created = await kernel.packages.local.create({
+        author: requiredText(model.author, "Author"),
+        repository: requiredText(model.repository, "Repository"),
+        description: model.description,
+      });
       showNotification(`Created ${created.index.package_id}`, "success");
       return { view: "back" };
     } catch (error) {
@@ -304,6 +310,12 @@ export function desiredVersion(
     return { commit: selection.slice(7) };
   }
   throw new TypeError("Select latest, a tag, or an exact commit");
+}
+
+export function requiredText(value: string, label: string): string {
+  const normalized = value.trim();
+  if (normalized === "") throw new TypeError(`${label} is required`);
+  return normalized;
 }
 
 export function sourceVersionOptions(inspection?: PackageSourceInspection) {
