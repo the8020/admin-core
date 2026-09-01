@@ -16,8 +16,8 @@
           "state",
           "enabled",
           "accessMode",
-          "desiredGeneration",
-          "loadedGeneration",
+          "desiredVersion",
+          "loadedVersion",
           "failure"
         ]
       },
@@ -89,6 +89,7 @@
         "key": "navigation",
         "display": [
           "sandboxId",
+          "version",
           "state",
           "workers",
           "activeRequests",

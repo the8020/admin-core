@@ -4,6 +4,7 @@ export interface ServiceSummary {
   canonical_base_path: string;
   state: string;
   enabled: boolean;
+  version_count: number;
   sandbox_count: number;
   worker_count: number;
   service_type: string;
@@ -17,6 +18,7 @@ export interface ServiceListResult extends Record<string, unknown> {
 
 export interface ServiceSandbox {
   index: number;
+  version: number;
   sandbox_id: string;
   worker_ids: string[] | null;
   active_requests: number;
@@ -30,8 +32,9 @@ export interface ServiceStatus {
   service_type: "stateless" | "session";
   access_mode: string;
   enabled: boolean;
-  desired_generation: number;
-  loaded_generation: number;
+  desired_version: number;
+  loaded_version: number;
+  version_count: number;
   state: string;
   sandbox_count: number;
   worker_count: number;

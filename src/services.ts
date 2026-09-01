@@ -20,6 +20,7 @@ const ServiceRow = z.object({
   serviceId: z.string(),
   state: z.string(),
   enabled: z.boolean(),
+  versions: z.number().int(),
   sandboxes: z.number().int(),
   workers: z.number().int(),
   serviceType: z.string(),
@@ -30,6 +31,7 @@ const ServiceList = z.object({ services: z.array(ServiceRow) });
 const SandboxRow = z.object({
   navigation: z.string(),
   sandboxId: z.string(),
+  version: z.number().int(),
   state: z.string(),
   workers: z.number().int(),
   activeRequests: z.number().int(),
@@ -43,12 +45,12 @@ function serviceDetailSchema(serviceType: string) {
     state: field(z.string(), { label: "State", readOnly: true }),
     enabled: field(z.boolean(), { label: "Enabled", readOnly: true }),
     accessMode: field(z.string(), { label: "Access", readOnly: true }),
-    desiredGeneration: field(z.number().int(), {
-      label: "Desired generation",
+    desiredVersion: field(z.number().int(), {
+      label: "Desired version",
       readOnly: true,
     }),
-    loadedGeneration: field(z.number().int(), {
-      label: "Loaded generation",
+    loadedVersion: field(z.number().int(), {
+      label: "Loaded version",
       readOnly: true,
     }),
     minimumWorkers: field(z.number().int().nonnegative(), {

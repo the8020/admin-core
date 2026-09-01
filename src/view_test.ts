@@ -30,6 +30,7 @@ import {
   sandboxHistoryDetailModel,
   sandboxHistoryRows,
   serviceDetailModel,
+  serviceRows,
 } from "./view.ts";
 
 Deno.test("package detail groups cards under Overview and Contents", () => {
@@ -61,8 +62,38 @@ Deno.test("service detail presents canonical scaling and lifecycle groups", () =
   );
   const encoded = JSON.stringify(layout);
   assertEquals(
-    /\b(?:replica|replicas|instance|instances)\b/i.test(encoded),
+    /\b(?:generation|generations|replica|replicas|instance|instances)\b/i.test(
+      encoded,
+    ),
     false,
+  );
+});
+
+Deno.test("service list keeps one aggregate row with version and unique capacity counts", () => {
+  assertEquals(
+    serviceRows({
+      services: [{
+        service_id: "the8020/uui/session",
+        canonical_base_path: "/the8020/uui/session",
+        state: "READY",
+        enabled: true,
+        version_count: 2,
+        sandbox_count: 1,
+        worker_count: 3,
+        service_type: "session",
+        access_mode: "authenticated",
+      }],
+    }),
+    [{
+      serviceId: "the8020/uui/session",
+      state: "READY",
+      enabled: true,
+      versions: 2,
+      sandboxes: 1,
+      workers: 3,
+      serviceType: "session",
+      description: "",
+    }],
   );
 });
 
@@ -211,13 +242,15 @@ Deno.test("service detail maps editable configuration and sandbox links", () => 
       service_type: "stateless",
       access_mode: "public",
       enabled: true,
-      desired_generation: 4,
-      loaded_generation: 4,
+      desired_version: 4,
+      loaded_version: 4,
+      version_count: 1,
       state: "READY",
       sandbox_count: 1,
       worker_count: 2,
       sandboxes: [{
         index: 0,
+        version: 4,
         sandbox_id: "sandbox-1",
         worker_ids: ["worker-1", "worker-2"],
         active_requests: 1,
@@ -249,6 +282,7 @@ Deno.test("service detail maps editable configuration and sandbox links", () => 
   assertEquals(model.concurrencyPerWorker, 32);
   assertEquals(model.targetUtilization, 70.5);
   assertEquals(model.sandboxes[0]?.navigation, "sandbox:sandbox-1");
+  assertEquals(model.sandboxes[0]?.version, 4);
 });
 
 Deno.test("service detail accepts a ready sandbox with no reported Worker IDs", () => {
@@ -259,13 +293,15 @@ Deno.test("service detail accepts a ready sandbox with no reported Worker IDs", 
       service_type: "session",
       access_mode: "authenticated",
       enabled: true,
-      desired_generation: 1,
-      loaded_generation: 1,
+      desired_version: 1,
+      loaded_version: 1,
+      version_count: 1,
       state: "READY",
       sandbox_count: 1,
       worker_count: 0,
       sandboxes: [{
         index: 0,
+        version: 1,
         sandbox_id: "sandbox-channel",
         worker_ids: null,
         active_requests: 0,

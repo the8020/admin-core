@@ -22,6 +22,10 @@
 - Programs use the typed kernel command bus under the active authenticated
   request. Collections stay compact; details own full status, relationships, and
   service configuration mutations.
+- The service collection keeps exactly one row per logical service and shows
+  live version count plus unique sandbox and Worker totals across current and
+  retained versions. Service detail lists every live sandbox once with its
+  service version so retained session capacity remains directly inspectable.
 - Package collection calls only `package.list`. Selecting one package calls
   `package.inspect` and `package.repository.inspect`; only that detail path
   reads Git status, manifests, and bounded non-Git file inventory.
