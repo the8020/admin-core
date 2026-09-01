@@ -147,21 +147,31 @@ const SandboxHistoryDetail = z.object({
 });
 
 export async function sandboxList(): Promise<ScreenResult> {
-  const result = await kernel.admin.execute<SandboxListResult>("sandbox.list");
-  const model = { sandboxes: sandboxRows(result) };
-  const event = await callScreen({
-    id: "core-admin-sandboxes",
-    title: "Sandboxes",
-    schema: SandboxList,
-    model,
-    layout: sandboxListLayout,
-    header: { actions: [{ id: "history", label: "History" }] },
-  });
-  if (event.action === "history") return { view: "sandboxHistory" };
-  if (event.action === BACK_EVENT) return { view: "back" };
-  return event.action === "select" && typeof event.value === "string"
-    ? { view: "sandbox", sandboxId: event.value }
-    : { view: "back" };
+  while (true) {
+    const result = await kernel.admin.execute<SandboxListResult>(
+      "sandbox.list",
+    );
+    const model = { sandboxes: sandboxRows(result) };
+    const event = await callScreen({
+      id: "core-admin-sandboxes",
+      title: "Sandboxes",
+      schema: SandboxList,
+      model,
+      layout: sandboxListLayout,
+      header: {
+        actions: [
+          { id: "history", label: "History" },
+          { id: "refresh", label: "[[icon=refresh]] Refresh" },
+        ],
+      },
+    });
+    if (event.action === "history") return { view: "sandboxHistory" };
+    if (event.action === BACK_EVENT) return { view: "back" };
+    if (event.action === "refresh") continue;
+    return event.action === "select" && typeof event.value === "string"
+      ? { view: "sandbox", sandboxId: event.value }
+      : { view: "back" };
+  }
 }
 
 export async function sandboxHistoryList(): Promise<ScreenResult> {

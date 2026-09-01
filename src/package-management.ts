@@ -385,9 +385,7 @@ function requireSuccessfulSynchronization(
 ): void {
   const failed = results.find((result) => !result.success);
   if (failed !== undefined) {
-    throw new Error(
-      failed.error ?? `Could not synchronize ${failed.package_id}`,
-    );
+    throw new Error(`Could not synchronize ${failed.package_id}`);
   }
 }
 

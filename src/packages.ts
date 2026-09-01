@@ -141,26 +141,32 @@ const PackageDetail = z.object({
 });
 
 export async function packageList(): Promise<ScreenResult> {
-  const result = await kernel.admin.execute<PackageListResult>("package.list");
-  const event = await callScreen({
-    id: "core-admin-packages",
-    title: "Packages",
-    schema: PackageList,
-    model: { packages: packageRows(result) },
-    layout: packageListLayout,
-    header: {
-      actions: [
-        { id: "install", label: "Install package", kind: "primary" },
-        { id: "local", label: "Create local package" },
-      ],
-    },
-  });
-  if (event.action === BACK_EVENT) return { view: "back" };
-  if (event.action === "install") return { view: "packageInstall" };
-  if (event.action === "local") return { view: "packageLocal" };
-  return event.action === "select" && typeof event.value === "string"
-    ? { view: "package", packageId: event.value }
-    : { view: "back" };
+  while (true) {
+    const result = await kernel.admin.execute<PackageListResult>(
+      "package.list",
+    );
+    const event = await callScreen({
+      id: "core-admin-packages",
+      title: "Packages",
+      schema: PackageList,
+      model: { packages: packageRows(result) },
+      layout: packageListLayout,
+      header: {
+        actions: [
+          { id: "install", label: "Install package", kind: "primary" },
+          { id: "local", label: "Create local package" },
+          { id: "refresh", label: "[[icon=refresh]] Refresh" },
+        ],
+      },
+    });
+    if (event.action === BACK_EVENT) return { view: "back" };
+    if (event.action === "refresh") continue;
+    if (event.action === "install") return { view: "packageInstall" };
+    if (event.action === "local") return { view: "packageLocal" };
+    return event.action === "select" && typeof event.value === "string"
+      ? { view: "package", packageId: event.value }
+      : { view: "back" };
+  }
 }
 
 export async function packageDetail(packageId: string): Promise<ScreenResult> {
@@ -204,7 +210,7 @@ export async function packageDetail(packageId: string): Promise<ScreenResult> {
         const results = await kernel.packages.synchronize([packageId]);
         const failure = results.find((result) => !result.success);
         if (failure !== undefined) {
-          throw new Error(failure.error ?? "Package synchronization failed");
+          throw new Error(`Could not synchronize ${failure.package_id}`);
         }
         showNotification(`Synchronized ${packageId}`, "success");
       } catch (error) {

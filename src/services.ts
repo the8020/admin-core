@@ -105,19 +105,27 @@ function serviceDetailSchema(serviceType: string) {
 }
 
 export async function serviceList(): Promise<ScreenResult> {
-  const result = await kernel.admin.execute<ServiceListResult>("service.list");
-  const model = { services: serviceRows(result) };
-  const event = await callScreen({
-    id: "core-admin-services",
-    title: "Services",
-    schema: ServiceList,
-    model,
-    layout: serviceListLayout,
-  });
-  if (event.action === BACK_EVENT) return { view: "back" };
-  return event.action === "select" && typeof event.value === "string"
-    ? { view: "service", serviceId: event.value }
-    : { view: "back" };
+  while (true) {
+    const result = await kernel.admin.execute<ServiceListResult>(
+      "service.list",
+    );
+    const model = { services: serviceRows(result) };
+    const event = await callScreen({
+      id: "core-admin-services",
+      title: "Services",
+      schema: ServiceList,
+      model,
+      layout: serviceListLayout,
+      header: {
+        actions: [{ id: "refresh", label: "[[icon=refresh]] Refresh" }],
+      },
+    });
+    if (event.action === BACK_EVENT) return { view: "back" };
+    if (event.action === "refresh") continue;
+    return event.action === "select" && typeof event.value === "string"
+      ? { view: "service", serviceId: event.value }
+      : { view: "back" };
+  }
 }
 
 export async function serviceDetail(serviceId: string): Promise<ScreenResult> {
@@ -141,6 +149,7 @@ export async function serviceDetail(serviceId: string): Promise<ScreenResult> {
             label: model.enabled ? "Disable" : "Enable",
           },
           { id: "restart", label: "Restart" },
+          { id: "refresh", label: "[[icon=refresh]] Refresh" },
         ],
       },
     });

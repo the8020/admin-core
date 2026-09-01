@@ -48,6 +48,9 @@
   No active control writes legacy instance or replica fields.
 - Every screen uses shell-owned `BACK_EVENT`; refresh, history, paging,
   service-state, restart, and save actions belong in the header.
+- Live package, service, and sandbox collections and their selected details each
+  expose a header Refresh action that reloads the current target without
+  navigating.
 - Sandbox history is a bounded separate collection with direct immutable
   metadata/log inspection. Nullable array results are treated as empty.
 
@@ -62,9 +65,10 @@
 # Verification
 
 - `deno task check` formats, lints, and type-checks all three programs;
-  `deno task test` runs `view_test.ts`, which covers package summary/detail and
-  source/version selector mapping, fractional utilization conversion, canonical
-  scaling/lifecycle bindings, nullable Worker/history arrays, and duration
-  rendering. The explicit browser E2E exercises navigation and service mutation.
+  `deno task test` covers package summary/detail and source/version selector
+  mapping, fractional utilization conversion, canonical scaling/lifecycle
+  bindings, nullable Worker/history arrays, duration rendering, and
+  current-target refresh behavior for all live collection/detail screens. The
+  explicit browser E2E exercises navigation and service mutation.
 
 # Child DOX Index
