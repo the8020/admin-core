@@ -20,9 +20,9 @@ const ServiceRow = z.object({
   serviceId: z.string(),
   state: z.string(),
   enabled: z.boolean(),
-  instances: z.number().int(),
+  sandboxes: z.number().int(),
   workers: z.number().int(),
-  mode: z.string(),
+  serviceType: z.string(),
   description: z.string(),
 });
 const ServiceList = z.object({ services: z.array(ServiceRow) });
@@ -35,44 +35,74 @@ const SandboxRow = z.object({
   activeRequests: z.number().int(),
   activeExecutions: z.number().int(),
 });
-const ServiceDetail = z.object({
-  serviceId: field(z.string(), { label: "Service ID", readOnly: true }),
-  description: field(z.string(), { label: "Description", readOnly: true }),
-  path: field(z.string(), { label: "Path", readOnly: true }),
-  state: field(z.string(), { label: "State", readOnly: true }),
-  enabled: field(z.boolean(), { label: "Enabled", readOnly: true }),
-  executionMode: field(z.string(), { label: "Execution", readOnly: true }),
-  accessMode: field(z.string(), { label: "Access", readOnly: true }),
-  desiredGeneration: field(z.number().int(), {
-    label: "Desired generation",
-    readOnly: true,
-  }),
-  loadedGeneration: field(z.number().int(), {
-    label: "Loaded generation",
-    readOnly: true,
-  }),
-  replicasMinimum: field(z.number().int().positive(), {
-    label: "Minimum",
-  }),
-  replicasMaximum: field(z.number().int().positive(), { label: "Maximum" }),
-  workersMinimum: field(z.number().int().positive(), { label: "Minimum" }),
-  workersMaximum: field(z.number().int().positive(), { label: "Maximum" }),
-  concurrencyPerWorker: field(z.number().int().positive(), {
-    label: "Concurrency per Worker",
-  }),
-  targetUtilization: field(z.number().int().min(1).max(100), {
-    label: "Target utilization",
-    control: "range",
-    minimum: 1,
-    maximum: 100,
-    step: 1,
-    valueSuffix: "%",
-  }),
-  keepAlive: field(z.string().min(1), { label: "Persistent keepalive" }),
-  sandboxGroup: field(z.string(), { label: "Sandbox group" }),
-  failure: field(z.string(), { label: "Failure", readOnly: true }),
-  sandboxes: z.array(SandboxRow),
-});
+function serviceDetailSchema(serviceType: string) {
+  return z.object({
+    serviceId: field(z.string(), { label: "Service ID", readOnly: true }),
+    description: field(z.string(), { label: "Description", readOnly: true }),
+    path: field(z.string(), { label: "Path", readOnly: true }),
+    state: field(z.string(), { label: "State", readOnly: true }),
+    enabled: field(z.boolean(), { label: "Enabled", readOnly: true }),
+    accessMode: field(z.string(), { label: "Access", readOnly: true }),
+    desiredGeneration: field(z.number().int(), {
+      label: "Desired generation",
+      readOnly: true,
+    }),
+    loadedGeneration: field(z.number().int(), {
+      label: "Loaded generation",
+      readOnly: true,
+    }),
+    minimumWorkers: field(z.number().int().nonnegative(), {
+      label: "Minimum Workers",
+      description: "Zero allows the service to scale to no running Workers.",
+    }),
+    maximumWorkers: field(z.number().int().nonnegative(), {
+      label: "Maximum Workers",
+      description:
+        "Zero is unlimited at the service level; kernel sandbox and resource limits still apply.",
+    }),
+    concurrencyPerWorker: field(z.number().int().positive(), {
+      label: "Concurrency",
+      description: "Maximum concurrent requests handled by one Worker.",
+    }),
+    targetUtilization: field(z.number().min(1).max(100), {
+      label: "Target utilization",
+      control: "range",
+      minimum: 1,
+      maximum: 100,
+      step: 0.1,
+      valueSuffix: "%",
+    }),
+    workerKeepAlive: field(z.string().min(1), {
+      label: "Worker keepalive",
+      description: "How long an excess idle Worker remains available.",
+    }),
+    sandboxGroup: field(z.string(), {
+      label: "Sandbox group",
+      description: "Only compatible services in the same group may share.",
+    }),
+    minimumSandboxes: field(z.number().int().nonnegative(), {
+      label: "Minimum sandboxes",
+      description: "Keeps warm compatible sandboxes even with zero Workers.",
+    }),
+    workersPerSandbox: field(z.number().int().positive(), {
+      label: "Workers per sandbox",
+      description: "Per-service packing limit in one sandbox.",
+    }),
+    serviceType: field(z.enum(["stateless", "session"]), {
+      label: "Service type",
+      reactive: true,
+      description: "Session services retain a persistent session environment.",
+    }),
+    sessionKeepAlive: field(z.string().min(1), {
+      label: "Session keepalive",
+      hidden: serviceType !== "session",
+      description:
+        "How long a session environment remains after activity ends.",
+    }),
+    failure: field(z.string(), { label: "Failure", readOnly: true }),
+    sandboxes: z.array(SandboxRow),
+  });
+}
 
 export async function serviceList(): Promise<ScreenResult> {
   const result = await kernel.admin.execute<ServiceListResult>("service.list");
@@ -91,16 +121,16 @@ export async function serviceList(): Promise<ScreenResult> {
 }
 
 export async function serviceDetail(serviceId: string): Promise<ScreenResult> {
+  let result = await kernel.admin.execute<ServiceInspectResult>(
+    "service.inspect",
+    { service_id: serviceId },
+  );
+  let model = serviceDetailModel(result);
   while (true) {
-    const result = await kernel.admin.execute<ServiceInspectResult>(
-      "service.inspect",
-      { service_id: serviceId },
-    );
-    const model = serviceDetailModel(result);
     const event = await callScreen({
       id: "core-admin-service-detail",
       title: `Service ${serviceId}`,
-      schema: ServiceDetail,
+      schema: serviceDetailSchema(model.serviceType),
       model,
       layout: serviceDetailLayout,
       header: {
@@ -115,6 +145,7 @@ export async function serviceDetail(serviceId: string): Promise<ScreenResult> {
       },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
+    if (event.action === "change") continue;
     if (
       event.action === "select" && typeof event.value === "string" &&
       event.value.startsWith("sandbox:")
@@ -135,19 +166,34 @@ export async function serviceDetail(serviceId: string): Promise<ScreenResult> {
         showNotification("Restarted", "success");
       }
       if (event.action === "save") {
+        if (
+          model.maximumWorkers !== 0 &&
+          model.maximumWorkers < model.minimumWorkers
+        ) {
+          throw new Error(
+            "Maximum Workers must be zero or at least Minimum Workers.",
+          );
+        }
         await kernel.admin.execute("service.scale", {
           service_id: serviceId,
-          replicas_min: model.replicasMinimum,
-          replicas_max: model.replicasMaximum,
-          workers_per_replica_min: model.workersMinimum,
-          workers_per_replica_max: model.workersMaximum,
+          minimum_workers: model.minimumWorkers,
+          maximum_workers: model.maximumWorkers,
           concurrency_per_worker: model.concurrencyPerWorker,
           target_utilization: String(model.targetUtilization / 100),
-          keep_alive: model.keepAlive,
+          worker_keep_alive: model.workerKeepAlive,
+          workers_per_sandbox: model.workersPerSandbox,
           sandbox_group: model.sandboxGroup,
+          minimum_sandboxes: model.minimumSandboxes,
+          service_type: model.serviceType,
+          session_keep_alive: model.sessionKeepAlive,
         });
         showNotification("Saved", "success");
       }
+      result = await kernel.admin.execute<ServiceInspectResult>(
+        "service.inspect",
+        { service_id: serviceId },
+      );
+      model = serviceDetailModel(result);
     } catch (error) {
       showNotification(
         error instanceof Error ? error.message : "Failed",

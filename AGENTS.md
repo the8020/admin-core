@@ -38,9 +38,14 @@
   list, or field-group cards.
 - Package/service navigation is bidirectional. Sandbox details show correlated
   services but never discover or duplicate application-owned session state.
-- Service configuration exposes stateless/persistent mode, concurrency per
-  Worker, persistent keep-alive, replica/Worker bounds, target utilization, and
-  free-text sandbox group. It does not expose application protocol semantics.
+- Service detail exposes one canonical editable policy. `Scaling` contains
+  `Worker threads` (minimum/maximum Workers), `Single worker` (concurrency,
+  target utilization, and Worker keepalive), and `Replication` (sandbox group,
+  minimum sandboxes, and Workers per sandbox). A separate `Lifecycle` group
+  edits stateless/session type and session keepalive. Zero minimum means
+  scale-to-zero; zero maximum means service-level unlimited. Session-only input
+  is disabled while stateless but preserved so switching type remains editable.
+  No active control writes legacy instance or replica fields.
 - Every screen uses shell-owned `BACK_EVENT`; refresh, history, paging,
   service-state, restart, and save actions belong in the header.
 - Sandbox history is a bounded separate collection with direct immutable
@@ -58,8 +63,8 @@
 
 - `deno task check` formats, lints, and type-checks all three programs;
   `deno task test` runs `view_test.ts`, which covers package summary/detail and
-  source/version selector mapping, utilization conversion, nullable
-  Worker/history arrays, and duration rendering. The explicit browser E2E
-  exercises navigation and service mutation.
+  source/version selector mapping, fractional utilization conversion, canonical
+  scaling/lifecycle bindings, nullable Worker/history arrays, and duration
+  rendering. The explicit browser E2E exercises navigation and service mutation.
 
 # Child DOX Index

@@ -4,9 +4,9 @@ export interface ServiceSummary {
   canonical_base_path: string;
   state: string;
   enabled: boolean;
-  instance_count: number;
+  sandbox_count: number;
   worker_count: number;
-  execution_mode: string;
+  service_type: string;
   access_mode: string;
   validation_error?: string;
 }
@@ -15,7 +15,7 @@ export interface ServiceListResult extends Record<string, unknown> {
   services: ServiceSummary[];
 }
 
-export interface ServiceInstance {
+export interface ServiceSandbox {
   index: number;
   sandbox_id: string;
   worker_ids: string[] | null;
@@ -27,29 +27,32 @@ export interface ServiceStatus {
   service_id: string;
   description?: string;
   canonical_base_path: string;
-  execution_mode: string;
+  service_type: "stateless" | "session";
   access_mode: string;
   enabled: boolean;
   desired_generation: number;
   loaded_generation: number;
   state: string;
-  instance_count: number;
+  sandbox_count: number;
   worker_count: number;
-  instances: ServiceInstance[];
+  sandboxes: ServiceSandbox[];
   effective_configuration: {
-    execution: {
-      mode: "stateless" | "persistent";
-      concurrency_per_worker: number;
-      keep_alive: number;
+    lifecycle: {
+      service_type: "stateless" | "session";
+      session_keep_alive: number;
     };
     scaling: {
-      replicas_min: number;
-      replicas_max: number;
-      workers_per_replica_min: number;
-      workers_per_replica_max: number;
+      minimum_workers: number;
+      maximum_workers: number;
+      concurrency_per_worker: number;
       target_utilization: number;
+      worker_keep_alive: number;
     };
-    placement: { sandbox_group: string };
+    placement: {
+      sandbox_group: string;
+      minimum_sandboxes: number;
+      workers_per_sandbox: number;
+    };
   };
   validation_error?: string;
   last_startup_error?: string;
@@ -77,7 +80,7 @@ export interface PackageService {
   service_id: string;
   path: string;
   description?: string;
-  execution_mode?: string;
+  service_type?: string;
   access_mode?: string;
   entrypoint?: string;
   valid: boolean;
@@ -204,7 +207,7 @@ export interface SandboxService {
   service_id: string;
   state: string;
   enabled: boolean;
-  instance_count: number;
+  sandbox_count: number;
   worker_count: number;
 }
 

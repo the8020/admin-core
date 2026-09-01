@@ -10,9 +10,9 @@
       "serviceId",
       "state",
       "enabled",
-      "instances",
+      "sandboxes",
       "workers",
-      "mode",
+      "serviceType",
       "description"
     ]
   }

@@ -54,7 +54,7 @@ const ServiceRow = z.object({
   serviceId: z.string(),
   state: z.string(),
   enabled: z.boolean(),
-  instances: z.number().int(),
+  sandboxes: z.number().int(),
   workers: z.number().int(),
 });
 const SandboxDetail = z.object({

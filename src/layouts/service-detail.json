@@ -15,7 +15,6 @@
           "path",
           "state",
           "enabled",
-          "executionMode",
           "accessMode",
           "desiredGeneration",
           "loadedGeneration",
@@ -23,45 +22,61 @@
         ]
       },
       {
-        "id": "configuration-section",
+        "id": "scaling-section",
         "type": "section",
-        "title": "Configuration",
+        "title": "Scaling",
         "children": [
           {
-            "id": "configuration",
+            "id": "scaling",
             "type": "grid",
             "columns": 3,
             "responsive": "stack",
             "children": [
               {
-                "id": "instances",
+                "id": "worker-threads",
                 "type": "field-group",
-                "title": "Instances",
+                "title": "Worker threads",
                 "controls": [
-                  "replicasMinimum",
-                  "replicasMaximum"
+                  "minimumWorkers",
+                  "maximumWorkers"
                 ]
               },
               {
-                "id": "workers",
+                "id": "single-worker",
                 "type": "field-group",
-                "title": "Workers",
+                "title": "Single worker",
                 "controls": [
-                  "workersMinimum",
-                  "workersMaximum",
                   "concurrencyPerWorker",
-                  "targetUtilization"
+                  "targetUtilization",
+                  "workerKeepAlive"
                 ]
               },
               {
-                "id": "runtime",
+                "id": "replication",
                 "type": "field-group",
-                "title": "Runtime",
+                "title": "Replication",
                 "controls": [
-                  "keepAlive",
-                  "sandboxGroup"
+                  "sandboxGroup",
+                  "minimumSandboxes",
+                  "workersPerSandbox"
                 ]
               }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "lifecycle-section",
+        "type": "section",
+        "title": "Lifecycle",
+        "children": [
+          {
+            "id": "service-lifecycle",
+            "type": "field-group",
+            "title": "Service lifecycle",
+            "controls": [
+              "serviceType",
+              "sessionKeepAlive"
             ]
           }
         ]

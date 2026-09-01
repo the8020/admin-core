@@ -29,7 +29,7 @@
         "title": "Services",
         "bind": "services",
         "key": "navigation",
-        "display": ["serviceId", "state", "enabled", "instances", "workers"]
+        "display": ["serviceId", "state", "enabled", "sandboxes", "workers"]
       }
     ]
   }

@@ -3,6 +3,9 @@ import { validateLayout } from "@packages/the8020/uui/mod.ts";
 import packageDetailLayout from "./layouts/package-detail.json" with {
   type: "json",
 };
+import serviceDetailLayout from "./layouts/service-detail.json" with {
+  type: "json",
+};
 import type {
   PackageInspectResult,
   PackageListResult,
@@ -43,6 +46,26 @@ Deno.test("package detail groups cards under Overview and Contents", () => {
   );
 });
 
+Deno.test("service detail presents canonical scaling and lifecycle groups", () => {
+  const layout = validateLayout(serviceDetailLayout);
+  const sections = layout.root.children ?? [];
+  assertEquals(sections.map((section) => section.title), [
+    "Status",
+    "Scaling",
+    "Lifecycle",
+    "Sandboxes",
+  ]);
+  assertEquals(
+    sections[1]?.children?.[0]?.children?.map((group) => group.title),
+    ["Worker threads", "Single worker", "Replication"],
+  );
+  const encoded = JSON.stringify(layout);
+  assertEquals(
+    /\b(?:replica|replicas|instance|instances)\b/i.test(encoded),
+    false,
+  );
+});
+
 Deno.test("package list stays summary-only and detail maps selected contents", () => {
   const list: PackageListResult = {
     packages: [{
@@ -73,7 +96,7 @@ Deno.test("package list stays summary-only and detail maps selected contents", (
         service_id: "the8020/admin-core/api",
         path: "services/api",
         description: "Admin API",
-        execution_mode: "stateless",
+        service_type: "stateless",
         access_mode: "authenticated",
         entrypoint: "services/api/service.ts",
         valid: true,
@@ -172,15 +195,15 @@ Deno.test("service detail maps editable configuration and sandbox links", () => 
     service: {
       service_id: "core/example/service",
       canonical_base_path: "/core/example/service",
-      execution_mode: "stateless",
+      service_type: "stateless",
       access_mode: "public",
       enabled: true,
       desired_generation: 4,
       loaded_generation: 4,
       state: "READY",
-      instance_count: 1,
+      sandbox_count: 1,
       worker_count: 2,
-      instances: [{
+      sandboxes: [{
         index: 0,
         sandbox_id: "sandbox-1",
         worker_ids: ["worker-1", "worker-2"],
@@ -188,43 +211,47 @@ Deno.test("service detail maps editable configuration and sandbox links", () => 
         active_executions: 0,
       }],
       effective_configuration: {
-        execution: {
-          mode: "stateless",
-          concurrency_per_worker: 32,
-          keep_alive: 120_000_000_000,
+        lifecycle: {
+          service_type: "stateless",
+          session_keep_alive: 600_000_000_000,
         },
         scaling: {
-          replicas_min: 1,
-          replicas_max: 2,
-          workers_per_replica_min: 1,
-          workers_per_replica_max: 4,
-          target_utilization: 0.7,
+          minimum_workers: 1,
+          maximum_workers: 8,
+          concurrency_per_worker: 32,
+          target_utilization: 0.705,
+          worker_keep_alive: 120_000_000_000,
         },
-        placement: { sandbox_group: "core" },
+        placement: {
+          sandbox_group: "core",
+          minimum_sandboxes: 1,
+          workers_per_sandbox: 4,
+        },
       },
     },
   };
   const model = serviceDetailModel(result);
-  assertEquals(model.keepAlive, "2m");
+  assertEquals(model.workerKeepAlive, "2m");
+  assertEquals(model.sessionKeepAlive, "10m");
   assertEquals(model.concurrencyPerWorker, 32);
-  assertEquals(model.targetUtilization, 70);
+  assertEquals(model.targetUtilization, 70.5);
   assertEquals(model.sandboxes[0]?.navigation, "sandbox:sandbox-1");
 });
 
-Deno.test("service detail accepts a ready instance with no reported Worker IDs", () => {
+Deno.test("service detail accepts a ready sandbox with no reported Worker IDs", () => {
   const result: ServiceInspectResult = {
     service: {
       service_id: "example/realtime/channel",
       canonical_base_path: "/example/realtime/channel",
-      execution_mode: "persistent",
+      service_type: "session",
       access_mode: "authenticated",
       enabled: true,
       desired_generation: 1,
       loaded_generation: 1,
       state: "READY",
-      instance_count: 1,
+      sandbox_count: 1,
       worker_count: 0,
-      instances: [{
+      sandboxes: [{
         index: 0,
         sandbox_id: "sandbox-channel",
         worker_ids: null,
@@ -232,19 +259,22 @@ Deno.test("service detail accepts a ready instance with no reported Worker IDs",
         active_executions: 0,
       }],
       effective_configuration: {
-        execution: {
-          mode: "persistent",
-          concurrency_per_worker: 1,
-          keep_alive: 120_000_000_000,
+        lifecycle: {
+          service_type: "session",
+          session_keep_alive: 120_000_000_000,
         },
         scaling: {
-          replicas_min: 1,
-          replicas_max: 1,
-          workers_per_replica_min: 1,
-          workers_per_replica_max: 10,
+          minimum_workers: 1,
+          maximum_workers: 10,
+          concurrency_per_worker: 1,
           target_utilization: 0.7,
+          worker_keep_alive: 120_000_000_000,
         },
-        placement: { sandbox_group: "realtime" },
+        placement: {
+          sandbox_group: "realtime",
+          minimum_sandboxes: 1,
+          workers_per_sandbox: 10,
+        },
       },
     },
   };
@@ -274,7 +304,7 @@ Deno.test("sandbox detail maps service links without service-owned sessions", ()
       service_id: "core/example/service",
       state: "READY",
       enabled: true,
-      instance_count: 1,
+      sandbox_count: 1,
       worker_count: 2,
     }],
   };

@@ -32,7 +32,7 @@ const ServiceRow = z.object({
   navigation: z.string(),
   serviceId: z.string(),
   path: z.string(),
-  execution: z.string(),
+  serviceType: z.string(),
   access: z.string(),
   entrypoint: z.string(),
   valid: z.boolean(),
