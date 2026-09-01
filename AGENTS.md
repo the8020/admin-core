@@ -7,18 +7,18 @@
 
 # Ownership
 
-- Own linked package list/detail/install/version/local-create, service
-  list/detail, live sandbox list/detail, and separate historical sandbox
-  list/detail screens plus their typed command-result models.
+- Own linked package list/detail/install/version/local-create, named-secret
+  list/edit, service list/detail, live sandbox list/detail, and separate
+  historical sandbox list/detail screens plus their typed command-result models.
 - Do not own UUI-session administration, command behavior, authorization,
   runtime lifecycle, program discovery, or browser rendering.
 
 # Local Contracts
 
-- `the8020/admin-core/packages`, `the8020/admin-core/services`, and
-  `the8020/admin-core/sandboxes` are parameterless programs backed only by
-  `@the8020/kernel` and the ordinary package mapping
-  `@packages/the8020/uui/mod.ts`.
+- `the8020/admin-core/packages`, `the8020/admin-core/secrets`,
+  `the8020/admin-core/services`, and `the8020/admin-core/sandboxes` are
+  parameterless programs backed only by `@the8020/kernel` and the ordinary
+  package mapping `@packages/the8020/uui/mod.ts`.
 - Programs use the typed kernel command bus under the active authenticated
   request. Collections stay compact; details own full status, relationships, and
   service configuration mutations.
@@ -26,11 +26,16 @@
   `package.inspect` and `package.repository.inspect`; only that detail path
   reads Git status, manifests, and bounded non-Git file inventory.
 - Package list header actions open ordinary Install package and Create local
-  package screens. Install validates a public Git URL, displays detected
+  package screens. Install validates an HTTPS Git URL, displays detected
   identity/branch/tag refs, writes the desired index, and may synchronize in one
   action. Versions lists bounded commits/tags and saves latest, tag, or exact
-  commit before synchronization. Detail synchronization refreshes only the
-  selected package.
+  commit before synchronization. Package detail exposes bounded branch/commit
+  selectors plus pull, push, checkout, and stored-secret-name selection. Git
+  operations remain typed kernel calls and refresh only affected services; the
+  existing explicit desired-version synchronization action remains available.
+- Secrets lists names and update times. Add/edit starts with a blank password
+  field, never calls secret get, clears the submitted model value, and
+  overwrites the named value through the typed kernel API.
 - Management screens call the typed `kernel.packages` API, which delegates to
   generic command-bus execution; they never read host paths or run Git.
 - Detail headings identify `Package <id>`, `Service <id>`, `Sandbox <id>`, or
@@ -64,11 +69,12 @@
 
 # Verification
 
-- `deno task check` formats, lints, and type-checks all three programs;
-  `deno task test` covers package summary/detail and source/version selector
-  mapping, fractional utilization conversion, canonical scaling/lifecycle
-  bindings, nullable Worker/history arrays, duration rendering, and
-  current-target refresh behavior for all live collection/detail screens. The
-  explicit browser E2E exercises navigation and service mutation.
+- `deno task check` formats, lints, and type-checks all programs;
+  `deno task test` covers package summary/detail, source/version/Git selectors,
+  secret overwrite-without-read behavior, mapping, fractional utilization
+  conversion, canonical scaling/lifecycle bindings, nullable Worker/history
+  arrays, duration rendering, and current-target refresh behavior for all live
+  collection/detail screens. The explicit browser E2E exercises navigation and
+  service mutation.
 
 # Child DOX Index

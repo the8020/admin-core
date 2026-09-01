@@ -257,6 +257,7 @@ export async function packageVersions(
         author: index.author,
         repository: index.repository,
         source: index.source,
+        secret: index.secret,
         ...selected,
       });
       const synchronized = await kernel.packages.synchronize([packageId]);

@@ -124,23 +124,6 @@ export interface PackageInspectResult extends Record<string, unknown> {
   package: PackageInspection;
 }
 
-export interface PackageRepository {
-  package_id: string;
-  path: string;
-  activation_ready: boolean;
-  branch?: string;
-  head?: string;
-  remote_name?: string;
-  remote_url?: string;
-  clean: boolean;
-  status: string;
-}
-
-export interface PackageRepositoryInspectResult
-  extends Record<string, unknown> {
-  repository: PackageRepository;
-}
-
 export interface SandboxSummary {
   sandbox_id: string;
   runtime_group_id: string;

@@ -10,6 +10,7 @@ import { bindSession } from "../../uui/session.ts";
 import type { ScreenResult } from "./navigation.ts";
 import { packageDetail, packageList } from "./packages.ts";
 import { sandboxDetail, sandboxList } from "./sandboxes.ts";
+import { secretList } from "./secrets.ts";
 import { serviceDetail, serviceList } from "./services.ts";
 
 class TestChannel {
@@ -66,8 +67,23 @@ const commandResults: Record<string, Record<string, unknown>> = {
       activation_ready: true,
       clean: true,
       status: "ready",
+      branches: [],
+      commits: [],
     },
   },
+  "package.index.inspect": {
+    package: {
+      schema: 1,
+      author: "the8020",
+      repository: "example",
+      source: "https://github.com/the8020/example.git",
+      local: false,
+      package_id: "the8020/example",
+      path: "/state/package-index/the8020/example.toml",
+      valid: true,
+    },
+  },
+  "secret.list": { secrets: [] },
   "service.list": { services: [] },
   "service.inspect": {
     service: {
@@ -160,9 +176,18 @@ Deno.test("live list and detail screens refresh their current target", async () 
       commands: [
         "package.inspect",
         "package.repository.inspect",
+        "package.index.inspect",
+        "secret.list",
         "package.inspect",
         "package.repository.inspect",
+        "package.index.inspect",
+        "secret.list",
       ],
+    },
+    {
+      name: "secret list",
+      run: secretList,
+      commands: ["secret.list", "secret.list"],
     },
     {
       name: "service list",

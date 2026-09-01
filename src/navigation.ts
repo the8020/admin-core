@@ -11,6 +11,7 @@ import {
 } from "./package-management.ts";
 import { packageDetail, packageList } from "./packages.ts";
 import { serviceDetail, serviceList } from "./services.ts";
+import { secretEdit, secretList } from "./secrets.ts";
 
 export type AdminTarget =
   | { view: "packages" }
@@ -23,7 +24,9 @@ export type AdminTarget =
   | { view: "sandboxes" }
   | { view: "sandbox"; sandboxId: string }
   | { view: "sandboxHistory" }
-  | { view: "sandboxHistoryDetail"; historyId: string };
+  | { view: "sandboxHistoryDetail"; historyId: string }
+  | { view: "secrets" }
+  | { view: "secret"; name?: string };
 
 export type ScreenResult = AdminTarget | { view: "back" };
 
@@ -65,5 +68,9 @@ function show(target: AdminTarget): Promise<ScreenResult> {
       return sandboxHistoryList();
     case "sandboxHistoryDetail":
       return sandboxHistoryDetail(target.historyId);
+    case "secrets":
+      return secretList();
+    case "secret":
+      return secretEdit(target.name);
   }
 }

@@ -1,7 +1,7 @@
+import type { PackageRepository } from "@the8020/kernel";
 import type {
   PackageInspectResult,
   PackageListResult,
-  PackageRepositoryInspectResult,
   SandboxHistoryInspectResult,
   SandboxHistoryListResult,
   SandboxInspectResult,
@@ -21,10 +21,10 @@ export function packageRows(result: PackageListResult) {
 
 export function packageDetailModel(
   result: PackageInspectResult,
-  repositoryResult: PackageRepositoryInspectResult,
+  repository: PackageRepository,
+  secretName = "",
 ) {
   const item = result.package;
-  const repository = repositoryResult.repository;
   const services = item.services ?? [];
   const programs = item.programs ?? [];
   const files = item.files ?? [];
@@ -52,6 +52,7 @@ export function packageDetailModel(
     head: repository.head ?? "",
     remoteName: repository.remote_name ?? "",
     remoteUrl: repository.remote_url ?? "",
+    secretName,
     services: services.map((service) => ({
       navigation: `service:${service.service_id}`,
       serviceId: service.service_id,

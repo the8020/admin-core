@@ -1,4 +1,5 @@
 import { assertEquals } from "@std/assert";
+import type { PackageRepository } from "@the8020/kernel";
 import { validateLayout } from "@packages/the8020/uui/mod.ts";
 import packageDetailLayout from "./layouts/package-detail.json" with {
   type: "json",
@@ -9,7 +10,6 @@ import serviceDetailLayout from "./layouts/service-detail.json" with {
 import type {
   PackageInspectResult,
   PackageListResult,
-  PackageRepositoryInspectResult,
   SandboxHistoryInspectResult,
   SandboxHistoryListResult,
   SandboxInspectResult,
@@ -112,23 +112,36 @@ Deno.test("package list stays summary-only and detail maps selected contents", (
       files: [{ path: "package.toml", type: "file", size: 80 }],
     },
   };
-  const repository: PackageRepositoryInspectResult = {
-    repository: {
-      package_id: "the8020/admin-core",
-      path: "/workspace/packages/the8020/admin-core",
-      activation_ready: true,
-      branch: "main",
-      head: "0123456789abcdef",
-      remote_name: "origin",
-      remote_url: "ssh://git.example.test/the8020/admin-core.git",
-      clean: true,
-      status: "ready",
-    },
+  const repository: PackageRepository = {
+    package_id: "the8020/admin-core",
+    path: "/workspace/packages/the8020/admin-core",
+    activation_ready: true,
+    branch: "main",
+    head: "0123456789abcdef",
+    remote_name: "origin",
+    remote_url: "ssh://git.example.test/the8020/admin-core.git",
+    clean: true,
+    status: "ready",
+    branches: [{
+      name: "main",
+      commit: "0123456789abcdef",
+      current: true,
+      remote: false,
+    }],
+    commits: [{
+      commit: "0123456789abcdef",
+      short_commit: "0123456",
+      authored_at: "2026-09-01T00:00:00Z",
+      author: "Developer",
+      subject: "Current",
+      current: true,
+    }],
   };
-  const model = packageDetailModel(inspection, repository);
+  const model = packageDetailModel(inspection, repository, "github");
   assertEquals(model.packageId, "the8020/admin-core");
   assertEquals(model.programCount, 1);
   assertEquals(model.fileCount, 1);
+  assertEquals(model.secretName, "github");
   assertEquals(model.services[0]?.navigation, "service:the8020/admin-core/api");
   assertEquals(
     model.remoteUrl,

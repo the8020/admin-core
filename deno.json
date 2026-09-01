@@ -19,7 +19,7 @@
     "zod": "npm:zod@4.1.5"
   },
   "tasks": {
-    "check": "deno fmt --check . && deno lint . && deno check programs/packages/program.ts programs/services/program.ts programs/sandboxes/program.ts",
+    "check": "deno fmt --check . && deno lint . && deno check programs/packages/program.ts programs/services/program.ts programs/sandboxes/program.ts programs/secrets/program.ts",
     "test": "deno test ."
   }
 }
