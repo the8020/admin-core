@@ -67,6 +67,14 @@
 
 - Keep labels short, lists bounded to useful columns, and program code free of
   application-specific runtime assumptions.
+- User-visible descriptions, hints, placeholders, notices, and empty-state copy
+  must help the user act or understand a user-visible outcome. Never add copy
+  solely to explain internal architecture, storage, persistence, sessions,
+  transport, or implementation details; omit it entirely and keep those details
+  in DOX or developer documentation. For example, never show
+  `Value is stored per-session in the user storage.` or
+  `The value is sent directly to kernel secret storage and is not shown again.`
+  in the UI.
 - Source checks resolve the sibling `kernel` and `uui` repositories; deployed
   Workers continue to resolve the canonical `@the8020/*` and `@packages/*`
   mappings supplied by the runtime image.

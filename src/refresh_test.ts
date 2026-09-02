@@ -242,6 +242,142 @@ Deno.test("live list and detail screens refresh their current target", async () 
   }
 });
 
+Deno.test("package list updates all published packages to latest", async () => {
+  const calls: Array<{ command: string; arguments: Record<string, unknown> }> =
+    [];
+  const indexes = [{
+    schema: 1,
+    author: "the8020",
+    repository: "alpha",
+    source: "https://github.com/the8020/alpha.git",
+    tag: "v1.0.0",
+    secret: "github",
+    local: false,
+    package_id: "the8020/alpha",
+    path: "/state/package-index/the8020/alpha.toml",
+    valid: true,
+  }, {
+    schema: 1,
+    author: "the8020",
+    repository: "beta",
+    source: "https://github.com/the8020/beta.git",
+    commit: "abcdef1234567",
+    local: false,
+    package_id: "the8020/beta",
+    path: "/state/package-index/the8020/beta.toml",
+    valid: true,
+  }, {
+    schema: 1,
+    author: "the8020",
+    repository: "local",
+    local: true,
+    package_id: "the8020/local",
+    path: "/state/package-index/the8020/local.toml",
+    valid: true,
+  }, {
+    schema: 1,
+    author: "the8020",
+    repository: "invalid",
+    local: false,
+    package_id: "the8020/invalid",
+    path: "/state/package-index/the8020/invalid.toml",
+    valid: false,
+  }];
+  (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
+    ((operation, input) => {
+      if (operation !== "admin.execute") {
+        return Promise.reject(new Error(`unexpected operation ${operation}`));
+      }
+      const command = String(input.command_id);
+      const arguments_ = structuredClone(
+        input.arguments as Record<string, unknown>,
+      );
+      calls.push({ command, arguments: arguments_ });
+      if (command === "package.list") {
+        return Promise.resolve({
+          protocol_version: 1,
+          success: true,
+          result: { packages: [] },
+        });
+      }
+      if (command === "package.index.list") {
+        return Promise.resolve({
+          protocol_version: 1,
+          success: true,
+          result: { packages: structuredClone(indexes) },
+        });
+      }
+      if (command === "package.index.set") {
+        return Promise.resolve({
+          protocol_version: 1,
+          success: true,
+          result: { package: arguments_ },
+        });
+      }
+      if (command === "package.synchronize") {
+        return Promise.resolve({
+          protocol_version: 1,
+          success: true,
+          result: {
+            packages: ["the8020/alpha", "the8020/beta"].map(
+              (package_id) => ({ package_id, commit: "latest", success: true }),
+            ),
+          },
+        });
+      }
+      return Promise.reject(new Error(`unexpected command ${command}`));
+    }) satisfies KernelInvoke;
+
+  const channel = new TestChannel();
+  const unbind = bindSession(channel);
+  try {
+    const pending = packageList();
+    const first = await waitForScreen(channel, 1);
+    assertEquals(
+      first.header.actions.some((action) => action.id === "update-all"),
+      true,
+    );
+    channel.push(screenEvent(channel, first, "update-all", 1));
+
+    const updated = await waitForScreen(channel, 2);
+    channel.push(screenEvent(channel, updated, BACK_EVENT, 2));
+    assertEquals(await pending, { view: "back" });
+    assertEquals(calls, [{
+      command: "package.list",
+      arguments: {},
+    }, {
+      command: "package.index.list",
+      arguments: {},
+    }, {
+      command: "package.index.set",
+      arguments: {
+        author: "the8020",
+        repository: "alpha",
+        source: "https://github.com/the8020/alpha.git",
+        secret: "github",
+      },
+    }, {
+      command: "package.index.set",
+      arguments: {
+        author: "the8020",
+        repository: "beta",
+        source: "https://github.com/the8020/beta.git",
+      },
+    }, {
+      command: "package.synchronize",
+      arguments: { packages: "the8020/alpha,the8020/beta" },
+    }, {
+      command: "package.list",
+      arguments: {},
+    }]);
+  } finally {
+    unbind();
+    delete (globalThis as unknown as Record<symbol, unknown>)[
+      kernelInvokeSymbol
+    ];
+  }
+});
+
 async function waitForScreen(
   channel: TestChannel,
   count: number,

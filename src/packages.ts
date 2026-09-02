@@ -199,6 +199,7 @@ export async function packageList(): Promise<ScreenResult> {
         actions: [
           { id: "install", label: "Install package", kind: "primary" },
           { id: "local", label: "Create local package" },
+          { id: "update-all", label: "Update all" },
           { id: "refresh", label: "[[icon=refresh]] Refresh" },
         ],
       },
@@ -207,10 +208,57 @@ export async function packageList(): Promise<ScreenResult> {
     if (event.action === "refresh") continue;
     if (event.action === "install") return { view: "packageInstall" };
     if (event.action === "local") return { view: "packageLocal" };
+    if (event.action === "update-all") {
+      try {
+        const updated = await updateAllPackages();
+        showNotification(
+          updated === 0
+            ? "No published packages to update"
+            : `Updated ${updated} ${
+              updated === 1 ? "package" : "packages"
+            } to latest`,
+          updated === 0 ? "info" : "success",
+        );
+      } catch (error) {
+        showNotification(
+          error instanceof Error ? error.message : "Package update failed",
+          "error",
+        );
+      }
+      continue;
+    }
     return event.action === "select" && typeof event.value === "string"
       ? { view: "package", packageId: event.value }
       : { view: "back" };
   }
+}
+
+async function updateAllPackages(): Promise<number> {
+  const indexes = await kernel.packages.index.list();
+  const published = indexes.filter((index) => index.valid && !index.local);
+
+  await Promise.all(
+    published
+      .filter((index) => index.commit !== undefined || index.tag !== undefined)
+      .map((index) =>
+        kernel.packages.index.set({
+          author: index.author,
+          repository: index.repository,
+          source: index.source,
+          secret: index.secret,
+        })
+      ),
+  );
+
+  if (published.length === 0) return 0;
+  const results = await kernel.packages.synchronize(
+    published.map((index) => index.package_id),
+  );
+  const failure = results.find((result) => !result.success);
+  if (failure !== undefined) {
+    throw new Error(`Could not update ${failure.package_id}`);
+  }
+  return results.length;
 }
 
 export async function packageDetail(packageId: string): Promise<ScreenResult> {
