@@ -38,7 +38,9 @@ export interface ServiceStatus {
   state: string;
   sandbox_count: number;
   worker_count: number;
-  sandboxes: ServiceSandbox[];
+  // A service that owns no runtime capacity reports a nil collection, which
+  // reaches the browser as null rather than an empty array.
+  sandboxes: ServiceSandbox[] | null;
   effective_configuration: {
     lifecycle: {
       service_type: "stateless" | "session";

@@ -123,7 +123,7 @@ export function serviceDetailModel(
     ),
     failure: service.validation_error ?? service.last_startup_error ??
       service.capacity_reason ?? "",
-    sandboxes: service.sandboxes.map((sandbox) => ({
+    sandboxes: (service.sandboxes ?? []).map((sandbox) => ({
       navigation: `sandbox:${sandbox.sandbox_id}`,
       sandboxId: sandbox.sandbox_id,
       version: sandbox.version,

@@ -285,6 +285,47 @@ Deno.test("service detail maps editable configuration and sandbox links", () => 
   assertEquals(model.sandboxes[0]?.version, 4);
 });
 
+Deno.test("service detail opens for a service that owns no sandboxes", () => {
+  const result: ServiceInspectResult = {
+    service: {
+      service_id: "thomolka/hello-world/hello",
+      canonical_base_path: "/thomolka/hello-world/hello",
+      service_type: "stateless",
+      access_mode: "public",
+      enabled: true,
+      desired_version: 1,
+      loaded_version: 1,
+      version_count: 1,
+      state: "DISABLED",
+      sandbox_count: 0,
+      worker_count: 0,
+      // A disabled or failed service reports the collection as null.
+      sandboxes: null,
+      effective_configuration: {
+        lifecycle: {
+          service_type: "stateless",
+          session_keep_alive: 600_000_000_000,
+        },
+        scaling: {
+          minimum_workers: 0,
+          maximum_workers: 0,
+          concurrency_per_worker: 32,
+          target_utilization: 0.7,
+          worker_keep_alive: 120_000_000_000,
+        },
+        placement: {
+          sandbox_group: "",
+          minimum_sandboxes: 0,
+          workers_per_sandbox: 4,
+        },
+      },
+    },
+  };
+  const model = serviceDetailModel(result);
+  assertEquals(model.sandboxes, []);
+  assertEquals(model.state, "DISABLED");
+});
+
 Deno.test("service detail accepts a ready sandbox with no reported Worker IDs", () => {
   const result: ServiceInspectResult = {
     service: {
