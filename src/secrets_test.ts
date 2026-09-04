@@ -6,6 +6,7 @@ import {
   type UUIClientMessage,
 } from "@packages/the8020/uui/mod.ts";
 import { bindSession } from "../../uui/session.ts";
+import { decodeKernelCall, kernelSuccess } from "./kernel_test_support.ts";
 import { secretEdit } from "./secrets.ts";
 
 class TestChannel {
@@ -47,25 +48,19 @@ Deno.test("secret edit starts blank, stays masked, and overwrites without readin
     [];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
-      if (operation !== "admin.execute") {
-        return Promise.reject(new Error(`unexpected operation ${operation}`));
-      }
-      const command = String(input.command_id);
-      const arguments_ = input.arguments as Record<string, unknown>;
+      const call = decodeKernelCall(operation, input);
+      const command = call.command;
+      const arguments_ = call.arguments;
       calls.push({ command, arguments: structuredClone(arguments_) });
       if (command !== "secret.set") {
         return Promise.reject(new Error(`unexpected command ${command}`));
       }
-      return Promise.resolve({
-        protocol_version: 1,
-        success: true,
-        result: {
-          secret: {
-            name: arguments_.name,
-            updated_at: "2026-09-01T00:00:00Z",
-          },
+      return Promise.resolve(kernelSuccess(call, {
+        secret: {
+          name: arguments_.name,
+          updated_at: "2026-09-01T00:00:00Z",
         },
-      });
+      }));
     }) satisfies KernelInvoke;
 
   const channel = new TestChannel();

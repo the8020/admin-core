@@ -3,7 +3,7 @@ import {
   BACK_EVENT,
   callScreen,
   field,
-  showNotification,
+  sendMessage,
   z,
 } from "@packages/the8020/uui/mod.ts";
 import secretEditLayout from "./layouts/secret-edit.json" with {
@@ -96,14 +96,14 @@ export async function secretEdit(name?: string): Promise<ScreenResult> {
         value: requiredValue(model.value),
       });
       model.value = "";
-      showNotification(
+      sendMessage(
         existing ? `Updated ${secretName}` : `Created ${secretName}`,
         "success",
       );
       return { view: "back" };
     } catch (error) {
       model.value = "";
-      showNotification(
+      sendMessage(
         error instanceof Error ? error.message : "Secret update failed",
         "error",
       );

@@ -1,6 +1,6 @@
 # Purpose
 
-- Provide first-party UUI programs for package, filesystem-service, and sandbox
+- Provide first-party UUI programs for package, service, and sandbox
   administration.
 - This file is the root contract of the independent `the8020/admin-core` Git
   repository.
@@ -19,15 +19,15 @@
   `the8020/admin-core/services`, and `the8020/admin-core/sandboxes` are
   parameterless programs backed only by `@the8020/kernel` and the ordinary
   package mapping `@packages/the8020/uui/mod.ts`.
-- Programs use the typed kernel command bus under the active authenticated
+- Programs use typed private kernel operations under the active authenticated
   request. Collections stay compact; details own full status, relationships, and
   service configuration mutations.
 - The service collection keeps exactly one row per logical service and shows
   live version count plus unique sandbox and Worker totals across current and
   retained versions. Service detail lists every live sandbox once with its
   service version so retained session capacity remains directly inspectable.
-- Package collection calls only `package.list`. Selecting one package calls
-  `package.inspect` and `package.repository.inspect`; only that detail path
+- Package collection uses only the package-list operation. Selecting one package
+  uses package-inspect and repository-inspect operations; only that detail path
   reads Git status, manifests, and bounded non-Git file inventory.
 - Package list header actions open ordinary Install package and Create local
   package screens. Install validates an HTTPS Git URL, displays detected
@@ -40,8 +40,8 @@
 - Secrets lists names and update times. Add/edit starts with a blank password
   field, never calls secret get, clears the submitted model value, and
   overwrites the named value through the typed kernel API.
-- Management screens call the typed `kernel.packages` API, which delegates to
-  generic command-bus execution; they never read host paths or run Git.
+- Management screens call the typed `kernel.packages` API backed by private
+  kernel operations; they never read host paths or run Git.
 - Detail headings identify `Package <id>`, `Service <id>`, `Sandbox <id>`, or
   `Archived sandbox <id>`. Unboxed H1 sections contain second-level detail,
   list, or field-group cards.

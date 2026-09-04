@@ -9,7 +9,7 @@ import {
   BACK_EVENT,
   callScreen,
   field,
-  showNotification,
+  sendMessage,
   z,
 } from "@packages/the8020/uui/mod.ts";
 import packageDetailLayout from "./layouts/package-detail.json" with {
@@ -18,7 +18,12 @@ import packageDetailLayout from "./layouts/package-detail.json" with {
 import packageListLayout from "./layouts/package-list.json" with {
   type: "json",
 };
-import type { PackageInspectResult, PackageListResult } from "./contracts.ts";
+import type {
+  PackageInspection,
+  PackageInspectResult,
+  PackageListResult,
+  PackageSummary,
+} from "./contracts.ts";
 import type { ScreenResult } from "./navigation.ts";
 import { packageDetailModel, packageRows } from "./view.ts";
 
@@ -186,9 +191,9 @@ export function packageDetailSchema(
 
 export async function packageList(): Promise<ScreenResult> {
   while (true) {
-    const result = await kernel.admin.execute<PackageListResult>(
-      "package.list",
-    );
+    const result = {
+      packages: await kernel.packages.list<PackageSummary>(),
+    } as PackageListResult;
     const event = await callScreen({
       id: "core-admin-packages",
       title: "Packages",
@@ -211,7 +216,7 @@ export async function packageList(): Promise<ScreenResult> {
     if (event.action === "update-all") {
       try {
         const updated = await updateAllPackages();
-        showNotification(
+        sendMessage(
           updated === 0
             ? "No published packages to update"
             : `Updated ${updated} ${
@@ -220,7 +225,7 @@ export async function packageList(): Promise<ScreenResult> {
           updated === 0 ? "info" : "success",
         );
       } catch (error) {
-        showNotification(
+        sendMessage(
           error instanceof Error ? error.message : "Package update failed",
           "error",
         );
@@ -263,13 +268,12 @@ async function updateAllPackages(): Promise<number> {
 
 export async function packageDetail(packageId: string): Promise<ScreenResult> {
   while (true) {
-    const [result, repository, index] = await Promise.all([
-      kernel.admin.execute<PackageInspectResult>("package.inspect", {
-        package_id: packageId,
-      }),
+    const [inspection, repository, index] = await Promise.all([
+      kernel.packages.inspect<PackageInspection>(packageId),
       kernel.packages.repository.inspect(packageId),
       optionalPackageIndex(packageId),
     ]);
+    const result = { package: inspection } as PackageInspectResult;
     const secrets = index === undefined ? [] : await kernel.secrets.list();
     const model = packageDetailModel(
       result,
@@ -318,32 +322,32 @@ export async function packageDetail(packageId: string): Promise<ScreenResult> {
       switch (event.action) {
         case "pull":
           await kernel.packages.repository.pull(packageId);
-          showNotification(`Pulled ${packageId}`, "success");
+          sendMessage(`Pulled ${packageId}`, "success");
           break;
         case "push":
           await kernel.packages.repository.push(packageId);
-          showNotification(`Pushed ${packageId}`, "success");
+          sendMessage(`Pushed ${packageId}`, "success");
           break;
         case "checkout-branch":
           await kernel.packages.repository.checkout({
             packageId,
             branch: requiredSelection(model.branch, "branch"),
           });
-          showNotification(`Checked out branch ${model.branch}`, "success");
+          sendMessage(`Checked out branch ${model.branch}`, "success");
           break;
         case "checkout-commit":
           await kernel.packages.repository.checkout({
             packageId,
             commit: requiredSelection(model.head, "commit"),
           });
-          showNotification(`Checked out ${model.head.slice(0, 12)}`, "success");
+          sendMessage(`Checked out ${model.head.slice(0, 12)}`, "success");
           break;
         case "save-secret":
           if (index === undefined) {
             throw new Error("Package has no desired index metadata");
           }
           await savePackageSecret(index, model.secretName);
-          showNotification(
+          sendMessage(
             `Saved Git authentication for ${packageId}`,
             "success",
           );
@@ -354,12 +358,12 @@ export async function packageDetail(packageId: string): Promise<ScreenResult> {
           if (failure !== undefined) {
             throw new Error(`Could not synchronize ${failure.package_id}`);
           }
-          showNotification(`Synchronized ${packageId}`, "success");
+          sendMessage(`Synchronized ${packageId}`, "success");
           break;
         }
       }
     } catch (error) {
-      showNotification(
+      sendMessage(
         error instanceof Error ? error.message : "Package operation failed",
         "error",
       );

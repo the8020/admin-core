@@ -9,7 +9,7 @@ import {
   BACK_EVENT,
   callScreen,
   field,
-  showNotification,
+  sendMessage,
   z,
 } from "@packages/the8020/uui/mod.ts";
 import packageInstallLayout from "./layouts/package-install.json" with {
@@ -158,7 +158,7 @@ export async function packageInstall(): Promise<ScreenResult> {
         model.source = requiredText(model.source, "Git URL");
         inspection = await kernel.packages.source.inspect(model.source);
         applyInspection(model, inspection);
-        showNotification(`Detected ${inspection.package_id}`, "success");
+        sendMessage(`Detected ${inspection.package_id}`, "success");
         continue;
       }
       if (event.action === "save" || event.action === "save-sync") {
@@ -178,18 +178,18 @@ export async function packageInstall(): Promise<ScreenResult> {
           ...selected,
         });
         if (event.action === "save") {
-          showNotification(`Saved ${inspection.package_id}`, "success");
+          sendMessage(`Saved ${inspection.package_id}`, "success");
           continue;
         }
         const synchronized = await kernel.packages.synchronize([
           inspection.package_id,
         ]);
         requireSuccessfulSynchronization(synchronized);
-        showNotification(`Installed ${inspection.package_id}`, "success");
+        sendMessage(`Installed ${inspection.package_id}`, "success");
         return { view: "back" };
       }
     } catch (error) {
-      showNotification(
+      sendMessage(
         errorMessage(error, "Package operation failed"),
         "error",
       );
@@ -209,11 +209,11 @@ export async function packageVersions(
         kernel.packages.versions.list(packageId, 100),
       ]);
     } catch (error) {
-      showNotification(errorMessage(error, "Version lookup failed"), "error");
+      sendMessage(errorMessage(error, "Version lookup failed"), "error");
       return { view: "back" };
     }
     if (index.local) {
-      showNotification(
+      sendMessage(
         "Local packages do not have a remote version selector",
         "error",
       );
@@ -262,9 +262,9 @@ export async function packageVersions(
       });
       const synchronized = await kernel.packages.synchronize([packageId]);
       requireSuccessfulSynchronization(synchronized);
-      showNotification(`Synchronized ${packageId}`, "success");
+      sendMessage(`Synchronized ${packageId}`, "success");
     } catch (error) {
-      showNotification(errorMessage(error, "Version update failed"), "error");
+      sendMessage(errorMessage(error, "Version update failed"), "error");
     }
   }
 }
@@ -292,10 +292,10 @@ export async function packageLocal(): Promise<ScreenResult> {
         repository: requiredText(model.repository, "Repository"),
         description: model.description,
       });
-      showNotification(`Created ${created.index.package_id}`, "success");
+      sendMessage(`Created ${created.index.package_id}`, "success");
       return { view: "back" };
     } catch (error) {
-      showNotification(errorMessage(error, "Package creation failed"), "error");
+      sendMessage(errorMessage(error, "Package creation failed"), "error");
     }
   }
 }

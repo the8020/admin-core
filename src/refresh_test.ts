@@ -8,6 +8,7 @@ import {
 } from "@packages/the8020/uui/mod.ts";
 import { bindSession } from "../../uui/session.ts";
 import type { ScreenResult } from "./navigation.ts";
+import { decodeKernelCall, kernelSuccess } from "./kernel_test_support.ts";
 import { packageDetail, packageList } from "./packages.ts";
 import { sandboxDetail, sandboxList } from "./sandboxes.ts";
 import { secretList } from "./secrets.ts";
@@ -73,13 +74,11 @@ const commandResults: Record<string, Record<string, unknown>> = {
   },
   "package.index.inspect": {
     package: {
-      schema: 1,
       author: "the8020",
       repository: "example",
       source: "https://github.com/the8020/example.git",
       local: false,
       package_id: "the8020/example",
-      path: "/state/package-index/the8020/example.toml",
       valid: true,
     },
   },
@@ -145,20 +144,14 @@ Deno.test("live list and detail screens refresh their current target", async () 
   const calls: string[] = [];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
-      if (operation !== "admin.execute") {
-        return Promise.reject(new Error(`unexpected operation ${operation}`));
-      }
-      const command = String(input.command_id);
+      const call = decodeKernelCall(operation, input);
+      const command = call.command;
       calls.push(command);
       const result = commandResults[command];
       if (result === undefined) {
         return Promise.reject(new Error(`unexpected command ${command}`));
       }
-      return Promise.resolve({
-        protocol_version: 1,
-        success: true,
-        result: structuredClone(result),
-      });
+      return Promise.resolve(kernelSuccess(call, structuredClone(result)));
     }) satisfies KernelInvoke;
 
   const cases: Array<{
@@ -246,7 +239,6 @@ Deno.test("package list updates all published packages to latest", async () => {
   const calls: Array<{ command: string; arguments: Record<string, unknown> }> =
     [];
   const indexes = [{
-    schema: 1,
     author: "the8020",
     repository: "alpha",
     source: "https://github.com/the8020/alpha.git",
@@ -254,76 +246,51 @@ Deno.test("package list updates all published packages to latest", async () => {
     secret: "github",
     local: false,
     package_id: "the8020/alpha",
-    path: "/state/package-index/the8020/alpha.toml",
     valid: true,
   }, {
-    schema: 1,
     author: "the8020",
     repository: "beta",
     source: "https://github.com/the8020/beta.git",
     commit: "abcdef1234567",
     local: false,
     package_id: "the8020/beta",
-    path: "/state/package-index/the8020/beta.toml",
     valid: true,
   }, {
-    schema: 1,
     author: "the8020",
     repository: "local",
     local: true,
     package_id: "the8020/local",
-    path: "/state/package-index/the8020/local.toml",
     valid: true,
   }, {
-    schema: 1,
     author: "the8020",
     repository: "invalid",
     local: false,
     package_id: "the8020/invalid",
-    path: "/state/package-index/the8020/invalid.toml",
     valid: false,
   }];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
-      if (operation !== "admin.execute") {
-        return Promise.reject(new Error(`unexpected operation ${operation}`));
-      }
-      const command = String(input.command_id);
-      const arguments_ = structuredClone(
-        input.arguments as Record<string, unknown>,
-      );
+      const call = decodeKernelCall(operation, input);
+      const command = call.command;
+      const arguments_ = structuredClone(call.arguments);
       calls.push({ command, arguments: arguments_ });
       if (command === "package.list") {
-        return Promise.resolve({
-          protocol_version: 1,
-          success: true,
-          result: { packages: [] },
-        });
+        return Promise.resolve(kernelSuccess(call, { packages: [] }));
       }
       if (command === "package.index.list") {
-        return Promise.resolve({
-          protocol_version: 1,
-          success: true,
-          result: { packages: structuredClone(indexes) },
-        });
+        return Promise.resolve(
+          kernelSuccess(call, { packages: structuredClone(indexes) }),
+        );
       }
       if (command === "package.index.set") {
-        return Promise.resolve({
-          protocol_version: 1,
-          success: true,
-          result: { package: arguments_ },
-        });
+        return Promise.resolve(kernelSuccess(call, { package: arguments_ }));
       }
       if (command === "package.synchronize") {
-        return Promise.resolve({
-          protocol_version: 1,
-          success: true,
-          result: {
-            packages: ["the8020/alpha", "the8020/beta"].map(
-              (package_id) => ({ package_id, commit: "latest", success: true }),
-            ),
-          },
-        });
+        return Promise.resolve(kernelSuccess(call, {
+          packages: ["the8020/alpha", "the8020/beta"].map(
+            (package_id) => ({ package_id, commit: "latest", success: true }),
+          ),
+        }));
       }
       return Promise.reject(new Error(`unexpected command ${command}`));
     }) satisfies KernelInvoke;

@@ -3,7 +3,7 @@ import {
   BACK_EVENT,
   callScreen,
   field,
-  showNotification,
+  sendMessage,
   z,
 } from "@packages/the8020/uui/mod.ts";
 import serviceDetailLayout from "./layouts/service-detail.json" with {
@@ -12,7 +12,12 @@ import serviceDetailLayout from "./layouts/service-detail.json" with {
 import serviceListLayout from "./layouts/service-list.json" with {
   type: "json",
 };
-import type { ServiceInspectResult, ServiceListResult } from "./contracts.ts";
+import type {
+  ServiceInspectResult,
+  ServiceListResult,
+  ServiceStatus,
+  ServiceSummary,
+} from "./contracts.ts";
 import type { ScreenResult } from "./navigation.ts";
 import { serviceDetailModel, serviceRows } from "./view.ts";
 
@@ -108,9 +113,9 @@ function serviceDetailSchema(serviceType: string) {
 
 export async function serviceList(): Promise<ScreenResult> {
   while (true) {
-    const result = await kernel.admin.execute<ServiceListResult>(
-      "service.list",
-    );
+    const result = {
+      services: await kernel.services.list<ServiceSummary>(),
+    } as ServiceListResult;
     const model = { services: serviceRows(result) };
     const event = await callScreen({
       id: "core-admin-services",
@@ -131,10 +136,9 @@ export async function serviceList(): Promise<ScreenResult> {
 }
 
 export async function serviceDetail(serviceId: string): Promise<ScreenResult> {
-  let result = await kernel.admin.execute<ServiceInspectResult>(
-    "service.inspect",
-    { service_id: serviceId },
-  );
+  let result = {
+    service: await kernel.services.inspect<ServiceStatus>(serviceId),
+  } as ServiceInspectResult;
   let model = serviceDetailModel(result);
   while (true) {
     const event = await callScreen({
@@ -163,18 +167,16 @@ export async function serviceDetail(serviceId: string): Promise<ScreenResult> {
     ) return { view: "sandbox", sandboxId: event.value.slice(8) };
     try {
       if (event.action === "enable") {
-        await kernel.admin.execute("service.start", { service_id: serviceId });
-        showNotification("Enabled", "success");
+        await kernel.services.start(serviceId);
+        sendMessage("Enabled", "success");
       }
       if (event.action === "disable") {
-        await kernel.admin.execute("service.stop", { service_id: serviceId });
-        showNotification("Disabled", "success");
+        await kernel.services.stop(serviceId);
+        sendMessage("Disabled", "success");
       }
       if (event.action === "restart") {
-        await kernel.admin.execute("service.restart", {
-          service_id: serviceId,
-        });
-        showNotification("Restarted", "success");
+        await kernel.services.restart(serviceId);
+        sendMessage("Restarted", "success");
       }
       if (event.action === "save") {
         if (
@@ -185,7 +187,7 @@ export async function serviceDetail(serviceId: string): Promise<ScreenResult> {
             "Maximum Workers must be zero or at least Minimum Workers.",
           );
         }
-        await kernel.admin.execute("service.scale", {
+        await kernel.services.scale({
           service_id: serviceId,
           minimum_workers: model.minimumWorkers,
           maximum_workers: model.maximumWorkers,
@@ -198,15 +200,14 @@ export async function serviceDetail(serviceId: string): Promise<ScreenResult> {
           service_type: model.serviceType,
           session_keep_alive: model.sessionKeepAlive,
         });
-        showNotification("Saved", "success");
+        sendMessage("Saved", "success");
       }
-      result = await kernel.admin.execute<ServiceInspectResult>(
-        "service.inspect",
-        { service_id: serviceId },
-      );
+      result = {
+        service: await kernel.services.inspect<ServiceStatus>(serviceId),
+      } as ServiceInspectResult;
       model = serviceDetailModel(result);
     } catch (error) {
-      showNotification(
+      sendMessage(
         error instanceof Error ? error.message : "Failed",
         "error",
       );

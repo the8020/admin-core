@@ -7,6 +7,11 @@ import {
   type UUIClientMessage,
 } from "@packages/the8020/uui/mod.ts";
 import { bindSession } from "../../uui/session.ts";
+import {
+  decodeKernelCall,
+  kernelFailure,
+  kernelSuccess,
+} from "./kernel_test_support.ts";
 import { packageDetail } from "./packages.ts";
 
 class TestChannel {
@@ -75,13 +80,11 @@ const repository = {
 };
 
 const index = {
-  schema: 1,
   author: "the8020",
   repository: "example",
   source: "https://github.com/the8020/example.git",
   local: false,
   package_id: "the8020/example",
-  path: "/state/package-index/the8020/example.toml",
   valid: true,
 };
 
@@ -90,11 +93,9 @@ Deno.test("package detail exposes Git selectors and persists only the secret nam
     [];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
-      if (operation !== "admin.execute") {
-        return Promise.reject(new Error(`unexpected operation ${operation}`));
-      }
-      const command = String(input.command_id);
-      const arguments_ = input.arguments as Record<string, unknown>;
+      const call = decodeKernelCall(operation, input);
+      const command = call.command;
+      const arguments_ = call.arguments;
       calls.push({ command, arguments: structuredClone(arguments_) });
       const result: Record<string, unknown> | undefined = {
         "package.inspect": {
@@ -126,7 +127,7 @@ Deno.test("package detail exposes Git selectors and persists only the secret nam
       if (result === undefined) {
         return Promise.reject(new Error(`unexpected command ${command}`));
       }
-      return Promise.resolve({ protocol_version: 1, success: true, result });
+      return Promise.resolve(kernelSuccess(call, result));
     }) satisfies KernelInvoke;
 
   const channel = new TestChannel();
@@ -216,17 +217,13 @@ Deno.test("package detail keeps Git controls available without index metadata", 
   const calls: string[] = [];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
-      if (operation !== "admin.execute") {
-        return Promise.reject(new Error(`unexpected operation ${operation}`));
-      }
-      const command = String(input.command_id);
+      const call = decodeKernelCall(operation, input);
+      const command = call.command;
       calls.push(command);
       if (command === "package.index.inspect") {
-        return Promise.resolve({
-          protocol_version: 1,
-          success: false,
-          error: { code: "not_found", message: "package index is absent" },
-        });
+        return Promise.resolve(
+          kernelFailure(call, "not_found", "package index is absent"),
+        );
       }
       const result: Record<string, unknown> | undefined = {
         "package.inspect": {
@@ -245,7 +242,7 @@ Deno.test("package detail keeps Git controls available without index metadata", 
       if (result === undefined) {
         return Promise.reject(new Error(`unexpected command ${command}`));
       }
-      return Promise.resolve({ protocol_version: 1, success: true, result });
+      return Promise.resolve(kernelSuccess(call, result));
     }) satisfies KernelInvoke;
 
   const channel = new TestChannel();
