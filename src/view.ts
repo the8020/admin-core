@@ -131,6 +131,8 @@ export function serviceDetailModel(
       workers: sandbox.worker_ids?.length ?? 0,
       activeRequests: sandbox.active_requests,
       activeExecutions: sandbox.active_executions,
+      snapshotRevision: sandbox.snapshot_revision ?? 0,
+      snapshotObservedAt: sandbox.snapshot_observed_at ?? "",
     })),
   };
 }
@@ -187,6 +189,7 @@ export function sandboxHistoryDetailModel(
 export function sandboxDetailModel(result: SandboxInspectResult) {
   const sandbox = result.sandbox;
   const resources = sandbox.status.resources ?? {};
+  const runtime = sandbox.runtime ?? {};
   return {
     sandboxId: sandbox.spec.sandbox_id,
     type: sandbox.spec.workload_type,
@@ -195,6 +198,10 @@ export function sandboxDetailModel(result: SandboxInspectResult) {
     runtimeGroupId: sandbox.spec.runtime_group_id,
     groupKey: sandbox.spec.placement_group ?? sandbox.spec.group_key,
     workers: sandbox.status.worker_count,
+    activeRequests: runtime.active_requests ?? 0,
+    activeExecutions: runtime.active_execution_count ?? 0,
+    snapshotRevision: runtime.revision ?? 0,
+    snapshotObservedAt: runtime.observed_at ?? "",
     failure: sandbox.status.failure_reason ?? "",
     memoryBytes: resources.memory_current ?? 0,
     cpuMicros: resources.cpu_usage_micros ?? 0,

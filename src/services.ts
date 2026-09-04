@@ -41,6 +41,8 @@ const SandboxRow = z.object({
   workers: z.number().int(),
   activeRequests: z.number().int(),
   activeExecutions: z.number().int(),
+  snapshotRevision: z.number().int().nonnegative(),
+  snapshotObservedAt: z.string(),
 });
 function serviceDetailSchema(serviceType: string) {
   return z.object({
@@ -203,7 +205,9 @@ export async function serviceDetail(serviceId: string): Promise<ScreenResult> {
         sendMessage("Saved", "success");
       }
       result = {
-        service: await kernel.services.inspect<ServiceStatus>(serviceId),
+        service: event.action === "refresh"
+          ? await kernel.services.refresh<ServiceStatus>(serviceId)
+          : await kernel.services.inspect<ServiceStatus>(serviceId),
       } as ServiceInspectResult;
       model = serviceDetailModel(result);
     } catch (error) {

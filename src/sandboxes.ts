@@ -81,6 +81,26 @@ const SandboxDetail = z.object({
     length: "short",
     readOnly: true,
   }),
+  activeRequests: field(z.number().int().nonnegative(), {
+    label: "Active requests",
+    length: "short",
+    readOnly: true,
+  }),
+  activeExecutions: field(z.number().int().nonnegative(), {
+    label: "Active executions",
+    length: "short",
+    readOnly: true,
+  }),
+  snapshotRevision: field(z.number().int().nonnegative(), {
+    label: "Snapshot revision",
+    length: "short",
+    readOnly: true,
+  }),
+  snapshotObservedAt: field(z.string(), {
+    label: "Snapshot observed",
+    length: "long",
+    readOnly: true,
+  }),
   failure: field(z.string(), {
     label: "Failure",
     length: "long",
@@ -228,11 +248,11 @@ export async function sandboxHistoryDetail(
 }
 
 export async function sandboxDetail(sandboxId: string): Promise<ScreenResult> {
+  let result = await kernel.admin.execute<SandboxInspectResult>(
+    "sandbox.inspect",
+    { sandbox_id: sandboxId },
+  );
   while (true) {
-    const result = await kernel.admin.execute<SandboxInspectResult>(
-      "sandbox.inspect",
-      { sandbox_id: sandboxId },
-    );
     const model = sandboxDetailModel(result);
     const event = await callScreen({
       id: "core-admin-sandbox-detail",
@@ -249,5 +269,11 @@ export async function sandboxDetail(sandboxId: string): Promise<ScreenResult> {
       event.value.startsWith("service:")
     ) return { view: "service", serviceId: event.value.slice(8) };
     if (event.action === BACK_EVENT) return { view: "back" };
+    if (event.action === "refresh") {
+      result = await kernel.admin.execute<SandboxInspectResult>(
+        "sandbox.refresh",
+        { sandbox_id: sandboxId },
+      );
+    }
   }
 }

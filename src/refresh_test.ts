@@ -40,9 +40,17 @@ class TestChannel {
     return this.sent.flatMap((message) => {
       if (
         message !== null && typeof message === "object" &&
-        "type" in message && message.type === "screen.show" &&
-        "screen" in message
-      ) return [message.screen as ScreenSnapshot];
+        "type" in message && message.type === "presentation.show" &&
+        "presentation" in message
+      ) {
+        const presentation = message.presentation as {
+          activeSurfaceId: string | null;
+          surfaces: Array<{ screen: ScreenSnapshot }>;
+        };
+        if (presentation.activeSurfaceId !== null) {
+          return [presentation.surfaces.at(-1)!.screen];
+        }
+      }
       return [];
     });
   }
@@ -118,6 +126,40 @@ const commandResults: Record<string, Record<string, unknown>> = {
       },
     },
   },
+  "service.refresh": {
+    service: {
+      service_id: "the8020/example/api",
+      canonical_base_path: "/the8020/example/api",
+      service_type: "stateless",
+      access_mode: "authenticated",
+      enabled: true,
+      desired_version: 1,
+      loaded_version: 1,
+      version_count: 1,
+      state: "READY",
+      sandbox_count: 0,
+      worker_count: 0,
+      sandboxes: [],
+      effective_configuration: {
+        lifecycle: {
+          service_type: "stateless",
+          session_keep_alive: 120_000_000_000,
+        },
+        scaling: {
+          minimum_workers: 0,
+          maximum_workers: 4,
+          concurrency_per_worker: 8,
+          target_utilization: 0.7,
+          worker_keep_alive: 120_000_000_000,
+        },
+        placement: {
+          sandbox_group: "example",
+          minimum_sandboxes: 0,
+          workers_per_sandbox: 2,
+        },
+      },
+    },
+  },
   "sandbox.list": { sandboxes: [] },
   "sandbox.inspect": {
     reason: "service:the8020/example/api",
@@ -134,11 +176,15 @@ const commandResults: Record<string, Record<string, unknown>> = {
         observed_state: "READY",
         worker_count: 0,
       },
+      runtime: {},
       workers: [],
     },
     services: [],
   },
 };
+commandResults["sandbox.refresh"] = structuredClone(
+  commandResults["sandbox.inspect"]!,
+);
 
 Deno.test("live list and detail screens refresh their current target", async () => {
   const calls: string[] = [];
@@ -191,7 +237,7 @@ Deno.test("live list and detail screens refresh their current target", async () 
     {
       name: "service detail",
       run: () => serviceDetail("the8020/example/api"),
-      commands: ["service.inspect", "service.inspect"],
+      commands: ["service.inspect", "service.refresh"],
     },
     {
       name: "sandbox list",
@@ -201,7 +247,7 @@ Deno.test("live list and detail screens refresh their current target", async () 
     {
       name: "sandbox detail",
       run: () => sandboxDetail("sbx-example"),
-      commands: ["sandbox.inspect", "sandbox.inspect"],
+      commands: ["sandbox.inspect", "sandbox.refresh"],
     },
   ];
 
@@ -367,6 +413,7 @@ function screenEvent(
     type: "screen.event",
     protocol: UUI_PROTOCOL_VERSION,
     sessionId: channel.sessionId,
+    surfaceId: "surface-1",
     screenId: screen.id,
     screenRevision: screen.revision,
     clientSequence,

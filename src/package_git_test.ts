@@ -40,9 +40,17 @@ class TestChannel {
     return this.sent.flatMap((message) => {
       if (
         message !== null && typeof message === "object" &&
-        "type" in message && message.type === "screen.show" &&
-        "screen" in message
-      ) return [message.screen as ScreenSnapshot];
+        "type" in message && message.type === "presentation.show" &&
+        "presentation" in message
+      ) {
+        const presentation = message.presentation as {
+          activeSurfaceId: string | null;
+          surfaces: Array<{ screen: ScreenSnapshot }>;
+        };
+        if (presentation.activeSurfaceId !== null) {
+          return [presentation.surfaces.at(-1)!.screen];
+        }
+      }
       return [];
     });
   }
@@ -291,6 +299,7 @@ function screenEvent(
     type: "screen.event",
     protocol: UUI_PROTOCOL_VERSION,
     sessionId: "session-package-git",
+    surfaceId: "surface-1",
     screenId: screen.id,
     screenRevision: screen.revision,
     clientSequence,

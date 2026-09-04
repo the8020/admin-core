@@ -93,7 +93,9 @@
           "state",
           "workers",
           "activeRequests",
-          "activeExecutions"
+          "activeExecutions",
+          "snapshotRevision",
+          "snapshotObservedAt"
         ]
       }
     ]

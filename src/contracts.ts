@@ -23,6 +23,8 @@ export interface ServiceSandbox {
   worker_ids: string[] | null;
   active_requests: number;
   active_executions: number;
+  snapshot_revision?: number;
+  snapshot_observed_at?: string;
 }
 
 export interface ServiceStatus {
@@ -182,6 +184,12 @@ export interface SandboxInspection {
       memory_current?: number;
       pid_current?: number;
     };
+  };
+  runtime?: {
+    revision?: number;
+    observed_at?: string;
+    active_requests?: number;
+    active_execution_count?: number;
   };
   workers: Array<{
     worker_id: string;

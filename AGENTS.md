@@ -60,6 +60,10 @@
 - Live package, service, and sandbox collections and their selected details each
   expose a header Refresh action that reloads the current target without
   navigating.
+- Service and sandbox lists plus ordinary detail opening use cached observed
+  runtime state. Detail shows snapshot revision/time; its Refresh action invokes
+  the targeted live service or sandbox operation and never triggers a global
+  runtime scan.
 - Sandbox history is a bounded separate collection with direct immutable
   metadata/log inspection. Nullable array results are treated as empty.
 
@@ -86,7 +90,7 @@
   secret overwrite-without-read behavior, mapping, fractional utilization
   conversion, canonical scaling/lifecycle bindings, nullable Worker/history
   arrays, duration rendering, and current-target refresh behavior for all live
-  collection/detail screens. The explicit browser E2E exercises navigation and
-  service mutation.
+  collection/detail screens, including targeted refresh and snapshot freshness.
+  The explicit browser E2E exercises navigation and service mutation.
 
 # Child DOX Index

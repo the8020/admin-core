@@ -35,9 +35,17 @@ class TestChannel {
     for (const message of this.sent) {
       if (
         message !== null && typeof message === "object" &&
-        "type" in message && message.type === "screen.show" &&
-        "screen" in message
-      ) return message.screen as ScreenSnapshot;
+        "type" in message && message.type === "presentation.show" &&
+        "presentation" in message
+      ) {
+        const presentation = message.presentation as {
+          activeSurfaceId: string | null;
+          surfaces: Array<{ screen: ScreenSnapshot }>;
+        };
+        if (presentation.activeSurfaceId !== null) {
+          return presentation.surfaces.at(-1)?.screen;
+        }
+      }
     }
     return undefined;
   }
@@ -83,6 +91,7 @@ Deno.test("secret edit starts blank, stays masked, and overwrites without readin
       type: "screen.event",
       protocol: UUI_PROTOCOL_VERSION,
       sessionId: channel.sessionId,
+      surfaceId: "surface-1",
       screenId: screen.id,
       screenRevision: screen.revision,
       clientSequence: 1,
