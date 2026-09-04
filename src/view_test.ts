@@ -1,6 +1,6 @@
 import { assertEquals } from "@std/assert";
 import type { PackageRepository } from "@the8020/kernel";
-import { validateLayout } from "@packages/the8020/uui/mod.ts";
+import { validateLayout } from "/p/the8020/uui/mod.ts";
 import packageDetailLayout from "./layouts/package-detail.json" with {
   type: "json",
 };

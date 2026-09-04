@@ -1,5 +1,5 @@
 import { kernel } from "@the8020/kernel";
-import { BACK_EVENT, callScreen, field, z } from "@packages/the8020/uui/mod.ts";
+import { BACK_EVENT, callScreen, field, z } from "/p/the8020/uui/mod.ts";
 import sandboxDetailLayout from "./layouts/sandbox-detail.json" with {
   type: "json",
 };

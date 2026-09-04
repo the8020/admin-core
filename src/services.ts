@@ -5,7 +5,7 @@ import {
   field,
   sendMessage,
   z,
-} from "@packages/the8020/uui/mod.ts";
+} from "/p/the8020/uui/mod.ts";
 import serviceDetailLayout from "./layouts/service-detail.json" with {
   type: "json",
 };

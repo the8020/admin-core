@@ -5,7 +5,7 @@ import {
   type ScreenSnapshot,
   UUI_PROTOCOL_VERSION,
   type UUIClientMessage,
-} from "@packages/the8020/uui/mod.ts";
+} from "/p/the8020/uui/mod.ts";
 import { bindSession } from "../../uui/session.ts";
 import {
   decodeKernelCall,

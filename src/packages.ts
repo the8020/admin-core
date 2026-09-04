@@ -11,7 +11,7 @@ import {
   field,
   sendMessage,
   z,
-} from "@packages/the8020/uui/mod.ts";
+} from "/p/the8020/uui/mod.ts";
 import packageDetailLayout from "./layouts/package-detail.json" with {
   type: "json",
 };

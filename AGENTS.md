@@ -18,7 +18,7 @@
 - `the8020/admin-core/packages`, `the8020/admin-core/secrets`,
   `the8020/admin-core/services`, and `the8020/admin-core/sandboxes` are
   parameterless programs backed only by `@the8020/kernel` and the ordinary
-  package mapping `@packages/the8020/uui/mod.ts`.
+  package mapping `/p/the8020/uui/mod.ts`.
 - Programs use typed private kernel operations under the active authenticated
   request. Collections stay compact; details own full status, relationships, and
   service configuration mutations.
@@ -80,8 +80,8 @@
   `The value is sent directly to kernel secret storage and is not shown again.`
   in the UI.
 - Source checks resolve the sibling `kernel` and `uui` repositories; deployed
-  Workers continue to resolve the canonical `@the8020/*` and `@packages/*`
-  mappings supplied by the runtime image.
+  Workers continue to resolve the canonical `@the8020/*` and `/p/*` mappings
+  supplied by the runtime image.
 
 # Verification
 
