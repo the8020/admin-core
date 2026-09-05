@@ -14,7 +14,10 @@ export function packageRows(result: PackageListResult) {
   return (result.packages ?? []).map((item) => ({
     canonicalName: item.package_id,
     valid: item.valid,
-    services: item.service_count,
+    services:
+      result.services.filter((service) =>
+        service.package_id === item.package_id
+      ).length,
     description: item.description ?? item.validation_error ?? "",
   }));
 }
@@ -25,7 +28,9 @@ export function packageDetailModel(
   secretName = "",
 ) {
   const item = result.package;
-  const services = item.services ?? [];
+  const services = result.services.filter((service) =>
+    service.package_id === item.package_id
+  );
   const programs = item.programs ?? [];
   const files = item.files ?? [];
   return {
@@ -35,7 +40,7 @@ export function packageDetailModel(
     documentationUrl: item.documentation_url ?? "",
     license: item.license ?? "",
     valid: item.valid,
-    serviceCount: item.service_count,
+    serviceCount: services.length,
     programCount: programs.length,
     fileCount: files.length,
     validation: (item.validation_errors ?? []).join("; "),
@@ -56,13 +61,12 @@ export function packageDetailModel(
     services: services.map((service) => ({
       navigation: `service:${service.service_id}`,
       serviceId: service.service_id,
-      path: service.path,
+      path: service.canonical_base_path,
       serviceType: service.service_type ?? "",
       access: service.access_mode ?? "",
-      entrypoint: service.entrypoint ?? "",
-      valid: service.valid,
-      description: service.description ??
-        (service.validation_errors ?? []).join("; "),
+      entrypoint: service.source_entrypoint,
+      valid: !service.validation_error,
+      description: service.description ?? service.validation_error ?? "",
     })),
     programs: programs.map((program) => ({
       programId: program.program_id,
@@ -70,6 +74,7 @@ export function packageDetailModel(
       entrypoint: program.entrypoint ?? "",
       defaultLayout: program.default_layout ?? "",
       discoverable: program.discoverable,
+      uui: program.uui,
       valid: program.valid,
       description: program.description ??
         (program.validation_errors ?? []).join("; "),
@@ -108,6 +113,7 @@ export function serviceDetailModel(
     enabled: service.enabled,
     serviceType: configuration.lifecycle.service_type,
     accessMode: service.access_mode,
+    anonymousUser: configuration.execution.anonymous_user,
     desiredVersion: service.desired_version,
     loadedVersion: service.loaded_version,
     minimumWorkers: configuration.scaling.minimum_workers,

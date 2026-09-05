@@ -1,3 +1,4 @@
+import { ScreenFrame } from "./screen_frame.ts";
 import {
   AdminCommandError,
   kernel,
@@ -23,6 +24,7 @@ import type {
   PackageInspectResult,
   PackageListResult,
   PackageSummary,
+  ServiceSummary,
 } from "./contracts.ts";
 import type { ScreenResult } from "./navigation.ts";
 import { packageDetailModel, packageRows } from "./view.ts";
@@ -51,6 +53,7 @@ const ProgramRow = z.object({
   entrypoint: z.string(),
   defaultLayout: z.string(),
   discoverable: z.boolean(),
+  uui: z.boolean(),
   valid: z.boolean(),
   description: z.string(),
 });
@@ -189,16 +192,20 @@ export function packageDetailSchema(
   });
 }
 
-export async function packageList(): Promise<ScreenResult> {
+export async function packageList(
+  frame = new ScreenFrame(),
+): Promise<ScreenResult> {
   while (true) {
-    const result = {
-      packages: await kernel.packages.list<PackageSummary>(),
-    } as PackageListResult;
+    const [packages, services] = await Promise.all([
+      kernel.packages.list<PackageSummary>(),
+      kernel.services.list<ServiceSummary>(),
+    ]);
+    const result: PackageListResult = { packages, services };
     const event = await callScreen({
       id: "core-admin-packages",
       title: "Packages",
       schema: PackageList,
-      model: { packages: packageRows(result) },
+      model: frame.model({ packages: packageRows(result) }),
       layout: packageListLayout,
       header: {
         actions: [
@@ -266,14 +273,18 @@ async function updateAllPackages(): Promise<number> {
   return results.length;
 }
 
-export async function packageDetail(packageId: string): Promise<ScreenResult> {
+export async function packageDetail(
+  packageId: string,
+  frame = new ScreenFrame(),
+): Promise<ScreenResult> {
   while (true) {
-    const [inspection, repository, index] = await Promise.all([
+    const [inspection, repository, index, services] = await Promise.all([
       kernel.packages.inspect<PackageInspection>(packageId),
       kernel.packages.repository.inspect(packageId),
       optionalPackageIndex(packageId),
+      kernel.services.list<ServiceSummary>(),
     ]);
-    const result = { package: inspection } as PackageInspectResult;
+    const result: PackageInspectResult = { package: inspection, services };
     const secrets = index === undefined ? [] : await kernel.secrets.list();
     const model = packageDetailModel(
       result,
@@ -289,7 +300,7 @@ export async function packageDetail(packageId: string): Promise<ScreenResult> {
         index?.secret ?? "",
         index !== undefined,
       ),
-      model,
+      model: frame.model(model),
       layout: packageDetailLayout,
       header: {
         actions: [

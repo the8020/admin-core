@@ -1,3 +1,4 @@
+import { ScreenFrame } from "./screen_frame.ts";
 import {
   kernel,
   type PackageIndex,
@@ -121,7 +122,9 @@ function versionsSchema(versions: PackageVersions) {
   });
 }
 
-export async function packageInstall(): Promise<ScreenResult> {
+export async function packageInstall(
+  frame = new ScreenFrame(),
+): Promise<ScreenResult> {
   const model: InstallModel = {
     source: "",
     author: "",
@@ -138,7 +141,7 @@ export async function packageInstall(): Promise<ScreenResult> {
       description:
         "Inspect a public HTTPS Git repository, save it to the package index, and optionally synchronize it now.",
       schema: installSchema(inspection),
-      model,
+      model: frame.model(model),
       layout: packageInstallLayout,
       header: {
         actions: [
@@ -199,6 +202,7 @@ export async function packageInstall(): Promise<ScreenResult> {
 
 export async function packageVersions(
   packageId: string,
+  frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
   while (true) {
     let index: PackageIndex;
@@ -239,7 +243,7 @@ export async function packageVersions(
       description:
         "Select latest, a tag, or an exact commit. Saving synchronizes the package and refreshes its services.",
       schema: versionsSchema(versions),
-      model,
+      model: frame.model(model),
       layout: packageVersionsLayout,
       header: {
         actions: [
@@ -269,7 +273,9 @@ export async function packageVersions(
   }
 }
 
-export async function packageLocal(): Promise<ScreenResult> {
+export async function packageLocal(
+  frame = new ScreenFrame(),
+): Promise<ScreenResult> {
   const model = { author: "", repository: "", description: "" };
   while (true) {
     const event = await callScreen({
@@ -278,7 +284,7 @@ export async function packageLocal(): Promise<ScreenResult> {
       description:
         "Create an independent local Git repository with a package manifest and no remote source.",
       schema: LocalPackage,
-      model,
+      model: frame.model(model),
       layout: packageLocalLayout,
       header: {
         actions: [{ id: "create", label: "Create", kind: "primary" }],

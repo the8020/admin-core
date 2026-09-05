@@ -1,3 +1,4 @@
+import { ScreenFrame } from "./screen_frame.ts";
 import { kernel } from "@the8020/kernel";
 import {
   BACK_EVENT,
@@ -52,6 +53,10 @@ function serviceDetailSchema(serviceType: string) {
     state: field(z.string(), { label: "State", readOnly: true }),
     enabled: field(z.boolean(), { label: "Enabled", readOnly: true }),
     accessMode: field(z.string(), { label: "Access", readOnly: true }),
+    anonymousUser: field(z.string().regex(/^[a-z0-9]{3,32}$/), {
+      label: "Anonymous user",
+      description: "Runs unauthenticated requests as this user.",
+    }),
     desiredVersion: field(z.number().int(), {
       label: "Desired version",
       readOnly: true,
@@ -113,7 +118,9 @@ function serviceDetailSchema(serviceType: string) {
   });
 }
 
-export async function serviceList(): Promise<ScreenResult> {
+export async function serviceList(
+  frame = new ScreenFrame(),
+): Promise<ScreenResult> {
   while (true) {
     const result = {
       services: await kernel.services.list<ServiceSummary>(),
@@ -123,7 +130,7 @@ export async function serviceList(): Promise<ScreenResult> {
       id: "core-admin-services",
       title: "Services",
       schema: ServiceList,
-      model,
+      model: frame.model(model),
       layout: serviceListLayout,
       header: {
         actions: [{ id: "refresh", label: "[[icon=refresh]] Refresh" }],
@@ -137,7 +144,10 @@ export async function serviceList(): Promise<ScreenResult> {
   }
 }
 
-export async function serviceDetail(serviceId: string): Promise<ScreenResult> {
+export async function serviceDetail(
+  serviceId: string,
+  frame = new ScreenFrame(),
+): Promise<ScreenResult> {
   let result = {
     service: await kernel.services.inspect<ServiceStatus>(serviceId),
   } as ServiceInspectResult;
@@ -147,7 +157,7 @@ export async function serviceDetail(serviceId: string): Promise<ScreenResult> {
       id: "core-admin-service-detail",
       title: `Service ${serviceId}`,
       schema: serviceDetailSchema(model.serviceType),
-      model,
+      model: frame.model(model),
       layout: serviceDetailLayout,
       header: {
         actions: [
@@ -168,41 +178,54 @@ export async function serviceDetail(serviceId: string): Promise<ScreenResult> {
       event.value.startsWith("sandbox:")
     ) return { view: "sandbox", sandboxId: event.value.slice(8) };
     try {
-      if (event.action === "enable") {
-        await kernel.services.start(serviceId);
-        sendMessage("Enabled", "success");
-      }
-      if (event.action === "disable") {
-        await kernel.services.stop(serviceId);
-        sendMessage("Disabled", "success");
-      }
-      if (event.action === "restart") {
-        await kernel.services.restart(serviceId);
-        sendMessage("Restarted", "success");
-      }
-      if (event.action === "save") {
-        if (
-          model.maximumWorkers !== 0 &&
-          model.maximumWorkers < model.minimumWorkers
-        ) {
-          throw new Error(
-            "Maximum Workers must be zero or at least Minimum Workers.",
-          );
+      if (["enable", "disable", "restart", "save"].includes(event.action)) {
+        const { applyDesired } = await import(
+          "/p/the8020/services/src/admin.ts"
+        );
+        if (event.action === "enable") {
+          await applyDesired(serviceId, { enabled: true }, false);
+          sendMessage("Enabled", "success");
         }
-        await kernel.services.scale({
-          service_id: serviceId,
-          minimum_workers: model.minimumWorkers,
-          maximum_workers: model.maximumWorkers,
-          concurrency_per_worker: model.concurrencyPerWorker,
-          target_utilization: String(model.targetUtilization / 100),
-          worker_keep_alive: model.workerKeepAlive,
-          workers_per_sandbox: model.workersPerSandbox,
-          sandbox_group: model.sandboxGroup,
-          minimum_sandboxes: model.minimumSandboxes,
-          service_type: model.serviceType,
-          session_keep_alive: model.sessionKeepAlive,
-        });
-        sendMessage("Saved", "success");
+        if (event.action === "disable") {
+          await applyDesired(serviceId, { enabled: false }, false);
+          sendMessage("Disabled", "success");
+        }
+        if (event.action === "restart") {
+          await applyDesired(serviceId, { enabled: true }, false);
+          sendMessage("Restarted", "success");
+        }
+        if (event.action === "save") {
+          if (
+            model.maximumWorkers !== 0 &&
+            model.maximumWorkers < model.minimumWorkers
+          ) {
+            throw new Error(
+              "Maximum Workers must be zero or at least Minimum Workers.",
+            );
+          }
+          const { duration } = await import(
+            "/p/the8020/services/src/configuration.ts"
+          );
+          await applyDesired(serviceId, {
+            overrides: {
+              anonymousUser: model.anonymousUser,
+              minimumWorkers: model.minimumWorkers,
+              maximumWorkers: model.maximumWorkers,
+              concurrencyPerWorker: model.concurrencyPerWorker,
+              targetUtilization: model.targetUtilization / 100,
+              workerKeepAliveMs:
+                duration(model.workerKeepAlive, "Worker keepalive") / 1_000_000,
+              workersPerSandbox: model.workersPerSandbox,
+              sandboxGroup: model.sandboxGroup,
+              minimumSandboxes: model.minimumSandboxes,
+              serviceType: model.serviceType,
+              sessionKeepAliveMs:
+                duration(model.sessionKeepAlive, "Session keepalive") /
+                1_000_000,
+            },
+          }, false);
+          sendMessage("Saved", "success");
+        }
       }
       result = {
         service: event.action === "refresh"

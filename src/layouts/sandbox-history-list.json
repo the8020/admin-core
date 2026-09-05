@@ -15,6 +15,24 @@
       "expiresAt",
       "logs",
       "logBytes"
-    ]
+    ],
+    "columnOptions": {
+      "sandboxId": {
+        "shortHeading": "Sandbox"
+      },
+      "reason": {
+        "length": "long"
+      },
+      "archivedAt": {
+        "shortHeading": "Archived"
+      },
+      "expiresAt": {
+        "shortHeading": "Expires"
+      },
+      "logBytes": {
+        "length": "compact",
+        "shortHeading": "Bytes"
+      }
+    }
   }
 }

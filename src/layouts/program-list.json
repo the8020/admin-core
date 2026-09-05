@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "core-admin-program-list",
+  "root": {
+    "id": "programs",
+    "type": "list",
+    "bind": "programs",
+    "key": "id",
+    "display": ["packageId", "name", "description", "uui", "discoverable"],
+    "columnOptions": {
+      "packageId": { "heading": "Package", "length": "medium" },
+      "name": { "heading": "Name", "length": "medium" },
+      "description": { "heading": "Description", "length": "long" },
+      "uui": { "heading": "UUI", "length": "compact" },
+      "discoverable": {
+        "heading": "Discoverable",
+        "shortHeading": "Disc.",
+        "length": "short"
+      }
+    }
+  }
+}

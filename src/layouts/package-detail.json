@@ -75,7 +75,21 @@
                   "entrypoint",
                   "valid",
                   "description"
-                ]
+                ],
+                "columnOptions": {
+                  "serviceId": {
+                    "shortHeading": "Service"
+                  },
+                  "serviceType": {
+                    "shortHeading": "Type"
+                  },
+                  "entrypoint": {
+                    "length": "long"
+                  },
+                  "description": {
+                    "length": "long"
+                  }
+                }
               },
               {
                 "id": "programs",
@@ -88,9 +102,21 @@
                   "entrypoint",
                   "defaultLayout",
                   "discoverable",
+                  "uui",
                   "valid",
                   "description"
-                ]
+                ],
+                "columnOptions": {
+                  "programId": {
+                    "shortHeading": "Program"
+                  },
+                  "entrypoint": {
+                    "length": "long"
+                  },
+                  "description": {
+                    "length": "long"
+                  }
+                }
               },
               {
                 "id": "files",
@@ -98,7 +124,16 @@
                 "title": "Files",
                 "bind": "files",
                 "key": "path",
-                "display": ["path", "type", "size"]
+                "display": [
+                  "path",
+                  "type",
+                  "size"
+                ],
+                "columnOptions": {
+                  "path": {
+                    "length": "long"
+                  }
+                }
               }
             ]
           }

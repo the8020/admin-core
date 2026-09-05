@@ -6,6 +6,28 @@
     "type": "list",
     "bind": "sandboxes",
     "key": "sandboxId",
-    "display": ["sandboxId", "type", "state", "reason", "workers", "failure"]
+    "display": [
+      "sandboxId",
+      "type",
+      "state",
+      "reason",
+      "workers",
+      "failure"
+    ],
+    "columnOptions": {
+      "sandboxId": {
+        "shortHeading": "Sandbox"
+      },
+      "reason": {
+        "length": "long"
+      },
+      "workers": {
+        "length": "compact",
+        "shortHeading": "W"
+      },
+      "failure": {
+        "length": "long"
+      }
+    }
   }
 }

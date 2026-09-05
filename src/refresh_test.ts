@@ -57,14 +57,14 @@ class TestChannel {
 }
 
 const commandResults: Record<string, Record<string, unknown>> = {
-  "package.list": { packages: [] },
+  "package.list": {
+    packages: [{ package_id: "the8020/example", valid: true }],
+  },
   "package.inspect": {
     package: {
       package_id: "the8020/example",
       path: "/workspace/packages/the8020/example",
       valid: true,
-      service_count: 0,
-      services: [],
       programs: [],
       files: [],
     },
@@ -107,6 +107,7 @@ const commandResults: Record<string, Record<string, unknown>> = {
       worker_count: 0,
       sandboxes: [],
       effective_configuration: {
+        execution: { anonymous_user: "system" },
         lifecycle: {
           service_type: "stateless",
           session_keep_alive: 120_000_000_000,
@@ -141,6 +142,7 @@ const commandResults: Record<string, Record<string, unknown>> = {
       worker_count: 0,
       sandboxes: [],
       effective_configuration: {
+        execution: { anonymous_user: "system" },
         lifecycle: {
           service_type: "stateless",
           session_keep_alive: 120_000_000_000,
@@ -208,7 +210,12 @@ Deno.test("live list and detail screens refresh their current target", async () 
     {
       name: "package list",
       run: packageList,
-      commands: ["package.list", "package.list"],
+      commands: [
+        "package.list",
+        "service.list",
+        "package.list",
+        "service.list",
+      ],
     },
     {
       name: "package detail",
@@ -217,10 +224,12 @@ Deno.test("live list and detail screens refresh their current target", async () 
         "package.inspect",
         "package.repository.inspect",
         "package.index.inspect",
+        "service.list",
         "secret.list",
         "package.inspect",
         "package.repository.inspect",
         "package.index.inspect",
+        "service.list",
         "secret.list",
       ],
     },
@@ -323,6 +332,9 @@ Deno.test("package list updates all published packages to latest", async () => {
       if (command === "package.list") {
         return Promise.resolve(kernelSuccess(call, { packages: [] }));
       }
+      if (command === "service.list") {
+        return Promise.resolve(kernelSuccess(call, { services: [] }));
+      }
       if (command === "package.index.list") {
         return Promise.resolve(
           kernelSuccess(call, { packages: structuredClone(indexes) }),
@@ -359,6 +371,9 @@ Deno.test("package list updates all published packages to latest", async () => {
       command: "package.list",
       arguments: {},
     }, {
+      command: "service.list",
+      arguments: {},
+    }, {
       command: "package.index.list",
       arguments: {},
     }, {
@@ -381,6 +396,9 @@ Deno.test("package list updates all published packages to latest", async () => {
       arguments: { packages: "the8020/alpha,the8020/beta" },
     }, {
       command: "package.list",
+      arguments: {},
+    }, {
+      command: "service.list",
       arguments: {},
     }]);
   } finally {
@@ -416,9 +434,90 @@ function screenEvent(
     surfaceId: "surface-1",
     screenId: screen.id,
     screenRevision: screen.revision,
+    instanceId: screen.state.instanceId,
+    screenState: {
+      version: screen.state.version,
+      scroll: screen.state.scroll,
+      elements: {},
+    },
     clientSequence,
     action,
     eventType: action === BACK_EVENT ? BACK_EVENT : "action",
     changes: [],
   };
 }
+
+Deno.test("navigation retains a list Model across detail and refreshed list frames", async () => {
+  const { runAdmin } = await import("./navigation.ts");
+  const channel = new TestChannel();
+  let reads = 0;
+  const runtime = globalThis as unknown as Record<symbol, unknown>;
+  const previous = runtime[kernelInvokeSymbol];
+  runtime[kernelInvokeSymbol] = ((operation, input) => {
+    const call = decodeKernelCall(operation, input);
+    assertEquals(call.command, "secret.list");
+    reads++;
+    return Promise.resolve(
+      kernelSuccess(call, {
+        secrets: Array.from(
+          { length: 103 },
+          (_, index) => ({
+            name: `example-${index}`,
+            updated_at: "2026-09-05T00:00:00Z",
+          }),
+        ),
+      }),
+    );
+  }) satisfies KernelInvoke;
+  const unbind = bindSession(channel);
+  try {
+    const pending = runAdmin({ view: "secrets" });
+    const initial = await waitForScreen(channel, 1);
+    let list = initial.lists[0]!;
+    channel.push({
+      ...screenEvent(channel, initial, "", 1),
+      type: "screen.list",
+      updates: [{
+        id: list.id,
+        revision: list.revision,
+        operation: "capacity",
+        pageSize: 10,
+      }],
+    });
+    const measured = await waitForScreen(channel, 2);
+    list = measured.lists[0]!;
+    channel.push({
+      ...screenEvent(channel, measured, "", 2),
+      type: "screen.list",
+      updates: [{
+        id: list.id,
+        revision: list.revision,
+        operation: "page",
+        page: 5,
+      }],
+      screenState: { version: 0, scroll: { x: 0, y: 260 }, elements: {} },
+    });
+    const fifth = await waitForScreen(channel, 3);
+    list = fifth.lists[0]!;
+    channel.push({
+      ...screenEvent(channel, fifth, "select", 3),
+      eventType: "select",
+      selection: { id: list.id, revision: list.revision, index: 2 },
+    });
+    const detail = await waitForScreen(channel, 4);
+    assertEquals(detail.title, "Secret example-42");
+    assertEquals(detail.state.scroll.y, 0);
+    channel.push(screenEvent(channel, detail, BACK_EVENT, 4));
+    const returned = await waitForScreen(channel, 5);
+    assertEquals(reads, 2);
+    assertEquals(returned.state.instanceId, initial.state.instanceId);
+    assertEquals(returned.state.scroll.y, 260);
+    assertEquals(returned.lists[0]!.state.page, 5);
+    channel.push(screenEvent(channel, returned, BACK_EVENT, 5));
+    await pending;
+  } finally {
+    unbind();
+    if (previous === undefined) delete runtime[kernelInvokeSymbol];
+    else runtime[kernelInvokeSymbol] = previous;
+  }
+});

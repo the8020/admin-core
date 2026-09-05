@@ -74,6 +74,9 @@ Deno.test("service list keeps one aggregate row with version and unique capacity
     serviceRows({
       services: [{
         service_id: "the8020/uui/session",
+        package_id: "the8020/uui",
+        source_entrypoint:
+          "file:///workspace/packages/the8020/uui/services/session/service.ts",
         canonical_base_path: "/the8020/uui/session",
         state: "READY",
         enabled: true,
@@ -97,22 +100,41 @@ Deno.test("service list keeps one aggregate row with version and unique capacity
   );
 });
 
-Deno.test("package list stays summary-only and detail maps selected contents", () => {
+Deno.test("package screens join generic package records with their indexed services", () => {
+  const service = {
+    service_id: "the8020/admin-core/api",
+    package_id: "the8020/admin-core",
+    canonical_base_path: "/the8020/admin-core/api",
+    source_entrypoint:
+      "file:///workspace/packages/the8020/admin-core/services/api/service.ts",
+    description: "Admin API",
+    service_type: "stateless",
+    access_mode: "authenticated",
+    state: "IDLE",
+    enabled: true,
+    version_count: 0,
+    sandbox_count: 0,
+    worker_count: 0,
+  };
   const list: PackageListResult = {
     packages: [{
       package_id: "the8020/admin-core",
       description: "Administration programs",
       valid: true,
-      service_count: 0,
+    }],
+    services: [service, {
+      ...service,
+      service_id: "other/package/api",
+      package_id: "other/package",
     }],
   };
   assertEquals(packageRows(list), [{
     canonicalName: "the8020/admin-core",
     valid: true,
-    services: 0,
+    services: 1,
     description: "Administration programs",
   }]);
-  assertEquals(packageRows({ packages: null }), []);
+  assertEquals(packageRows({ packages: null, services: [] }), []);
 
   const inspection: PackageInspectResult = {
     package: {
@@ -122,26 +144,18 @@ Deno.test("package list stays summary-only and detail maps selected contents", (
       documentation_url: "https://example.test/admin",
       license: "Apache-2.0",
       valid: true,
-      service_count: 1,
-      services: [{
-        service_id: "the8020/admin-core/api",
-        path: "services/api",
-        description: "Admin API",
-        service_type: "stateless",
-        access_mode: "authenticated",
-        entrypoint: "services/api/service.ts",
-        valid: true,
-      }],
       programs: [{
         program_id: "the8020/admin-core/packages",
         path: "programs/packages",
         description: "Packages",
         entrypoint: "program.ts",
         discoverable: true,
+        uui: true,
         valid: true,
       }],
       files: [{ path: "package.toml", type: "file", size: 80 }],
     },
+    services: list.services,
   };
   const repository: PackageRepository = {
     package_id: "the8020/admin-core",
@@ -171,6 +185,8 @@ Deno.test("package list stays summary-only and detail maps selected contents", (
   const model = packageDetailModel(inspection, repository, "github");
   assertEquals(model.packageId, "the8020/admin-core");
   assertEquals(model.programCount, 1);
+  assertEquals(model.serviceCount, 1);
+  assertEquals(model.services[0]?.entrypoint, service.source_entrypoint);
   assertEquals(model.fileCount, 1);
   assertEquals(model.secretName, "github");
   assertEquals(model.services[0]?.navigation, "service:the8020/admin-core/api");
@@ -257,6 +273,7 @@ Deno.test("service detail maps editable configuration and sandbox links", () => 
         active_executions: 0,
       }],
       effective_configuration: {
+        execution: { anonymous_user: "visitor" },
         lifecycle: {
           service_type: "stateless",
           session_keep_alive: 600_000_000_000,
@@ -278,6 +295,7 @@ Deno.test("service detail maps editable configuration and sandbox links", () => 
   };
   const model = serviceDetailModel(result);
   assertEquals(model.workerKeepAlive, "2m");
+  assertEquals(model.anonymousUser, "visitor");
   assertEquals(model.sessionKeepAlive, "10m");
   assertEquals(model.concurrencyPerWorker, 32);
   assertEquals(model.targetUtilization, 70.5);
@@ -302,6 +320,7 @@ Deno.test("service detail opens for a service that owns no sandboxes", () => {
       // A disabled or failed service reports the collection as null.
       sandboxes: null,
       effective_configuration: {
+        execution: { anonymous_user: "system" },
         lifecycle: {
           service_type: "stateless",
           session_keep_alive: 600_000_000_000,
@@ -349,6 +368,7 @@ Deno.test("service detail accepts a ready sandbox with no reported Worker IDs", 
         active_executions: 0,
       }],
       effective_configuration: {
+        execution: { anonymous_user: "system" },
         lifecycle: {
           service_type: "session",
           session_keep_alive: 120_000_000_000,

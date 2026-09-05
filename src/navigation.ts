@@ -1,3 +1,4 @@
+import { ScreenFrame } from "./screen_frame.ts";
 import {
   sandboxDetail,
   sandboxHistoryDetail,
@@ -12,8 +13,11 @@ import {
 import { packageDetail, packageList } from "./packages.ts";
 import { serviceDetail, serviceList } from "./services.ts";
 import { secretEdit, secretList } from "./secrets.ts";
+import { programDetail, programList } from "./programs.ts";
 
 export type AdminTarget =
+  | { view: "programs" }
+  | { view: "program"; programId: string }
   | { view: "packages" }
   | { view: "package"; packageId: string }
   | { view: "packageInstall" }
@@ -31,46 +35,52 @@ export type AdminTarget =
 export type ScreenResult = AdminTarget | { view: "back" };
 
 export async function runAdmin(initial: AdminTarget): Promise<void> {
-  const history: AdminTarget[] = [];
-  let target: AdminTarget | undefined = initial;
-  while (target !== undefined) {
-    const next = await show(target);
-    if (next.view === "back") {
-      target = history.pop();
-    } else {
-      history.push(target);
-      target = next;
+  const history: Array<{ target: AdminTarget; frame: ScreenFrame }> = [];
+  let current: { target: AdminTarget; frame: ScreenFrame } | undefined = {
+    target: initial,
+    frame: new ScreenFrame(),
+  };
+  while (current !== undefined) {
+    const next = await show(current.target, current.frame);
+    if (next.view === "back") current = history.pop();
+    else {
+      history.push(current);
+      current = { target: next, frame: new ScreenFrame() };
     }
   }
 }
 
-function show(target: AdminTarget): Promise<ScreenResult> {
+function show(target: AdminTarget, frame: ScreenFrame): Promise<ScreenResult> {
   switch (target.view) {
+    case "programs":
+      return programList(frame);
+    case "program":
+      return programDetail(target.programId, frame);
     case "packages":
-      return packageList();
+      return packageList(frame);
     case "package":
-      return packageDetail(target.packageId);
+      return packageDetail(target.packageId, frame);
     case "packageInstall":
-      return packageInstall();
+      return packageInstall(frame);
     case "packageLocal":
-      return packageLocal();
+      return packageLocal(frame);
     case "packageVersions":
-      return packageVersions(target.packageId);
+      return packageVersions(target.packageId, frame);
     case "services":
-      return serviceList();
+      return serviceList(frame);
     case "service":
-      return serviceDetail(target.serviceId);
+      return serviceDetail(target.serviceId, frame);
     case "sandboxes":
-      return sandboxList();
+      return sandboxList(frame);
     case "sandbox":
-      return sandboxDetail(target.sandboxId);
+      return sandboxDetail(target.sandboxId, frame);
     case "sandboxHistory":
-      return sandboxHistoryList();
+      return sandboxHistoryList(frame);
     case "sandboxHistoryDetail":
-      return sandboxHistoryDetail(target.historyId);
+      return sandboxHistoryDetail(target.historyId, frame);
     case "secrets":
-      return secretList();
+      return secretList(frame);
     case "secret":
-      return secretEdit(target.name);
+      return secretEdit(target.name, frame);
   }
 }

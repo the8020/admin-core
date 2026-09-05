@@ -1,3 +1,4 @@
 schema = 1
+uui = true
 description = "Inspect installed packages and repositories"
 entrypoint = "program.ts"

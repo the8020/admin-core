@@ -94,6 +94,12 @@ Deno.test("secret edit starts blank, stays masked, and overwrites without readin
       surfaceId: "surface-1",
       screenId: screen.id,
       screenRevision: screen.revision,
+      instanceId: screen.state.instanceId,
+      screenState: {
+        version: screen.state.version,
+        scroll: screen.state.scroll,
+        elements: {},
+      },
       clientSequence: 1,
       action: "save",
       eventType: "action",

@@ -37,7 +37,17 @@
             "type": "list",
             "bind": "logs",
             "key": "name",
-            "display": ["name", "size", "truncated", "content"]
+            "display": [
+              "name",
+              "size",
+              "truncated",
+              "content"
+            ],
+            "columnOptions": {
+              "content": {
+                "length": "long"
+              }
+            }
           }
         ]
       }

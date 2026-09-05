@@ -1,3 +1,4 @@
+import { ScreenFrame } from "./screen_frame.ts";
 import { kernel } from "@the8020/kernel";
 import { BACK_EVENT, callScreen, field, z } from "/p/the8020/uui/mod.ts";
 import sandboxDetailLayout from "./layouts/sandbox-detail.json" with {
@@ -166,7 +167,9 @@ const SandboxHistoryDetail = z.object({
   logs: z.array(SandboxHistoryLog),
 });
 
-export async function sandboxList(): Promise<ScreenResult> {
+export async function sandboxList(
+  frame = new ScreenFrame(),
+): Promise<ScreenResult> {
   while (true) {
     const result = await kernel.admin.execute<SandboxListResult>(
       "sandbox.list",
@@ -176,7 +179,7 @@ export async function sandboxList(): Promise<ScreenResult> {
       id: "core-admin-sandboxes",
       title: "Sandboxes",
       schema: SandboxList,
-      model,
+      model: frame.model(model),
       layout: sandboxListLayout,
       header: {
         actions: [
@@ -194,18 +197,20 @@ export async function sandboxList(): Promise<ScreenResult> {
   }
 }
 
-export async function sandboxHistoryList(): Promise<ScreenResult> {
-  let before = "";
+export async function sandboxHistoryList(
+  frame = new ScreenFrame(),
+): Promise<ScreenResult> {
+  const context = frame.context({ before: "" });
   while (true) {
     const result = await kernel.admin.execute<SandboxHistoryListResult>(
       "sandbox.history.list",
-      { limit: 100, before },
+      { limit: 100, before: context.before },
     );
     const event = await callScreen({
       id: "core-admin-sandbox-history",
       title: "Sandbox history",
       schema: SandboxHistoryList,
-      model: { sandboxes: sandboxHistoryRows(result) },
+      model: frame.model({ sandboxes: sandboxHistoryRows(result) }),
       layout: sandboxHistoryListLayout,
       header: {
         actions: result.next_cursor
@@ -214,7 +219,7 @@ export async function sandboxHistoryList(): Promise<ScreenResult> {
       },
     });
     if (event.action === "older") {
-      before = result.next_cursor;
+      context.before = result.next_cursor;
       continue;
     }
     if (event.action === BACK_EVENT) return { view: "back" };
@@ -226,6 +231,7 @@ export async function sandboxHistoryList(): Promise<ScreenResult> {
 
 export async function sandboxHistoryDetail(
   historyId: string,
+  frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
   while (true) {
     const result = await kernel.admin.execute<SandboxHistoryInspectResult>(
@@ -237,7 +243,7 @@ export async function sandboxHistoryDetail(
       title:
         `Archived sandbox ${result.sandbox_history.record.spec.sandbox_id}`,
       schema: SandboxHistoryDetail,
-      model: sandboxHistoryDetailModel(result),
+      model: frame.model(sandboxHistoryDetailModel(result)),
       layout: sandboxHistoryDetailLayout,
       header: {
         actions: [{ id: "refresh", label: "Refresh", kind: "primary" }],
@@ -247,7 +253,10 @@ export async function sandboxHistoryDetail(
   }
 }
 
-export async function sandboxDetail(sandboxId: string): Promise<ScreenResult> {
+export async function sandboxDetail(
+  sandboxId: string,
+  frame = new ScreenFrame(),
+): Promise<ScreenResult> {
   let result = await kernel.admin.execute<SandboxInspectResult>(
     "sandbox.inspect",
     { sandbox_id: sandboxId },
@@ -258,7 +267,7 @@ export async function sandboxDetail(sandboxId: string): Promise<ScreenResult> {
       id: "core-admin-sandbox-detail",
       title: `Sandbox ${sandboxId}`,
       schema: SandboxDetail,
-      model,
+      model: frame.model(model),
       layout: sandboxDetailLayout,
       header: {
         actions: [{ id: "refresh", label: "Refresh", kind: "primary" }],

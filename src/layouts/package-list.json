@@ -6,6 +6,23 @@
     "type": "list",
     "bind": "packages",
     "key": "canonicalName",
-    "display": ["canonicalName", "valid", "services", "description"]
+    "display": [
+      "canonicalName",
+      "valid",
+      "services",
+      "description"
+    ],
+    "columnOptions": {
+      "canonicalName": {
+        "shortHeading": "Package"
+      },
+      "services": {
+        "length": "compact",
+        "shortHeading": "S"
+      },
+      "description": {
+        "length": "long"
+      }
+    }
   }
 }

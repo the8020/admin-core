@@ -1,5 +1,7 @@
 export interface ServiceSummary {
   service_id: string;
+  package_id: string;
+  source_entrypoint: string;
   description?: string;
   canonical_base_path: string;
   state: string;
@@ -44,6 +46,7 @@ export interface ServiceStatus {
   // reaches the browser as null rather than an empty array.
   sandboxes: ServiceSandbox[] | null;
   effective_configuration: {
+    execution: { anonymous_user: string };
     lifecycle: {
       service_type: "stateless" | "session";
       session_keep_alive: number;
@@ -75,23 +78,12 @@ export interface PackageSummary {
   package_id: string;
   description?: string;
   valid: boolean;
-  service_count: number;
   validation_error?: string;
 }
 
 export interface PackageListResult extends Record<string, unknown> {
   packages: PackageSummary[] | null;
-}
-
-export interface PackageService {
-  service_id: string;
-  path: string;
-  description?: string;
-  service_type?: string;
-  access_mode?: string;
-  entrypoint?: string;
-  valid: boolean;
-  validation_errors?: string[] | null;
+  services: ServiceSummary[];
 }
 
 export interface PackageProgram {
@@ -101,6 +93,7 @@ export interface PackageProgram {
   entrypoint?: string;
   default_layout?: string;
   discoverable: boolean;
+  uui: boolean;
   valid: boolean;
   validation_errors?: string[] | null;
 }
@@ -118,8 +111,6 @@ export interface PackageInspection {
   documentation_url?: string;
   license?: string;
   valid: boolean;
-  service_count: number;
-  services?: PackageService[] | null;
   programs?: PackageProgram[] | null;
   files?: PackageFile[] | null;
   contents_truncated?: boolean;
@@ -129,6 +120,7 @@ export interface PackageInspection {
 
 export interface PackageInspectResult extends Record<string, unknown> {
   package: PackageInspection;
+  services: ServiceSummary[];
 }
 
 export interface SandboxSummary {

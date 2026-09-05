@@ -1,3 +1,4 @@
+import { ScreenFrame } from "./screen_frame.ts";
 import { kernel } from "@the8020/kernel";
 import {
   BACK_EVENT,
@@ -39,7 +40,9 @@ function secretEditSchema(existing: boolean) {
   });
 }
 
-export async function secretList(): Promise<ScreenResult> {
+export async function secretList(
+  frame = new ScreenFrame(),
+): Promise<ScreenResult> {
   while (true) {
     const secrets = await kernel.secrets.list();
     const event = await callScreen({
@@ -47,12 +50,12 @@ export async function secretList(): Promise<ScreenResult> {
       title: "Secrets",
       description: "Stored values are intentionally omitted from this list.",
       schema: SecretList,
-      model: {
+      model: frame.model({
         secrets: secrets.map((secret) => ({
           name: secret.name,
           updatedAt: secret.updated_at,
         })),
-      },
+      }),
       layout: secretListLayout,
       header: {
         actions: [
@@ -70,7 +73,10 @@ export async function secretList(): Promise<ScreenResult> {
   }
 }
 
-export async function secretEdit(name?: string): Promise<ScreenResult> {
+export async function secretEdit(
+  name?: string,
+  frame = new ScreenFrame(),
+): Promise<ScreenResult> {
   const existing = name !== undefined;
   const model = { name: name ?? "", value: "" };
   while (true) {
@@ -81,7 +87,7 @@ export async function secretEdit(name?: string): Promise<ScreenResult> {
         ? "Enter a replacement value. The current value is never read into this screen."
         : "Create a named value for kernel-owned authenticated operations.",
       schema: secretEditSchema(existing),
-      model,
+      model: frame.model(model),
       layout: secretEditLayout,
       header: {
         actions: [{ id: "save", label: "Save", kind: "primary" }],

@@ -75,6 +75,7 @@
             "type": "field-group",
             "title": "Service lifecycle",
             "controls": [
+              "anonymousUser",
               "serviceType",
               "sessionKeepAlive"
             ]
@@ -96,7 +97,31 @@
           "activeExecutions",
           "snapshotRevision",
           "snapshotObservedAt"
-        ]
+        ],
+        "columnOptions": {
+          "sandboxId": {
+            "shortHeading": "Sandbox"
+          },
+          "workers": {
+            "length": "compact",
+            "shortHeading": "W"
+          },
+          "activeRequests": {
+            "length": "compact",
+            "shortHeading": "Req."
+          },
+          "activeExecutions": {
+            "length": "compact",
+            "shortHeading": "Exec."
+          },
+          "snapshotRevision": {
+            "length": "compact",
+            "shortHeading": "Rev."
+          },
+          "snapshotObservedAt": {
+            "shortHeading": "Observed"
+          }
+        }
       }
     ]
   }

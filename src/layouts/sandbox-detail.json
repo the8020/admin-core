@@ -33,7 +33,30 @@
         "title": "Services",
         "bind": "services",
         "key": "navigation",
-        "display": ["serviceId", "state", "enabled", "sandboxes", "workers"]
+        "display": [
+          "serviceId",
+          "state",
+          "enabled",
+          "sandboxes",
+          "workers"
+        ],
+        "columnOptions": {
+          "serviceId": {
+            "shortHeading": "Service"
+          },
+          "enabled": {
+            "length": "compact",
+            "shortHeading": "On"
+          },
+          "sandboxes": {
+            "length": "compact",
+            "shortHeading": "S"
+          },
+          "workers": {
+            "length": "compact",
+            "shortHeading": "W"
+          }
+        }
       }
     ]
   }

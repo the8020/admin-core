@@ -14,7 +14,11 @@
             "id": "selection-fields",
             "type": "field-group",
             "title": "Desired package version",
-            "controls": ["source", "currentCommit", "selection"]
+            "controls": [
+              "source",
+              "currentCommit",
+              "selection"
+            ]
           }
         ]
       },
@@ -36,7 +40,15 @@
               "current",
               "selected",
               "subject"
-            ]
+            ],
+            "columnOptions": {
+              "authoredAt": {
+                "shortHeading": "Authored"
+              },
+              "subject": {
+                "length": "long"
+              }
+            }
           }
         ]
       }
