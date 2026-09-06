@@ -19,8 +19,16 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   live detail.
 - Secret editing starts empty, writes through the typed API, and never loads the
   stored secret value.
+- Sandbox history lists read metadata only. Details query the owning node's
+  unified logs by saved position, sandbox ID and time range, retaining one page
+  and cursor in their existing navigation frame. Render decoded stack traces
+  with the shared SDK formatter and show expired, unavailable or partial pages
+  explicitly without discarding terminal metadata.
 
 # Work Guidance
+
+- Runtime placement uses one sandbox identity alongside node and Worker IDs. Do
+  not store or display a second identity for the same sandbox.
 
 - Keep source/version/Git operations in the kernel package API and service
   policy mutations in the shared services package API.

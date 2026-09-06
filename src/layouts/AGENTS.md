@@ -15,6 +15,8 @@ Parent DOX: [admin-core/src DOX](../AGENTS.md).
   CSS.
 - Keep bindings aligned with the owning screen schema, retain declarative column
   widths, and use the repository's two-level heading/card hierarchy.
+- Historical sandbox detail presents one bounded log page in a read-only
+  multiline field. Its metadata list has no copied-log file/size columns.
 
 # Work Guidance
 

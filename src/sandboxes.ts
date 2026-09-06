@@ -1,5 +1,5 @@
 import { ScreenFrame } from "./screen_frame.ts";
-import { kernel } from "@the8020/kernel";
+import { kernel, type LogPage } from "@the8020/kernel";
 import { BACK_EVENT, callScreen, field, z } from "/p/the8020/uui/mod.ts";
 import sandboxDetailLayout from "./layouts/sandbox-detail.json" with {
   type: "json",
@@ -44,8 +44,6 @@ const SandboxHistoryRow = z.object({
   reason: z.string(),
   archivedAt: z.string(),
   expiresAt: z.string(),
-  logs: z.number().int(),
-  logBytes: z.number().int(),
 });
 const SandboxHistoryList = z.object({
   sandboxes: z.array(SandboxHistoryRow),
@@ -68,11 +66,6 @@ const SandboxDetail = z.object({
   state: field(z.string(), { label: "State", length: "short", readOnly: true }),
   reason: field(z.string(), {
     label: "Reason",
-    length: "long",
-    readOnly: true,
-  }),
-  runtimeGroupId: field(z.string(), {
-    label: "Runtime group",
     length: "long",
     readOnly: true,
   }),
@@ -124,13 +117,9 @@ const SandboxDetail = z.object({
   }),
   services: z.array(ServiceRow),
 });
-const SandboxHistoryLog = z.object({
-  name: z.string(),
-  size: z.number().int(),
-  truncated: z.boolean(),
-  content: z.string(),
-});
 const SandboxHistoryDetail = z.object({
+  nodeId: field(z.string(), { label: "Node ID", readOnly: true }),
+  createdAt: field(z.string(), { label: "Created", readOnly: true }),
   historyId: field(z.string(), {
     label: "History ID",
     length: "long",
@@ -138,11 +127,6 @@ const SandboxHistoryDetail = z.object({
   }),
   sandboxId: field(z.string(), {
     label: "Sandbox ID",
-    length: "long",
-    readOnly: true,
-  }),
-  runtimeGroupId: field(z.string(), {
-    label: "Runtime group",
     length: "long",
     readOnly: true,
   }),
@@ -163,8 +147,19 @@ const SandboxHistoryDetail = z.object({
     readOnly: true,
   }),
   archivedAt: field(z.string(), { label: "Archived", readOnly: true }),
-  expiresAt: field(z.string(), { label: "Expires", readOnly: true }),
-  logs: z.array(SandboxHistoryLog),
+  expiresAt: field(z.string(), { label: "History expires", readOnly: true }),
+  logStatus: field(z.string(), {
+    label: "Log status",
+    length: "long",
+    readOnly: true,
+  }),
+  logs: field(z.string(), {
+    label: "Logs",
+    control: "textarea",
+    rowSpan: 8,
+    length: "long",
+    readOnly: true,
+  }),
 });
 
 export async function sandboxList(
@@ -233,23 +228,67 @@ export async function sandboxHistoryDetail(
   historyId: string,
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  const view = frame.context<{ cursor?: string; tail?: boolean }>({});
   while (true) {
     const result = await kernel.admin.execute<SandboxHistoryInspectResult>(
       "sandbox.history.inspect",
       { history_id: historyId },
     );
+    const record = result.sandbox_history.record;
+    let page: LogPage;
+    try {
+      page = await kernel.logs.query({
+        node_id: record.status.node_id,
+        sandbox_id: record.spec.sandbox_id,
+        from: record.status.created_at,
+        until: record.archived_at,
+        position: view.cursor || view.tail
+          ? undefined
+          : record.status.log_position,
+        cursor: view.cursor,
+        tail: view.tail,
+        limit: 100,
+      });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        throw error;
+      }
+      page = {
+        state: "unavailable",
+        records: [],
+        more: false,
+        scanned_bytes: 0,
+      };
+    }
     const event = await callScreen({
       id: "core-admin-sandbox-history-detail",
       title:
         `Archived sandbox ${result.sandbox_history.record.spec.sandbox_id}`,
       schema: SandboxHistoryDetail,
-      model: frame.model(sandboxHistoryDetailModel(result)),
+      model: frame.model(sandboxHistoryDetailModel(result, page)),
       layout: sandboxHistoryDetailLayout,
       header: {
-        actions: [{ id: "refresh", label: "Refresh", kind: "primary" }],
+        actions: [
+          { id: "refresh", label: "Refresh", kind: "primary" },
+          { id: "first", label: "First logs" },
+          { id: "recent", label: "Recent logs" },
+          ...(page.state === "ok" && page.more && page.cursor
+            ? [{ id: "next", label: "Next logs" }]
+            : []),
+        ],
       },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
+    if (event.action === "first") {
+      view.cursor = undefined;
+      view.tail = undefined;
+    } else if (event.action === "recent") {
+      view.cursor = undefined;
+      view.tail = true;
+    } else if (event.action === "next" && page.cursor && page.more) {
+      view.cursor = page.cursor;
+      view.tail = undefined;
+    }
   }
 }
 

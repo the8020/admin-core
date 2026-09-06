@@ -10,7 +10,12 @@ import { bindSession } from "../../uui/session.ts";
 import type { ScreenResult } from "./navigation.ts";
 import { decodeKernelCall, kernelSuccess } from "./kernel_test_support.ts";
 import { packageDetail, packageList } from "./packages.ts";
-import { sandboxDetail, sandboxList } from "./sandboxes.ts";
+import {
+  sandboxDetail,
+  sandboxHistoryDetail,
+  sandboxHistoryList,
+  sandboxList,
+} from "./sandboxes.ts";
 import { secretList } from "./secrets.ts";
 import { serviceDetail, serviceList } from "./services.ts";
 
@@ -168,7 +173,7 @@ const commandResults: Record<string, Record<string, unknown>> = {
     sandbox: {
       spec: {
         sandbox_id: "sbx-example",
-        runtime_group_id: "rgp-example",
+
         workload_type: "service",
         group_key: "service:placement:ZXhhbXBsZQ",
         lifecycle: { warm: false },
@@ -176,6 +181,8 @@ const commandResults: Record<string, Record<string, unknown>> = {
       status: {
         desired_state: "READY",
         observed_state: "READY",
+        node_id: "nod-abcdefghij",
+        created_at: "2026-08-27T13:00:00Z",
         worker_count: 0,
       },
       runtime: {},
@@ -287,6 +294,132 @@ Deno.test("live list and detail screens refresh their current target", async () 
     delete (globalThis as unknown as Record<symbol, unknown>)[
       kernelInvokeSymbol
     ];
+  }
+});
+
+Deno.test("sandbox history reads metadata separately and replaces bounded log pages", async () => {
+  const runtime = globalThis as unknown as Record<symbol, unknown>;
+  const previous = runtime[kernelInvokeSymbol];
+  const queries: Record<string, unknown>[] = [];
+  const model = (screen: ScreenSnapshot) =>
+    screen.model as Record<string, unknown>;
+  const historyId = "20260827T130405.123456789Z-sbx-abcdefghij";
+  const record = {
+    history_id: historyId,
+    archived_at: "2026-08-27T13:04:05Z",
+    expires_at: "2026-09-03T13:04:05Z",
+    reason: "supervisor failed",
+    spec: {
+      sandbox_id: "sbx-abcdefghij",
+      workload_type: "service",
+      group_key: "",
+      lifecycle: { warm: false },
+    },
+    status: {
+      desired_state: "FAILED",
+      observed_state: "FAILED",
+      worker_count: 0,
+      node_id: "nod-abcdefghij",
+      created_at: "2026-08-27T13:00:00Z",
+      log_position: "before-startup",
+      failure_reason: "supervisor failed",
+    },
+  };
+  runtime[kernelInvokeSymbol] = ((operation, input) => {
+    const call = decodeKernelCall(operation, input);
+    if (call.command === "sandbox.history.list") {
+      return Promise.resolve(
+        kernelSuccess(call, { sandboxes: [], next_cursor: "" }),
+      );
+    }
+    if (call.command === "sandbox.history.inspect") {
+      assertEquals(call.arguments.history_id, historyId);
+      return Promise.resolve(
+        kernelSuccess(call, { sandbox_history: { record } }),
+      );
+    }
+    assertEquals(call.command, "logs.query");
+    queries.push(structuredClone(call.arguments));
+    if (queries.length === 4) return Promise.reject(new Error("node offline"));
+    const expired = queries.length === 3;
+    return Promise.resolve(kernelSuccess(call, {
+      state: expired ? "expired" : "ok",
+      records: expired ? [] : [{
+        time: "2026-08-27T13:01:00Z",
+        level: "ERROR",
+        source: "deno",
+        component: "worker",
+        node_id: record.status.node_id,
+        sandbox_id: record.spec.sandbox_id,
+        message: `page ${queries.length}\n    at program.ts:1`,
+        segment: "segment",
+        offset: 0,
+      }],
+      cursor: "next-position",
+      more: queries.length === 1,
+      scanned_bytes: 300,
+      tail_limited: call.arguments.tail === true,
+    }));
+  }) satisfies KernelInvoke;
+  const channel = new TestChannel();
+  const unbind = bindSession(channel);
+  try {
+    const listing = sandboxHistoryList();
+    const list = await waitForScreen(channel, 1);
+    assertEquals(queries, []);
+    channel.push(screenEvent(channel, list, BACK_EVENT, 1));
+    await listing;
+
+    const pending = sandboxHistoryDetail(historyId);
+    const first = await waitForScreen(channel, 2);
+    assertEquals(queries[0], {
+      node_id: record.status.node_id,
+      sandbox_id: record.spec.sandbox_id,
+      from: record.status.created_at,
+      until: record.archived_at,
+      position: "before-startup",
+      cursor: undefined,
+      tail: undefined,
+      limit: 100,
+    });
+    assertEquals(
+      String(model(first).logs).includes("page 1\n    at program.ts:1"),
+      true,
+    );
+    channel.push(screenEvent(channel, first, "next", 2));
+    const second = await waitForScreen(channel, 3);
+    assertEquals(queries[1]?.cursor, "next-position");
+    assertEquals(queries[1]?.position, undefined);
+    assertEquals(String(model(second).logs).includes("page 1"), false);
+    assertEquals(String(model(second).logs).includes("page 2"), true);
+    channel.push(screenEvent(channel, second, "refresh", 3));
+    const expired = await waitForScreen(channel, 4);
+    assertEquals(String(model(expired).logStatus).includes("expired"), true);
+    assertEquals(model(expired).failure, "supervisor failed");
+    channel.push(screenEvent(channel, expired, "refresh", 4));
+    const unavailable = await waitForScreen(channel, 5);
+    assertEquals(
+      String(model(unavailable).logStatus).includes("unavailable"),
+      true,
+    );
+    assertEquals(model(unavailable).nodeId, record.status.node_id);
+    channel.push(screenEvent(channel, unavailable, "recent", 5));
+    const recent = await waitForScreen(channel, 6);
+    assertEquals(queries[4]?.tail, true);
+    assertEquals(queries[4]?.cursor, undefined);
+    assertEquals(
+      String(model(recent).logStatus).includes("Showing recent logs"),
+      true,
+    );
+    channel.push(screenEvent(channel, recent, "first", 6));
+    const restarted = await waitForScreen(channel, 7);
+    assertEquals(queries[5], queries[0]);
+    channel.push(screenEvent(channel, restarted, BACK_EVENT, 7));
+    await pending;
+  } finally {
+    unbind();
+    if (previous === undefined) delete runtime[kernelInvokeSymbol];
+    else runtime[kernelInvokeSymbol] = previous;
   }
 });
 

@@ -16,7 +16,8 @@
             "controls": [
               "historyId",
               "sandboxId",
-              "runtimeGroupId",
+              "nodeId",
+              "createdAt",
               "type",
               "state",
               "reason",
@@ -30,24 +31,12 @@
       {
         "id": "logs-section",
         "type": "section",
-        "title": "Log tails",
+        "title": "Logs",
         "children": [
           {
             "id": "logs",
-            "type": "list",
-            "bind": "logs",
-            "key": "name",
-            "display": [
-              "name",
-              "size",
-              "truncated",
-              "content"
-            ],
-            "columnOptions": {
-              "content": {
-                "length": "long"
-              }
-            }
+            "type": "detail",
+            "controls": ["logStatus", "logs"]
           }
         ]
       }

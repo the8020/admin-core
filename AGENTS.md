@@ -194,8 +194,11 @@ below.
   runtime state. Detail shows snapshot revision/time; its Refresh action invokes
   the targeted live service or sandbox operation and never triggers a global
   runtime scan.
-- Sandbox history is a bounded separate collection with direct immutable
-  metadata/log inspection. Nullable array results are treated as empty.
+- Sandbox history is a bounded metadata collection. Opening a record reads
+  bounded `kernel.logs` pages using its creation node, sandbox ID, time range
+  and saved position. First/Recent/Next actions replace the displayed page;
+  expired or unavailable logs leave the terminal metadata visible. Nullable
+  collection results are treated as empty.
 
 - Navigation history entries retain a UUI Model and program context, including
   the sandbox-history backend cursor. Refreshes replace business data without

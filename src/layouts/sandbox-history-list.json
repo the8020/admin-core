@@ -12,9 +12,7 @@
       "state",
       "reason",
       "archivedAt",
-      "expiresAt",
-      "logs",
-      "logBytes"
+      "expiresAt"
     ],
     "columnOptions": {
       "sandboxId": {
@@ -28,10 +26,6 @@
       },
       "expiresAt": {
         "shortHeading": "Expires"
-      },
-      "logBytes": {
-        "length": "compact",
-        "shortHeading": "Bytes"
       }
     }
   }

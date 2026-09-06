@@ -125,7 +125,7 @@ export interface PackageInspectResult extends Record<string, unknown> {
 
 export interface SandboxSummary {
   sandbox_id: string;
-  runtime_group_id: string;
+
   workload_type: string;
   state: string;
   worker_count: number;
@@ -141,15 +141,13 @@ export interface SandboxListResult extends Record<string, unknown> {
 export interface SandboxHistorySummary {
   history_id: string;
   sandbox_id: string;
-  runtime_group_id: string;
+
   workload_type: string;
   state: string;
   reason?: string;
   failure_reason?: string;
   archived_at: string;
   expires_at: string;
-  log_files: number;
-  log_bytes: number;
 }
 
 export interface SandboxHistoryListResult extends Record<string, unknown> {
@@ -160,7 +158,7 @@ export interface SandboxHistoryListResult extends Record<string, unknown> {
 export interface SandboxInspection {
   spec: {
     sandbox_id: string;
-    runtime_group_id: string;
+
     workload_type: string;
     group_key: string;
     placement_group?: string;
@@ -169,6 +167,9 @@ export interface SandboxInspection {
   status: {
     desired_state: string;
     observed_state: string;
+    node_id: string;
+    created_at: string;
+    log_position?: string;
     failure_reason?: string;
     worker_count: number;
     resources?: {
@@ -215,13 +216,5 @@ export interface SandboxHistoryInspectResult extends Record<string, unknown> {
       spec: SandboxInspection["spec"];
       status: SandboxInspection["status"];
     };
-    logs:
-      | Array<{
-        name: string;
-        size: number;
-        content: string;
-        truncated: boolean;
-      }>
-      | null;
   };
 }

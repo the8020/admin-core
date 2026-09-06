@@ -398,7 +398,7 @@ Deno.test("sandbox detail maps service links without service-owned sessions", ()
     sandbox: {
       spec: {
         sandbox_id: "sandbox-1",
-        runtime_group_id: "group-1",
+
         workload_type: "service",
         group_key: "service:core/example/service",
         lifecycle: { warm: false },
@@ -406,6 +406,8 @@ Deno.test("sandbox detail maps service links without service-owned sessions", ()
       status: {
         desired_state: "READY",
         observed_state: "READY",
+        node_id: "nod-abcdefghij",
+        created_at: "2026-08-27T13:00:00Z",
         worker_count: 2,
       },
       workers: [],
@@ -428,14 +430,12 @@ Deno.test("sandbox history maps separately from live sandbox rows", () => {
     sandboxes: [{
       history_id: "20260827T130405.123456789Z-sbx-ax9thsl3",
       sandbox_id: "sbx-ax9thsl3",
-      runtime_group_id: "group-1",
+
       workload_type: "service",
       state: "FAILED",
       reason: "supervisor heartbeat exceeded 15s",
       archived_at: "2026-08-27T13:04:05Z",
       expires_at: "2026-09-03T13:04:05Z",
-      log_files: 2,
-      log_bytes: 120,
     }],
     next_cursor: "",
   };
@@ -451,7 +451,7 @@ Deno.test("sandbox history maps separately from live sandbox rows", () => {
         reason: "supervisor heartbeat exceeded 15s",
         spec: {
           sandbox_id: "sbx-ax9thsl3",
-          runtime_group_id: "group-1",
+
           workload_type: "service",
           group_key: "service:example",
           lifecycle: { warm: false },
@@ -459,21 +459,45 @@ Deno.test("sandbox history maps separately from live sandbox rows", () => {
         status: {
           desired_state: "FAILED",
           observed_state: "FAILED",
+          node_id: "nod-abcdefghij",
+          created_at: "2026-08-27T13:00:00Z",
+          log_position: "saved-log-position",
           worker_count: 0,
           failure_reason: "supervisor heartbeat exceeded 15s",
         },
       },
-      logs: [{
-        name: "runtime.log",
-        size: 4,
-        content: "test",
-        truncated: false,
-      }],
     },
   };
-  const model = sandboxHistoryDetailModel(detail);
+  const model = sandboxHistoryDetailModel(detail, {
+    state: "ok",
+    more: false,
+    scanned_bytes: 200,
+    records: [{
+      time: "2026-08-27T13:01:00Z",
+      level: "ERROR",
+      source: "deno",
+      component: "worker",
+      node_id: "nod-abcdefghij",
+      sandbox_id: "sbx-ax9thsl300",
+      message: "Error: test\n    at program.ts:1",
+      segment: "segment",
+      offset: 0,
+    }],
+  });
   assertEquals(model.historyId, list.sandboxes?.[0]?.history_id);
-  assertEquals(model.logs[0]?.content, "test");
+  assertEquals(model.nodeId, "nod-abcdefghij");
+  assertEquals(model.logs.includes("Error: test\n    at program.ts:1"), true);
+  for (const state of ["expired", "unavailable"] as const) {
+    const unavailable = sandboxHistoryDetailModel(detail, {
+      state,
+      records: [],
+      more: false,
+      scanned_bytes: 0,
+    });
+    assertEquals(unavailable.failure, "supervisor heartbeat exceeded 15s");
+    assertEquals(unavailable.logStatus.includes(state), true);
+    assertEquals(unavailable.logs, "");
+  }
 });
 
 Deno.test("duration rendering uses exact Go duration units", () => {

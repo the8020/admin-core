@@ -14,7 +14,7 @@
           "type",
           "state",
           "reason",
-          "runtimeGroupId",
+
           "groupKey",
           "workers",
           "activeRequests",

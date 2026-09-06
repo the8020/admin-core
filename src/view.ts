@@ -1,4 +1,8 @@
-import type { PackageRepository } from "@the8020/kernel";
+import {
+  formatLogRecord,
+  type LogPage,
+  type PackageRepository,
+} from "@the8020/kernel";
 import type {
   PackageInspectResult,
   PackageListResult,
@@ -163,32 +167,42 @@ export function sandboxHistoryRows(result: SandboxHistoryListResult) {
     reason: sandbox.reason ?? sandbox.failure_reason ?? "",
     archivedAt: sandbox.archived_at,
     expiresAt: sandbox.expires_at,
-    logs: sandbox.log_files,
-    logBytes: sandbox.log_bytes,
   }));
 }
 
 export function sandboxHistoryDetailModel(
   result: SandboxHistoryInspectResult,
+  page: LogPage,
 ) {
   const history = result.sandbox_history;
   const record = history.record;
   return {
     historyId: record.history_id,
     sandboxId: record.spec.sandbox_id,
-    runtimeGroupId: record.spec.runtime_group_id,
+    nodeId: record.status.node_id,
+    createdAt: record.status.created_at,
     type: record.spec.workload_type,
     state: record.status.observed_state || record.status.desired_state,
     reason: record.reason,
     failure: record.status.failure_reason ?? "",
     archivedAt: record.archived_at,
     expiresAt: record.expires_at,
-    logs: (history.logs ?? []).map((log) => ({
-      name: log.name,
-      size: log.size,
-      truncated: log.truncated,
-      content: log.content,
-    })),
+    logStatus: page.state === "expired"
+      ? "The referenced logs have expired."
+      : page.state === "unavailable"
+      ? "Logs are currently unavailable."
+      : [
+        page.tail_limited
+          ? "Showing recent logs. Use First logs for earlier entries."
+          : "",
+        page.corrupt_records ? "Some log records could not be read." : "",
+        page.records.length === 0
+          ? page.more
+            ? "No matching records on this page."
+            : "No matching logs."
+          : "",
+      ].filter(Boolean).join(" "),
+    logs: page.records.map(formatLogRecord).join("\n"),
   };
 }
 
@@ -201,7 +215,7 @@ export function sandboxDetailModel(result: SandboxInspectResult) {
     type: sandbox.spec.workload_type,
     state: sandbox.status.observed_state || sandbox.status.desired_state,
     reason: result.reason,
-    runtimeGroupId: sandbox.spec.runtime_group_id,
+
     groupKey: sandbox.spec.placement_group ?? sandbox.spec.group_key,
     workers: sandbox.status.worker_count,
     activeRequests: runtime.active_requests ?? 0,
