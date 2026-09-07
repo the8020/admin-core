@@ -23,6 +23,7 @@ import packageVersionsLayout from "./layouts/package-versions.json" with {
   type: "json",
 };
 import type { ScreenResult } from "./navigation.ts";
+import { choiceHelp } from "./value_help.ts";
 
 interface InstallModel {
   source: string;
@@ -55,24 +56,28 @@ export function installSchema(inspection?: PackageSourceInspection) {
       label: "Author",
       length: "medium",
       readOnly: true,
+      hidden: inspection === undefined,
     }),
     repository: field(z.string(), {
       label: "Repository",
       length: "medium",
       readOnly: true,
+      hidden: inspection === undefined,
     }),
     defaultBranch: field(z.string(), {
       label: "Default branch",
       length: "medium",
       readOnly: true,
+      hidden: inspection === undefined,
     }),
     version: field(z.string().min(1), {
       label: "Version",
       length: "long",
-      control: "select",
-      options: sourceVersionOptions(inspection),
+      description:
+        "Choose Latest or find a branch, tag, or commit in field help.",
+      valueHelp: choiceHelp(sourceVersionOptions(inspection)),
     }),
-    references: z.array(Reference),
+    references: field(z.array(Reference), { hidden: true }),
   });
 }
 
@@ -113,10 +118,11 @@ function versionsSchema(versions: PackageVersions) {
       readOnly: true,
     }),
     selection: field(z.string().min(1), {
-      label: "Desired version",
+      label: "Version to install",
       length: "long",
-      control: "select",
-      options: installedVersionOptions(versions),
+      description:
+        "Choose Latest, a tag, or a specific commit. Applying replaces the installed version.",
+      valueHelp: choiceHelp(installedVersionOptions(versions)),
     }),
     versions: z.array(Version),
   });
@@ -138,18 +144,17 @@ export async function packageInstall(
     const event = await callScreen({
       id: "core-admin-package-install",
       title: "Install package",
-      description:
-        "Inspect a public HTTPS Git repository, save it to the package index, and optionally synchronize it now.",
+      description: "Enter a repository URL and choose the version to install.",
       schema: installSchema(inspection),
       model: frame.model(model),
       layout: packageInstallLayout,
       header: {
         actions: [
-          { id: "detect", label: "Detect" },
-          { id: "save", label: "Save" },
+          { id: "detect", label: "Check repository" },
+          { id: "save", label: "Save for later" },
           {
             id: "save-sync",
-            label: "Save & synchronize",
+            label: "Install",
             kind: "primary",
           },
         ],
@@ -204,6 +209,7 @@ export async function packageVersions(
   packageId: string,
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  let draft: string | undefined;
   while (true) {
     let index: PackageIndex;
     let versions: PackageVersions;
@@ -226,7 +232,7 @@ export async function packageVersions(
     const model = {
       source: index.source ?? "",
       currentCommit: versions.current_commit ?? "",
-      selection: selectedVersion(index),
+      selection: draft ?? selectedVersion(index),
       versions: versions.versions.map((version) => ({
         commit: version.commit,
         authoredAt: version.authored_at,
@@ -241,19 +247,27 @@ export async function packageVersions(
       id: "core-admin-package-versions",
       title: `Versions for ${packageId}`,
       description:
-        "Select latest, a tag, or an exact commit. Saving synchronizes the package and refreshes its services.",
+        "Choose a version from field help or select a row below, then apply it to the package.",
       schema: versionsSchema(versions),
       model: frame.model(model),
       layout: packageVersionsLayout,
       header: {
         actions: [
           { id: "refresh", label: "[[icon=refresh]] Refresh" },
-          { id: "save", label: "Save & synchronize", kind: "primary" },
+          { id: "save", label: "Apply version", kind: "primary" },
         ],
       },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
-    if (event.action === "refresh") continue;
+    if (event.action === "refresh") {
+      draft = undefined;
+      continue;
+    }
+    draft = model.selection;
+    if (event.action === "select" && typeof event.value === "string") {
+      draft = `commit:${event.value}`;
+      continue;
+    }
     if (event.action !== "save") continue;
     try {
       const selected = desiredVersion(model.selection);
@@ -267,6 +281,7 @@ export async function packageVersions(
       const synchronized = await kernel.packages.synchronize([packageId]);
       requireSuccessfulSynchronization(synchronized);
       sendMessage(`Synchronized ${packageId}`, "success");
+      draft = undefined;
     } catch (error) {
       sendMessage(errorMessage(error, "Version update failed"), "error");
     }
@@ -281,8 +296,7 @@ export async function packageLocal(
     const event = await callScreen({
       id: "core-admin-package-local",
       title: "Create local package",
-      description:
-        "Create an independent local Git repository with a package manifest and no remote source.",
+      description: "Create a package for your own programs and services.",
       schema: LocalPackage,
       model: frame.model(model),
       layout: packageLocalLayout,

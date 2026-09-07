@@ -111,6 +111,10 @@ export function serviceDetailModel(
   const configuration = service.effective_configuration;
   return {
     serviceId: service.service_id,
+    packageId: service.service_id.split("/").slice(0, 2).join("/"),
+    workerCount: service.worker_count,
+    sandboxCount: service.sandbox_count,
+    versionCount: service.version_count,
     description: service.description ?? "",
     path: service.canonical_base_path,
     state: service.state,
@@ -226,6 +230,17 @@ export function sandboxDetailModel(result: SandboxInspectResult) {
     memoryBytes: resources.memory_current ?? 0,
     cpuMicros: resources.cpu_usage_micros ?? 0,
     pids: resources.pid_current ?? 0,
+    memory: resources.memory_current === undefined
+      ? "Not measured"
+      : `${(resources.memory_current / 1024 / 1024).toFixed(1)} MiB`,
+    nodeId: sandbox.status.node_id,
+    createdAt: sandbox.status.created_at,
+    workerRows: (sandbox.workers ?? []).map((worker) => ({
+      workerId: worker.worker_id,
+      owner: worker.owner_id,
+      state: worker.state,
+      requests: worker.in_flight,
+    })),
     services: result.services.map((service) => ({
       navigation: `service:${service.service_id}`,
       serviceId: service.service_id,

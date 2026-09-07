@@ -1,6 +1,15 @@
 import { ScreenFrame } from "./screen_frame.ts";
 import { kernel, type LogPage } from "@the8020/kernel";
-import { BACK_EVENT, callScreen, field, z } from "/p/the8020/uui/mod.ts";
+import {
+  BACK_EVENT,
+  callScreen,
+  field,
+  Model,
+  presentPage,
+  z,
+} from "/p/the8020/uui/mod.ts";
+import { serviceId } from "/p/the8020/services/types/service.ts";
+import { sandboxId as sandboxField, workerId } from "../types/runtime.ts";
 import sandboxDetailLayout from "./layouts/sandbox-detail.json" with {
   type: "json",
 };
@@ -28,7 +37,7 @@ import {
 } from "./view.ts";
 
 const SandboxRow = z.object({
-  sandboxId: z.string(),
+  sandboxId: sandboxField,
   type: z.string(),
   state: z.string(),
   reason: z.string(),
@@ -50,15 +59,15 @@ const SandboxHistoryList = z.object({
 });
 const ServiceRow = z.object({
   navigation: z.string(),
-  serviceId: z.string(),
+  serviceId,
   state: z.string(),
   enabled: z.boolean(),
   sandboxes: z.number().int(),
   workers: z.number().int(),
 });
 const SandboxDetail = z.object({
-  sandboxId: field(z.string(), {
-    label: "Sandbox ID",
+  sandboxId: field(sandboxField, {
+    open: undefined,
     length: "long",
     readOnly: true,
   }),
@@ -105,6 +114,15 @@ const SandboxDetail = z.object({
     length: "short",
     readOnly: true,
   }),
+  memory: field(z.string(), { label: "Memory in use", readOnly: true }),
+  nodeId: field(z.string(), { label: "Node", readOnly: true }),
+  createdAt: field(z.string(), { label: "Started", readOnly: true }),
+  workerRows: z.array(z.object({
+    workerId,
+    owner: field(z.string(), { label: "Workload owner" }),
+    state: field(z.string(), { label: "Status" }),
+    requests: field(z.number().int(), { label: "Active requests" }),
+  })),
   cpuMicros: field(z.number().nonnegative(), {
     label: "CPU microseconds",
     length: "short",
@@ -178,11 +196,13 @@ export async function sandboxList(
       layout: sandboxListLayout,
       header: {
         actions: [
+          { id: "workers", label: "Workers" },
           { id: "history", label: "History" },
           { id: "refresh", label: "[[icon=refresh]] Refresh" },
         ],
       },
     });
+    if (event.action === "workers") return { view: "workers" };
     if (event.action === "history") return { view: "sandboxHistory" };
     if (event.action === BACK_EVENT) return { view: "back" };
     if (event.action === "refresh") continue;
@@ -270,6 +290,7 @@ export async function sandboxHistoryDetail(
       header: {
         actions: [
           { id: "refresh", label: "Refresh", kind: "primary" },
+          { id: "advanced", label: "Advanced" },
           { id: "first", label: "First logs" },
           { id: "recent", label: "Recent logs" },
           ...(page.state === "ok" && page.more && page.cursor
@@ -279,7 +300,18 @@ export async function sandboxHistoryDetail(
       },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
-    if (event.action === "first") {
+    if (event.action === "advanced") {
+      await presentPage(() =>
+        callScreen({
+          id: "core-admin-sandbox-history-advanced",
+          title: "Archive details",
+          schema: SandboxHistoryDetail,
+          model: new Model(sandboxHistoryDetailModel(result, page)),
+          controls: ["historyId", "sandboxId", "nodeId", "createdAt", "type"]
+            .map((bind) => ({ bind })),
+        })
+      );
+    } else if (event.action === "first") {
       view.cursor = undefined;
       view.tail = undefined;
     } else if (event.action === "recent") {
@@ -307,9 +339,31 @@ export async function sandboxDetail(
       title: `Sandbox ${sandboxId}`,
       schema: SandboxDetail,
       model: frame.model(model),
-      layout: sandboxDetailLayout,
+      controls: [
+        "state",
+        "type",
+        "reason",
+        "workers",
+        "activeRequests",
+        "activeExecutions",
+        "memory",
+        "failure",
+      ].map((bind) => ({ bind, hidden: bind === "failure" && !model.failure })),
+      layout: {
+        ...sandboxDetailLayout,
+        root: {
+          ...sandboxDetailLayout.root,
+          children: sandboxDetailLayout.root.children.filter((item) =>
+            item.id !== "services" || model.services.length > 0
+          ),
+        },
+      },
       header: {
-        actions: [{ id: "refresh", label: "Refresh", kind: "primary" }],
+        actions: [{
+          id: "refresh",
+          label: "[[icon=refresh]] Refresh",
+          kind: "primary",
+        }, { id: "advanced", label: "Advanced" }],
       },
     });
     if (
@@ -317,6 +371,33 @@ export async function sandboxDetail(
       event.value.startsWith("service:")
     ) return { view: "service", serviceId: event.value.slice(8) };
     if (event.action === BACK_EVENT) return { view: "back" };
+    if (
+      event.action === "select" && typeof event.value === "string" &&
+      event.controlId === "workers"
+    ) {
+      return { view: "worker", workerId: event.value };
+    }
+    if (event.action === "advanced") {
+      await presentPage(() =>
+        callScreen({
+          id: "core-admin-sandbox-advanced",
+          title: `Advanced · ${sandboxId}`,
+          schema: SandboxDetail,
+          model: new Model(model),
+          controls: [
+            "sandboxId",
+            "nodeId",
+            "createdAt",
+            "groupKey",
+            "snapshotRevision",
+            "snapshotObservedAt",
+            "memoryBytes",
+            "cpuMicros",
+            "pids",
+          ].map((bind) => ({ bind })),
+        })
+      );
+    }
     if (event.action === "refresh") {
       result = await kernel.admin.execute<SandboxInspectResult>(
         "sandbox.refresh",

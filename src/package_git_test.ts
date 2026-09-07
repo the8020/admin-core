@@ -12,7 +12,8 @@ import {
   kernelFailure,
   kernelSuccess,
 } from "./kernel_test_support.ts";
-import { packageDetail } from "./packages.ts";
+import { packageAdvanced, packageDetailSchema } from "./packages.ts";
+import { fieldMetadata } from "/p/the8020/db/fields.ts";
 
 class TestChannel {
   readonly sessionId = "session-package-git";
@@ -96,7 +97,7 @@ const index = {
   valid: true,
 };
 
-Deno.test("package detail exposes Git selectors and persists only the secret name", async () => {
+Deno.test("advanced package detail exposes Git selectors and persists only the secret name", async () => {
   const calls: Array<{ command: string; arguments: Record<string, unknown> }> =
     [];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
@@ -140,25 +141,30 @@ Deno.test("package detail exposes Git selectors and persists only the secret nam
   const channel = new TestChannel();
   const unbind = bindSession(channel);
   try {
-    const pending = packageDetail("the8020/example");
+    const pending = packageAdvanced("the8020/example");
     const first = await waitForScreen(channel, 1);
     assertEquals(
       first.header.actions.map((action) => action.id).slice(0, 5),
       ["pull", "push", "checkout-branch", "checkout-commit", "save-secret"],
     );
     assertEquals(
-      first.fields.find((field) => field.bind === "branch")?.options,
-      [
-        { value: "main", label: "main (current)" },
-        { value: "stable", label: "stable (remote)" },
-      ],
+      first.fields.find((field) => field.bind === "branch")?.control,
+      "text",
     );
+    const help = packageDetailSchema(repository);
     assertEquals(
-      first.fields.find((field) => field.bind === "secretName")?.options,
-      [
-        { value: "", label: "No secret (public repository)" },
-        { value: "github", label: "github" },
-      ],
+      await fieldMetadata(help.shape.branch)?.valueHelp?.({
+        query: "",
+        offset: 0,
+        limit: 50,
+      }),
+      {
+        items: [
+          { value: "main", label: "main (current)" },
+          { value: "stable", label: "stable (remote)" },
+        ],
+        more: false,
+      },
     );
     channel.push(screenEvent(first, "pull", 1));
     const second = await waitForScreen(channel, 2);
@@ -254,7 +260,7 @@ Deno.test("package detail keeps Git controls available without index metadata", 
   const channel = new TestChannel();
   const unbind = bindSession(channel);
   try {
-    const pending = packageDetail("the8020/example");
+    const pending = packageAdvanced("the8020/example");
     const screen = await waitForScreen(channel, 1);
     assertEquals(
       screen.header.actions.some((action) => action.id === "save-secret"),

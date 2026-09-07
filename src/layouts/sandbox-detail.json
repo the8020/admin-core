@@ -10,21 +10,14 @@
         "type": "detail",
         "title": "Status",
         "controls": [
-          "sandboxId",
-          "type",
           "state",
+          "type",
           "reason",
-
-          "groupKey",
           "workers",
           "activeRequests",
           "activeExecutions",
-          "snapshotRevision",
-          "snapshotObservedAt",
-          "failure",
-          "memoryBytes",
-          "cpuMicros",
-          "pids"
+          "memory",
+          "failure"
         ]
       },
       {
@@ -36,8 +29,6 @@
         "display": [
           "serviceId",
           "state",
-          "enabled",
-          "sandboxes",
           "workers"
         ],
         "columnOptions": {
@@ -53,8 +44,32 @@
             "shortHeading": "S"
           },
           "workers": {
-            "length": "compact",
+            "length": "short",
             "shortHeading": "W"
+          }
+        }
+      },
+      {
+        "id": "workers",
+        "type": "list",
+        "title": "Workers",
+        "bind": "workerRows",
+        "key": "workerId",
+        "display": [
+          "workerId",
+          "owner",
+          "state",
+          "requests"
+        ],
+        "columnOptions": {
+          "workerId": {
+            "length": "long"
+          },
+          "owner": {
+            "length": "long"
+          },
+          "requests": {
+            "length": "short"
           }
         }
       }

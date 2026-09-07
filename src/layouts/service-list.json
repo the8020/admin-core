@@ -7,40 +7,24 @@
     "bind": "services",
     "key": "serviceId",
     "display": [
+      "description",
       "serviceId",
       "state",
-      "enabled",
-      "versions",
-      "sandboxes",
       "workers",
-      "serviceType",
-      "description"
+      "sandboxes"
     ],
     "columnOptions": {
-      "serviceId": {
-        "shortHeading": "Service"
-      },
-      "enabled": {
-        "length": "compact",
-        "shortHeading": "On"
-      },
-      "versions": {
-        "length": "compact",
-        "shortHeading": "V"
-      },
-      "sandboxes": {
-        "length": "compact",
-        "shortHeading": "S"
-      },
-      "workers": {
-        "length": "compact",
-        "shortHeading": "W"
-      },
-      "serviceType": {
-        "shortHeading": "Type"
-      },
       "description": {
         "length": "long"
+      },
+      "serviceId": {
+        "length": "long"
+      },
+      "workers": {
+        "length": "short"
+      },
+      "sandboxes": {
+        "length": "short"
       }
     }
   }

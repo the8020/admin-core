@@ -110,90 +110,110 @@ This root retains repository-wide contracts and files outside the child scopes
 below.
 
 - [programs/AGENTS.md](programs/AGENTS.md): Expose the first-party program,
-  package, secret, service, and sandbox administration entrypoints.
+  package, secret, service, sandbox, and Worker administration entrypoints.
 - [src/AGENTS.md](src/AGENTS.md): Implement shared administration screens,
   navigation, and typed result models.
+- [types/AGENTS.md](types/AGENTS.md): Share sandbox and Worker reference fields.
 
 # Purpose
 
-- Provide first-party UUI programs for program, package, service, and sandbox
-  administration.
+- Provide first-party UUI programs for program, package, secret, service,
+  sandbox, and Worker administration.
 - This file is the root contract of the independent `the8020/admin-core` Git
   repository.
 
 # Ownership
 
 - Own linked package list/detail/install/version/local-create, named-secret
-  list/edit, program list/detail, service list/detail, live sandbox list/detail,
-  and separate historical sandbox list/detail screens plus their typed
-  command-result models.
+  list/edit, program list/detail, service overview/settings, live sandbox and
+  Worker list/detail, and separate historical sandbox list/detail screens plus
+  their typed command-result models.
 - Do not own UUI-session administration, command behavior, authorization,
   runtime lifecycle, program discovery, or browser rendering.
 
 # Local Contracts
 
-- `the8020/admin-core/packages`, `the8020/admin-core/secrets`,
-  `the8020/admin-core/services`, and `the8020/admin-core/sandboxes` are
-  parameterless programs backed only by `@the8020/kernel` and the ordinary
-  package mapping `/p/the8020/uui/mod.ts`.
-- All interactive entrypoints declare `uui = true`. The parameterless
+- Administration programs open their catalogs without arguments. Packages and
+  Programs, Secrets, Services, Sandboxes, and Workers also accept a selected
+  identifier for semantic field clickthrough. Use typed kernel/package APIs and
+  ordinary `/p/` imports.
+- All interactive entrypoints declare `uui = true`. The
   `the8020/admin-core/programs` uses `kernel.programs.list()` to display all
   ready programs, including hidden and non-UUI programs. Its retained list and
-  detail models expose UUI/discoverable flags, package, description, entrypoint,
-  and commit. Execute calls the ordinary
+  detail models put the description, execution kind, and linked package first.
+  Advanced owns program ID, entrypoint, commit, and Home/interactive flags.
+  Program headings use the short program name. Execute calls the ordinary
   `/p/the8020/jobs/programs/run-program/program.ts` entrypoint with the selected
   ID; Jobs owns input collection, execution mode, and results. Back returns
   through the existing navigation frames, preserving list state.
+- Program/package references reuse the fields owned by the packages repository.
+  Program detail links directly to its package; shared help calls the selected
+  entity's ordinary public UUI entrypoint.
 - Programs use typed private kernel operations under the active authenticated
   request. Collections stay compact; details own full status and relationships.
   Service mutations call the shared Deno services-package configuration API in
   the existing Worker; the kernel exposes only observed runtime operations.
-- The service collection keeps exactly one row per logical service and shows
-  live version count plus unique sandbox and Worker totals across current and
-  retained versions. Service detail lists every live sandbox once with its
-  service version so retained session capacity remains directly inspectable.
+- Service catalogs show one row per logical service, its description, status,
+  and unique sandbox/Worker totals across current and retained versions. Main
+  detail puts health, address, access, package, and running capacity first.
+  Enabled is visible in the overview. Configure edits all service policy on one
+  page, including Enabled; Advanced shows version/snapshot diagnostics. Each
+  live sandbox stays directly reachable.
 - Package collection combines the generic package catalog with the accepted
   service index for service counts. Selecting one package combines generic
-  package/repository inspection with that package's indexed services; only the
-  detail path reads Git status, package manifests, and bounded non-Git file
-  inventory. Kernel package records contain no service declarations or counts.
+  package inspection with that package's indexed services. The main page shows
+  status, description, available documentation/license, and compact service and
+  program links. Empty content groups are omitted. Advanced owns Git inspection,
+  repository controls, full manifest diagnostics, and bounded file inventory.
+  Main-page refresh reads the desired index to offer remote Versions only when
+  applicable; it never inspects Git or lists credentials. Kernel package records
+  contain no service declarations or counts.
 - Package list header actions open ordinary Install package and Create local
   package screens. Install validates an HTTPS Git URL, displays detected
-  identity/branch/tag refs, writes the desired index, and may synchronize in one
-  action. Versions lists bounded commits/tags and saves latest, tag, or exact
-  commit before synchronization. Package detail exposes bounded branch/commit
-  selectors plus pull, push, checkout, and stored-secret-name selection. Git
-  operations remain typed kernel calls and refresh only affected services; the
-  existing explicit desired-version synchronization action remains available.
+  identity, writes the desired index, and may install in one action. Versions
+  lists readable changes/tags and accepts row or field-help selection before
+  Apply version. Branch/commit/tag choices use searchable help over bounded
+  reference snapshots through `src/value_help.ts`. Advanced retains pull, push,
+  and checkout. Its credential field reuses `the8020/secrets/types/secret.ts`
+  and loads names only when help opens. Git operations remain typed kernel calls
+  and refresh only affected services; the existing explicit desired-version
+  synchronization action remains available.
 - Secrets lists names and update times. Add/edit starts with a blank password
   field, never calls secret get, clears the submitted model value, and
-  overwrites the named value through the typed kernel API.
+  overwrites the named value through the typed kernel API. One field group owns
+  name and replacement value. Shared secret-name help can open this screen from
+  another entity; the edit form suppresses its own recursive record link.
 - Package management screens call the typed `kernel.packages` API backed by
   private kernel operations; they never read host paths or run Git.
-- Detail headings identify `Package <id>`, `Service <id>`, `Sandbox <id>`, or
-  `Archived sandbox <id>`. Unboxed H1 sections contain second-level detail,
-  list, or field-group cards.
-- Package/service navigation is bidirectional. Sandbox details show correlated
-  services but never discover or duplicate application-owned session state.
-- Service detail exposes one canonical editable policy. `Scaling` contains
-  `Worker threads` (minimum/maximum Workers), `Single worker` (concurrency,
-  target utilization, and Worker keepalive), and `Replication` (sandbox group,
-  minimum sandboxes, and Workers per sandbox). A separate `Lifecycle` group
-  edits stateless/session type and session keepalive. Zero minimum means
-  scale-to-zero; zero maximum means service-level unlimited. Session-only input
-  is disabled while stateless but preserved so switching type remains editable.
-  The lifecycle group also edits the anonymous execution user. It reads/writes
-  canonical service execution policy, without assuming that the user is system.
-  No active control writes legacy instance or replica fields.
+- Detail headings identify `Package <id>`, `Service <short name>`,
+  `Sandbox <id>`, or `Archived sandbox <id>`. Unboxed H1 sections contain
+  second-level detail, list, or field-group cards.
+- Package/service and package/program navigation are bidirectional. Sandbox
+  details show correlated services but never discover or duplicate
+  application-owned session state.
+- Service configuration is one page with no nested Advanced view. Only Save
+  settings writes Enabled and canonical policy through the services package;
+  Back discards the draft. Scaling retains the Worker threads, Single worker,
+  and Replication groups together; lifecycle and execution identity are on the
+  same page. Diagnostics Advanced contains versions and runtime snapshots only.
+  Zero minimum allows scale-to-zero, zero maximum means no service-level limit,
+  and switching service type retains its session timeout. Execution identities
+  can be entered directly; account sign-in eligibility never limits them.
+- Sandbox overview shows health, work, readable memory use, services, and
+  Workers. Advanced owns raw metrics, placement, IDs, and snapshot diagnostics.
+  Worker detail uses the existing inspect API and links its sandbox and, for
+  service workloads, its canonical owner service. A workload owner is not an
+  execution username. Shared runtime reference fields live in
+  `types/runtime.ts`.
 - Every screen uses shell-owned `BACK_EVENT`; refresh, history, paging,
   service-state, restart, and save actions belong in the header.
 - Live package, service, and sandbox collections and their selected details each
   expose a header Refresh action that reloads the current target without
   navigating.
 - Service and sandbox lists plus ordinary detail opening use cached observed
-  runtime state. Detail shows snapshot revision/time; its Refresh action invokes
-  the targeted live service or sandbox operation and never triggers a global
-  runtime scan.
+  runtime state. Advanced detail shows snapshot revision/time; its Refresh
+  action invokes the targeted live service or sandbox operation and never
+  triggers a global runtime scan.
 - Sandbox history is a bounded metadata collection. Opening a record reads
   bounded `kernel.logs` pages using its creation node, sandbox ID, time range
   and saved position. First/Recent/Next actions replace the displayed page;
@@ -206,6 +226,13 @@ below.
   widths and compact headings.
 
 # Work Guidance
+
+- Keep administration features within their owning domain and reuse its public
+  program or mutation API. Package unrelated capabilities separately; a screen
+  is not a new owner for service policy or runtime state.
+- Reuse shared UUI models, semantic reference fields, and bounded owner
+  snapshots. Fix a missing shared capability at its owner and verify the
+  linked administration flow before considering a kernel change.
 
 - Keep labels short, lists bounded to useful columns, and program code free of
   application-specific runtime assumptions.

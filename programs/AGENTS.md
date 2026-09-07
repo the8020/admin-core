@@ -2,7 +2,7 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 
 # Purpose
 
-- Expose the first-party program, package, secret, service, and sandbox
+- Expose the first-party program, package, secret, service, sandbox, and Worker
   administration entrypoints.
 
 # Ownership
@@ -12,8 +12,9 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 
 # Local Contracts
 
-- Interactive manifests declare `uui = true` and entrypoints remain
-  parameterless.
+- Interactive manifests declare `uui = true`. Calling without arguments opens
+  the catalog; Programs, Packages, Secrets, Services, Sandboxes, and Workers
+  accept an optional selected identifier.
 - Route entrypoints through the shared admin navigation; the Programs catalog
   hands execution inputs to the Jobs package.
 

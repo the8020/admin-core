@@ -15,8 +15,22 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 
 - Retain each navigation frame's UUI Model and context across refreshes and
   returns.
+- Programs lists description, execution kind, and package. Its main detail owns
+  Execute and package navigation; Advanced owns source metadata and flags. Reuse
+  the packages repository's semantic program/package fields.
 - Use cheap observed snapshots for lists and explicit targeted refreshes for
   live detail.
+- Package overview reads package inspection/index and indexed services. Keep
+  Git, file inventory, and technical diagnostics in its separate Advanced
+  navigation frame. Both main content lists open the related entity.
+- `value_help.ts` pages existing bounded branch/version snapshots for multiple
+  fields. Credentials use the secrets package's on-demand name-only lookup and
+  its linked edit screen; opening Advanced never preloads credentials.
+- Services separate overview, settings, and diagnostics. Configuration keeps
+  every editable setting, including Enabled, in one draft on one page, uses the
+  original scaling groups, and calls the shared mutation API only on Save.
+- Sandbox and Worker screens use existing runtime snapshots and explicit
+  relationships. Worker workload owners must never be treated as usernames.
 - Secret editing starts empty, writes through the typed API, and never loads the
   stored secret value.
 - Sandbox history lists read metadata only. Details query the owning node's
@@ -26,6 +40,10 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   explicitly without discarding terminal metadata.
 
 # Work Guidance
+
+- Compose related administration through owning public programs and shared
+  semantic fields. New domain behavior belongs with its package; shared UUI
+  defects belong in the framework, with the affected navigation flow verified.
 
 - Runtime placement uses one sandbox identity alongside node and Worker IDs. Do
   not store or display a second identity for the same sandbox.

@@ -184,12 +184,30 @@ export interface SandboxInspection {
     active_requests?: number;
     active_execution_count?: number;
   };
-  workers: Array<{
-    worker_id: string;
-    owner_id: string;
-    state: string;
-    in_flight: number;
-  }>;
+  workers: WorkerStatus[] | null;
+}
+
+export interface WorkerStatus {
+  worker_id: string;
+  owner_id: string;
+  workload_id?: string;
+  state: string;
+  in_flight: number;
+  persistent_executions?: number;
+  entrypoint?: string;
+  release_id?: string;
+  debugger_name?: string;
+  failure?: string;
+}
+
+export interface WorkerInspectResult extends Record<string, unknown> {
+  worker: { sandbox_id: string; workload_type: string; worker: WorkerStatus };
+}
+
+export interface WorkerListResult extends Record<string, unknown> {
+  workers:
+    | Array<WorkerStatus & { sandbox_id: string; workload_type: string }>
+    | null;
 }
 
 export interface SandboxService {

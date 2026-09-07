@@ -14,11 +14,6 @@
             "id": "identity",
             "type": "detail",
             "controls": [
-              "historyId",
-              "sandboxId",
-              "nodeId",
-              "createdAt",
-              "type",
               "state",
               "reason",
               "failure",
@@ -36,7 +31,10 @@
           {
             "id": "logs",
             "type": "detail",
-            "controls": ["logStatus", "logs"]
+            "controls": [
+              "logStatus",
+              "logs"
+            ]
           }
         ]
       }

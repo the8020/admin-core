@@ -9,7 +9,7 @@ import {
 import { bindSession } from "../../uui/session.ts";
 import type { ScreenResult } from "./navigation.ts";
 import { decodeKernelCall, kernelSuccess } from "./kernel_test_support.ts";
-import { packageDetail, packageList } from "./packages.ts";
+import { packageAdvanced, packageDetail, packageList } from "./packages.ts";
 import {
   sandboxDetail,
   sandboxHistoryDetail,
@@ -229,15 +229,25 @@ Deno.test("live list and detail screens refresh their current target", async () 
       run: () => packageDetail("the8020/example"),
       commands: [
         "package.inspect",
-        "package.repository.inspect",
-        "package.index.inspect",
         "service.list",
-        "secret.list",
+        "package.index.inspect",
+        "package.inspect",
+        "service.list",
+        "package.index.inspect",
+      ],
+    },
+    {
+      name: "advanced package detail",
+      run: () => packageAdvanced("the8020/example"),
+      commands: [
         "package.inspect",
         "package.repository.inspect",
         "package.index.inspect",
         "service.list",
-        "secret.list",
+        "package.inspect",
+        "package.repository.inspect",
+        "package.index.inspect",
+        "service.list",
       ],
     },
     {

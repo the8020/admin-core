@@ -6,51 +6,40 @@
     "type": "stack",
     "children": [
       {
-        "id": "selection-section",
-        "type": "section",
-        "title": "Selection",
-        "children": [
-          {
-            "id": "selection-fields",
-            "type": "field-group",
-            "title": "Desired package version",
-            "controls": [
-              "source",
-              "currentCommit",
-              "selection"
-            ]
-          }
+        "id": "selection",
+        "type": "field-group",
+        "controls": [
+          "selection",
+          "currentCommit",
+          "source"
         ]
       },
       {
-        "id": "history-section",
-        "type": "section",
-        "title": "Recent commits",
-        "children": [
-          {
-            "id": "versions-list",
-            "type": "list",
-            "bind": "versions",
-            "key": "commit",
-            "display": [
-              "commit",
-              "authoredAt",
-              "author",
-              "tags",
-              "current",
-              "selected",
-              "subject"
-            ],
-            "columnOptions": {
-              "authoredAt": {
-                "shortHeading": "Authored"
-              },
-              "subject": {
-                "length": "long"
-              }
-            }
+        "id": "versions-list",
+        "type": "list",
+        "title": "Recent versions",
+        "bind": "versions",
+        "key": "commit",
+        "display": [
+          "subject",
+          "tags",
+          "authoredAt",
+          "current"
+        ],
+        "columnOptions": {
+          "subject": {
+            "heading": "Change",
+            "length": "long"
+          },
+          "authoredAt": {
+            "heading": "Date",
+            "length": "medium"
+          },
+          "current": {
+            "heading": "Installed",
+            "length": "compact"
           }
-        ]
+        }
       }
     ]
   }

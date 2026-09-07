@@ -4,7 +4,6 @@ import {
   kernel,
   type PackageIndex,
   type PackageRepository,
-  type SecretSummary,
 } from "@the8020/kernel";
 import {
   BACK_EVENT,
@@ -19,6 +18,11 @@ import packageDetailLayout from "./layouts/package-detail.json" with {
 import packageListLayout from "./layouts/package-list.json" with {
   type: "json",
 };
+import packageAdvancedLayout from "./layouts/package-advanced.json" with {
+  type: "json",
+};
+import { packageId as packageField } from "/p/the8020/packages/types/package.ts";
+import { programId as programField } from "/p/the8020/packages/types/program.ts";
 import type {
   PackageInspection,
   PackageInspectResult,
@@ -28,10 +32,13 @@ import type {
 } from "./contracts.ts";
 import type { ScreenResult } from "./navigation.ts";
 import { packageDetailModel, packageRows } from "./view.ts";
+import { choiceHelp } from "./value_help.ts";
+import { secretName } from "/p/the8020/secrets/types/secret.ts";
 
 const PackageRow = z.object({
-  canonicalName: z.string(),
+  canonicalName: packageField,
   valid: z.boolean(),
+  status: field(z.string(), { label: "Status" }),
   services: z.number().int(),
   description: z.string(),
 });
@@ -48,7 +55,7 @@ const ServiceRow = z.object({
   description: z.string(),
 });
 const ProgramRow = z.object({
-  programId: z.string(),
+  programId: programField,
   path: z.string(),
   entrypoint: z.string(),
   defaultLayout: z.string(),
@@ -64,15 +71,13 @@ const FileRow = z.object({
 });
 export function packageDetailSchema(
   repository: PackageRepository,
-  secrets: SecretSummary[],
-  selectedSecret = "",
   canPersistSecret = true,
 ) {
   return z.object({
-    packageId: field(z.string(), {
-      label: "Canonical name",
+    packageId: field(packageField, {
       length: "long",
       readOnly: true,
+      open: undefined,
     }),
     path: field(z.string(), { label: "Path", length: "long", readOnly: true }),
     description: field(z.string(), {
@@ -138,24 +143,22 @@ export function packageDetailSchema(
     branch: field(z.string(), {
       label: "Current branch",
       length: "long",
-      control: "select",
-      options: repository.branches.map((branch) => ({
+      valueHelp: choiceHelp(repository.branches.map((branch) => ({
         value: branch.name,
         label: branch.remote
           ? `${branch.name} (remote)`
           : branch.current
           ? `${branch.name} (current)`
           : branch.name,
-      })),
+      }))),
     }),
     head: field(z.string(), {
       label: "Current commit",
       length: "long",
-      control: "select",
-      options: repository.commits.map((commit) => ({
+      valueHelp: choiceHelp(repository.commits.map((commit) => ({
         value: commit.commit,
         label: `${commit.short_commit} — ${commit.subject}`,
-      })),
+      }))),
     }),
     remoteName: field(z.string(), {
       label: "Remote",
@@ -167,24 +170,12 @@ export function packageDetailSchema(
       length: "long",
       readOnly: true,
     }),
-    secretName: field(z.string(), {
+    secretName: field(secretName, {
       label: "Authentication secret",
       description:
-        "Only the stored secret name is saved with the package; its value remains in kernel secret storage.",
+        "Choose credentials for a private repository. Leave empty for public access.",
       length: "long",
-      control: "select",
       hidden: !canPersistSecret,
-      options: [
-        { value: "", label: "No secret (public repository)" },
-        ...(selectedSecret !== "" &&
-            !secrets.some((secret) => secret.name === selectedSecret)
-          ? [{ value: selectedSecret, label: `${selectedSecret} (missing)` }]
-          : []),
-        ...secrets.map((secret) => ({
-          value: secret.name,
-          label: secret.name,
-        })),
-      ],
     }),
     services: z.array(ServiceRow),
     programs: z.array(ProgramRow),
@@ -205,7 +196,12 @@ export async function packageList(
       id: "core-admin-packages",
       title: "Packages",
       schema: PackageList,
-      model: frame.model({ packages: packageRows(result) }),
+      model: frame.model({
+        packages: packageRows(result).map((item) => ({
+          ...item,
+          status: item.valid ? "Ready" : "Needs attention",
+        })),
+      }),
       layout: packageListLayout,
       header: {
         actions: [
@@ -277,6 +273,135 @@ export async function packageDetail(
   packageId: string,
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  const Screen = z.object({
+    description: field(z.string(), {
+      label: "Description",
+      readOnly: true,
+      length: "long",
+    }),
+    status: field(z.string(), {
+      label: "Status",
+      readOnly: true,
+      length: "short",
+    }),
+    license: field(z.string(), {
+      label: "License",
+      readOnly: true,
+      length: "short",
+    }),
+    documentation: field(z.string(), {
+      label: "Documentation",
+      readOnly: true,
+      length: "long",
+    }),
+    issue: field(z.string(), {
+      label: "Needs attention",
+      readOnly: true,
+      length: "long",
+      control: "textarea",
+      rowSpan: 2,
+    }),
+    services: z.array(z.object({
+      id: z.string(),
+      description: field(z.string(), { label: "Service" }),
+      state: field(z.string(), { label: "Status" }),
+      workers: field(z.number(), { label: "Workers" }),
+    })),
+    programs: z.array(z.object({
+      id: programField,
+      description: field(z.string(), { label: "Program" }),
+      kind: field(z.string(), { label: "Runs as" }),
+    })),
+  });
+  while (true) {
+    const [inspection, services, index] = await Promise.all([
+      kernel.packages.inspect<PackageInspection>(packageId),
+      kernel.services.list<ServiceSummary>(),
+      optionalPackageIndex(packageId),
+    ]);
+    const issue = [
+      ...(inspection.validation_errors ?? []),
+      ...(inspection.inspection_errors ?? []),
+    ].join("\n");
+    const model = {
+      description: inspection.description ?? "",
+      status: inspection.valid ? "Ready" : "Needs attention",
+      license: inspection.license ?? "",
+      documentation: inspection.documentation_url ?? "",
+      issue,
+      services: services.filter((service) => service.package_id === packageId)
+        .map((service) => ({
+          id: service.service_id,
+          description: service.description || service.service_id,
+          state: service.state,
+          workers: service.worker_count,
+        })),
+      programs: (inspection.programs ?? []).map((program) => ({
+        id: program.program_id,
+        description: program.description || program.program_id,
+        kind: !program.valid
+          ? "Unavailable"
+          : program.uui
+          ? "Interactive"
+          : "Background job",
+      })),
+    };
+    const event = await callScreen({
+      id: "core-admin-package-detail",
+      title: `Package ${packageId}`,
+      schema: Screen,
+      model: frame.model(model),
+      layout: {
+        ...packageDetailLayout,
+        root: {
+          ...packageDetailLayout.root,
+          children: packageDetailLayout.root.children.filter((child) =>
+            (child.id !== "services" || model.services.length > 0) &&
+            (child.id !== "programs" || model.programs.length > 0)
+          ),
+        },
+      },
+      controls: [
+        { bind: "description", hidden: !model.description },
+        { bind: "status" },
+        { bind: "license", hidden: !model.license },
+        { bind: "documentation", hidden: !model.documentation },
+        { bind: "issue", hidden: !issue },
+        { bind: "services" },
+        { bind: "programs" },
+      ],
+      header: {
+        actions: [
+          ...(index !== undefined && !index.local
+            ? [{ id: "versions", label: "Versions", kind: "primary" as const }]
+            : []),
+          { id: "refresh", label: "Refresh" },
+          { id: "advanced", label: "Advanced" },
+        ],
+      },
+    });
+    if (event.action === BACK_EVENT) return { view: "back" };
+    if (event.action === "advanced") {
+      return { view: "packageAdvanced", packageId };
+    }
+    if (event.action === "versions") {
+      return { view: "packageVersions", packageId };
+    }
+    if (event.action === "select" && typeof event.value === "string") {
+      if (event.bind === "services") {
+        return { view: "service", serviceId: event.value };
+      }
+      if (event.bind === "programs") {
+        return { view: "program", programId: event.value };
+      }
+    }
+  }
+}
+
+export async function packageAdvanced(
+  packageId: string,
+  frame = new ScreenFrame(),
+): Promise<ScreenResult> {
   while (true) {
     const [inspection, repository, index, services] = await Promise.all([
       kernel.packages.inspect<PackageInspection>(packageId),
@@ -285,23 +410,20 @@ export async function packageDetail(
       kernel.services.list<ServiceSummary>(),
     ]);
     const result: PackageInspectResult = { package: inspection, services };
-    const secrets = index === undefined ? [] : await kernel.secrets.list();
     const model = packageDetailModel(
       result,
       repository,
       index?.secret ?? "",
     );
     const event = await callScreen({
-      id: "core-admin-package-detail",
-      title: `Package ${packageId}`,
+      id: "core-admin-package-advanced",
+      title: `Advanced · ${packageId}`,
       schema: packageDetailSchema(
         repository,
-        secrets,
-        index?.secret ?? "",
         index !== undefined,
       ),
       model: frame.model(model),
-      layout: packageDetailLayout,
+      layout: packageAdvancedLayout,
       header: {
         actions: [
           { id: "pull", label: "Pull", kind: "primary" },
@@ -325,6 +447,12 @@ export async function packageDetail(
       event.action === "select" && typeof event.value === "string" &&
       event.value.startsWith("service:")
     ) return { view: "service", serviceId: event.value.slice(8) };
+    if (
+      event.action === "select" && event.bind === "programs" &&
+      typeof event.value === "string"
+    ) {
+      return { view: "program", programId: event.value };
+    }
     if (event.action === "versions") {
       return { view: "packageVersions", packageId };
     }

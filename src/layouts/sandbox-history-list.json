@@ -8,11 +8,9 @@
     "key": "historyId",
     "display": [
       "sandboxId",
-      "type",
       "state",
       "reason",
-      "archivedAt",
-      "expiresAt"
+      "archivedAt"
     ],
     "columnOptions": {
       "sandboxId": {

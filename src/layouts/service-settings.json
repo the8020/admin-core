@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "id": "service-settings",
+  "root": {
+    "id": "settings",
+    "type": "stack",
+    "children": [
+      {
+        "id": "service-state",
+        "type": "field-group",
+        "title": "Service",
+        "controls": [
+          "enabled"
+        ]
+      },
+      {
+        "id": "scaling-section",
+        "type": "section",
+        "title": "Scaling",
+        "children": [
+          {
+            "id": "scaling",
+            "type": "grid",
+            "columns": 3,
+            "responsive": "stack",
+            "children": [
+              {
+                "id": "worker-threads",
+                "type": "field-group",
+                "title": "Worker threads",
+                "controls": [
+                  "minimumWorkers",
+                  "maximumWorkers"
+                ]
+              },
+              {
+                "id": "single-worker",
+                "type": "field-group",
+                "title": "Single worker",
+                "controls": [
+                  "concurrencyPerWorker",
+                  "targetUtilization",
+                  "workerKeepAlive"
+                ]
+              },
+              {
+                "id": "replication",
+                "type": "field-group",
+                "title": "Replication",
+                "controls": [
+                  "sandboxGroup",
+                  "minimumSandboxes",
+                  "workersPerSandbox"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "lifecycle-section",
+        "type": "section",
+        "title": "Lifecycle",
+        "children": [
+          {
+            "id": "service-lifecycle",
+            "type": "field-group",
+            "title": "Service lifecycle",
+            "controls": [
+              "anonymousUser",
+              "serviceType",
+              "sessionKeepAlive"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

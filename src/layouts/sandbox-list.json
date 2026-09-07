@@ -8,25 +8,19 @@
     "key": "sandboxId",
     "display": [
       "sandboxId",
-      "type",
-      "state",
       "reason",
-      "workers",
-      "failure"
+      "state",
+      "workers"
     ],
     "columnOptions": {
       "sandboxId": {
-        "shortHeading": "Sandbox"
+        "length": "long"
       },
       "reason": {
         "length": "long"
       },
       "workers": {
-        "length": "compact",
-        "shortHeading": "W"
-      },
-      "failure": {
-        "length": "long"
+        "length": "short"
       }
     }
   }

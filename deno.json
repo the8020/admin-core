@@ -4,7 +4,12 @@
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
     "useUnknownInCatchVariables": true,
-    "lib": ["deno.ns", "dom", "dom.iterable", "esnext"]
+    "lib": [
+      "deno.ns",
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ]
   },
   "imports": {
     "@the8020/context": "file:///opt/runtime/context/mod.ts",
@@ -18,7 +23,7 @@
     "zod": "npm:zod@4.1.5"
   },
   "tasks": {
-    "check": "deno fmt --check . && deno lint . && deno check --import-map=deno.local.json programs/packages/program.ts programs/services/program.ts programs/sandboxes/program.ts programs/secrets/program.ts programs/programs/program.ts",
+    "check": "deno fmt --check . && deno lint . && deno check --import-map=deno.local.json types/*.ts programs/*/program.ts",
     "test": "deno test --import-map=deno.local.json ."
   }
 }

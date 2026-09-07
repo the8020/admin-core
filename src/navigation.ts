@@ -10,23 +10,28 @@ import {
   packageLocal,
   packageVersions,
 } from "./package-management.ts";
-import { packageDetail, packageList } from "./packages.ts";
-import { serviceDetail, serviceList } from "./services.ts";
+import { packageAdvanced, packageDetail, packageList } from "./packages.ts";
+import { serviceDetail, serviceList, serviceSettings } from "./services.ts";
 import { secretEdit, secretList } from "./secrets.ts";
 import { programDetail, programList } from "./programs.ts";
+import { workerDetail, workerList } from "./workers.ts";
 
 export type AdminTarget =
   | { view: "programs" }
   | { view: "program"; programId: string }
   | { view: "packages" }
   | { view: "package"; packageId: string }
+  | { view: "packageAdvanced"; packageId: string }
   | { view: "packageInstall" }
   | { view: "packageLocal" }
   | { view: "packageVersions"; packageId: string }
   | { view: "services" }
   | { view: "service"; serviceId: string }
+  | { view: "serviceSettings"; serviceId: string }
   | { view: "sandboxes" }
   | { view: "sandbox"; sandboxId: string }
+  | { view: "workers" }
+  | { view: "worker"; workerId: string }
   | { view: "sandboxHistory" }
   | { view: "sandboxHistoryDetail"; historyId: string }
   | { view: "secrets" }
@@ -60,6 +65,8 @@ function show(target: AdminTarget, frame: ScreenFrame): Promise<ScreenResult> {
       return packageList(frame);
     case "package":
       return packageDetail(target.packageId, frame);
+    case "packageAdvanced":
+      return packageAdvanced(target.packageId, frame);
     case "packageInstall":
       return packageInstall(frame);
     case "packageLocal":
@@ -70,10 +77,16 @@ function show(target: AdminTarget, frame: ScreenFrame): Promise<ScreenResult> {
       return serviceList(frame);
     case "service":
       return serviceDetail(target.serviceId, frame);
+    case "serviceSettings":
+      return serviceSettings(target.serviceId, frame);
     case "sandboxes":
       return sandboxList(frame);
     case "sandbox":
       return sandboxDetail(target.sandboxId, frame);
+    case "workers":
+      return workerList(frame);
+    case "worker":
+      return workerDetail(target.workerId, frame);
     case "sandboxHistory":
       return sandboxHistoryList(frame);
     case "sandboxHistoryDetail":

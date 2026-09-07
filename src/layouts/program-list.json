@@ -6,17 +6,11 @@
     "type": "list",
     "bind": "programs",
     "key": "id",
-    "display": ["packageId", "name", "description", "uui", "discoverable"],
+    "display": ["description", "kind", "packageId"],
     "columnOptions": {
       "packageId": { "heading": "Package", "length": "medium" },
-      "name": { "heading": "Name", "length": "medium" },
-      "description": { "heading": "Description", "length": "long" },
-      "uui": { "heading": "UUI", "length": "compact" },
-      "discoverable": {
-        "heading": "Discoverable",
-        "shortHeading": "Disc.",
-        "length": "short"
-      }
+      "description": { "heading": "Program", "length": "long" },
+      "kind": { "heading": "Runs as", "length": "short" }
     }
   }
 }

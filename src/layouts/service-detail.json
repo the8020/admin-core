@@ -6,120 +6,49 @@
     "type": "stack",
     "children": [
       {
-        "id": "identity",
+        "id": "overview",
         "type": "detail",
-        "title": "Status",
         "controls": [
-          "serviceId",
           "description",
-          "path",
           "state",
           "enabled",
+          "path",
           "accessMode",
-          "desiredVersion",
-          "loadedVersion",
+          "packageId",
+          "workerCount",
+          "sandboxCount",
           "failure"
-        ]
-      },
-      {
-        "id": "scaling-section",
-        "type": "section",
-        "title": "Scaling",
-        "children": [
-          {
-            "id": "scaling",
-            "type": "grid",
-            "columns": 3,
-            "responsive": "stack",
-            "children": [
-              {
-                "id": "worker-threads",
-                "type": "field-group",
-                "title": "Worker threads",
-                "controls": [
-                  "minimumWorkers",
-                  "maximumWorkers"
-                ]
-              },
-              {
-                "id": "single-worker",
-                "type": "field-group",
-                "title": "Single worker",
-                "controls": [
-                  "concurrencyPerWorker",
-                  "targetUtilization",
-                  "workerKeepAlive"
-                ]
-              },
-              {
-                "id": "replication",
-                "type": "field-group",
-                "title": "Replication",
-                "controls": [
-                  "sandboxGroup",
-                  "minimumSandboxes",
-                  "workersPerSandbox"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "lifecycle-section",
-        "type": "section",
-        "title": "Lifecycle",
-        "children": [
-          {
-            "id": "service-lifecycle",
-            "type": "field-group",
-            "title": "Service lifecycle",
-            "controls": [
-              "anonymousUser",
-              "serviceType",
-              "sessionKeepAlive"
-            ]
-          }
+        ],
+        "actions": [
+          "package"
         ]
       },
       {
         "id": "sandboxes",
         "type": "list",
-        "title": "Sandboxes",
+        "title": "Running capacity",
         "bind": "sandboxes",
         "key": "navigation",
         "display": [
           "sandboxId",
-          "version",
-          "state",
           "workers",
           "activeRequests",
-          "activeExecutions",
-          "snapshotRevision",
-          "snapshotObservedAt"
+          "activeExecutions"
         ],
         "columnOptions": {
           "sandboxId": {
-            "shortHeading": "Sandbox"
-          },
-          "workers": {
-            "length": "compact",
-            "shortHeading": "W"
+            "length": "long"
           },
           "activeRequests": {
-            "length": "compact",
-            "shortHeading": "Req."
+            "shortHeading": "Requests",
+            "length": "short"
           },
           "activeExecutions": {
-            "length": "compact",
-            "shortHeading": "Exec."
+            "shortHeading": "Executions",
+            "length": "short"
           },
-          "snapshotRevision": {
-            "length": "compact",
-            "shortHeading": "Rev."
-          },
-          "snapshotObservedAt": {
-            "shortHeading": "Observed"
+          "workers": {
+            "length": "short"
           }
         }
       }

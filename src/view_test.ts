@@ -4,6 +4,12 @@ import { validateLayout } from "/p/the8020/uui/mod.ts";
 import packageDetailLayout from "./layouts/package-detail.json" with {
   type: "json",
 };
+import packageAdvancedLayout from "./layouts/package-advanced.json" with {
+  type: "json",
+};
+import serviceSettingsLayout from "./layouts/service-settings.json" with {
+  type: "json",
+};
 import serviceDetailLayout from "./layouts/service-detail.json" with {
   type: "json",
 };
@@ -33,8 +39,12 @@ import {
   serviceRows,
 } from "./view.ts";
 
-Deno.test("package detail groups cards under Overview and Contents", () => {
-  const layout = validateLayout(packageDetailLayout);
+Deno.test("package overview links content while Advanced retains full inspection cards", () => {
+  assertEquals(
+    validateLayout(packageDetailLayout).root.children?.map((card) => card.id),
+    ["overview", "services", "programs"],
+  );
+  const layout = validateLayout(packageAdvancedLayout);
   const sections = layout.root.children ?? [];
   assertEquals(sections.map((section) => section.title), [
     "Overview",
@@ -47,26 +57,50 @@ Deno.test("package detail groups cards under Overview and Contents", () => {
   );
 });
 
-Deno.test("service detail presents canonical scaling and lifecycle groups", () => {
-  const layout = validateLayout(serviceDetailLayout);
-  const sections = layout.root.children ?? [];
-  assertEquals(sections.map((section) => section.title), [
-    "Status",
-    "Scaling",
-    "Lifecycle",
-    "Sandboxes",
+Deno.test("service configuration keeps all policy in one page with the original scaling groups", () => {
+  const overview = validateLayout(serviceDetailLayout);
+  assertEquals(
+    overview.root.children?.[0]?.controls?.includes("enabled"),
+    true,
+  );
+  assertEquals(JSON.stringify(overview).includes("minimumWorkers"), false);
+  const settings = validateLayout(serviceSettingsLayout);
+  const groups = settings.root.children!;
+  assertEquals(groups.map((group) => group.id), [
+    "service-state",
+    "scaling-section",
+    "lifecycle-section",
   ]);
+  assertEquals(groups[0]?.controls, ["enabled"]);
   assertEquals(
-    sections[1]?.children?.[0]?.children?.map((group) => group.title),
-    ["Worker threads", "Single worker", "Replication"],
+    groups[1]?.children?.[0]?.children?.map((group) => ({
+      title: group.title,
+      controls: group.controls,
+    })),
+    [
+      {
+        title: "Worker threads",
+        controls: ["minimumWorkers", "maximumWorkers"],
+      },
+      {
+        title: "Single worker",
+        controls: [
+          "concurrencyPerWorker",
+          "targetUtilization",
+          "workerKeepAlive",
+        ],
+      },
+      {
+        title: "Replication",
+        controls: ["sandboxGroup", "minimumSandboxes", "workersPerSandbox"],
+      },
+    ],
   );
-  const encoded = JSON.stringify(layout);
-  assertEquals(
-    /\b(?:generation|generations|replica|replicas|instance|instances)\b/i.test(
-      encoded,
-    ),
-    false,
-  );
+  assertEquals(groups[2]?.children?.[0]?.controls, [
+    "anonymousUser",
+    "serviceType",
+    "sessionKeepAlive",
+  ]);
 });
 
 Deno.test("service list keeps one aggregate row with version and unique capacity counts", () => {

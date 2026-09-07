@@ -14,26 +14,32 @@ import secretListLayout from "./layouts/secret-list.json" with {
   type: "json",
 };
 import type { ScreenResult } from "./navigation.ts";
+import { secretName } from "/p/the8020/secrets/types/secret.ts";
 
 const SecretRow = z.object({
-  name: z.string(),
-  updatedAt: z.string(),
+  name: secretName,
+  updatedAt: field(z.string(), {
+    label: "Last changed",
+    semanticType: "datetime",
+  }),
 });
 const SecretList = z.object({ secrets: z.array(SecretRow) });
 
 function secretEditSchema(existing: boolean) {
   return z.object({
-    name: field(z.string(), {
+    name: field(secretName, {
       label: "Name",
-      length: "long",
+      length: "medium",
       readOnly: existing,
       placeholder: "github",
+      open: undefined,
+      valueHelp: undefined,
     }),
     value: field(z.string(), {
       label: existing ? "Replacement value" : "Value",
       description: existing
-        ? "The stored value is never loaded or displayed. Saving replaces it."
-        : "The value is sent directly to kernel secret storage and is not shown again.",
+        ? "Paste the new credential. Saving **replaces** the current value."
+        : "Paste the credential you want to save.",
       length: "long",
       control: "password",
     }),
@@ -48,7 +54,7 @@ export async function secretList(
     const event = await callScreen({
       id: "core-admin-secrets",
       title: "Secrets",
-      description: "Stored values are intentionally omitted from this list.",
+      description: "Manage credentials used by your packages and services.",
       schema: SecretList,
       model: frame.model({
         secrets: secrets.map((secret) => ({
@@ -83,14 +89,11 @@ export async function secretEdit(
     const event = await callScreen({
       id: "core-admin-secret-edit",
       title: existing ? `Secret ${name}` : "Add secret",
-      description: existing
-        ? "Enter a replacement value. The current value is never read into this screen."
-        : "Create a named value for kernel-owned authenticated operations.",
       schema: secretEditSchema(existing),
       model: frame.model(model),
       layout: secretEditLayout,
       header: {
-        actions: [{ id: "save", label: "Save", kind: "primary" }],
+        actions: [{ id: "save", label: "Save secret", kind: "primary" }],
       },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
