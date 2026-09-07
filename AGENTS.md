@@ -231,8 +231,8 @@ below.
   program or mutation API. Package unrelated capabilities separately; a screen
   is not a new owner for service policy or runtime state.
 - Reuse shared UUI models, semantic reference fields, and bounded owner
-  snapshots. Fix a missing shared capability at its owner and verify the
-  linked administration flow before considering a kernel change.
+  snapshots. Fix a missing shared capability at its owner and verify the linked
+  administration flow before considering a kernel change.
 
 - Keep labels short, lists bounded to useful columns, and program code free of
   application-specific runtime assumptions.
