@@ -1,3 +1,4 @@
+import { runtimeInfo } from "../types/runtime.ts";
 import { kernel } from "@the8020/kernel";
 import {
   BACK_EVENT,
@@ -17,21 +18,18 @@ const Worker = z.object({
   workerId: field(workerId, { readOnly: true, open: undefined }),
   sandboxId: field(sandboxId, { readOnly: true }),
   serviceId: field(serviceId, { readOnly: true }),
-  owner: field(z.string(), { label: "Workload owner", readOnly: true }),
-  state: field(z.string(), { label: "Status", readOnly: true }),
-  requests: field(z.number().int(), {
-    label: "Active requests",
-    readOnly: true,
-  }),
-  executions: field(z.number().int(), {
+  owner: field(runtimeInfo.shape.owner, { readOnly: true }),
+  state: field(runtimeInfo.shape.state, { readOnly: true }),
+  requests: field(runtimeInfo.shape.activeRequests, { readOnly: true }),
+  executions: field(runtimeInfo.shape.activeExecutions, {
     label: "Persistent executions",
     readOnly: true,
   }),
-  failure: field(z.string(), { label: "Attention", readOnly: true }),
-  workload: field(z.string(), { label: "Workload ID", readOnly: true }),
-  entrypoint: field(z.string(), { label: "Entrypoint", readOnly: true }),
-  release: field(z.string(), { label: "Release", readOnly: true }),
-  debugger: field(z.string(), { label: "Debugger name", readOnly: true }),
+  failure: field(runtimeInfo.shape.failure, { readOnly: true }),
+  workload: field(runtimeInfo.shape.workload, { readOnly: true }),
+  entrypoint: field(runtimeInfo.shape.entrypoint, { readOnly: true }),
+  release: field(runtimeInfo.shape.release, { readOnly: true }),
+  debugger: field(runtimeInfo.shape.debugger, { readOnly: true }),
 });
 const WorkerList = z.object({
   workers: z.array(

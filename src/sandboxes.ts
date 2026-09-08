@@ -1,3 +1,5 @@
+import { archivedSandboxId, runtimeInfo } from "../types/runtime.ts";
+import { serviceInfo } from "/p/the8020/services/types/service.ts";
 import { ScreenFrame } from "./screen_frame.ts";
 import { kernel, type LogPage } from "@the8020/kernel";
 import {
@@ -38,21 +40,21 @@ import {
 
 const SandboxRow = z.object({
   sandboxId: sandboxField,
-  type: z.string(),
-  state: z.string(),
-  reason: z.string(),
-  workers: z.number().int(),
-  failure: z.string(),
+  type: runtimeInfo.shape.type,
+  state: runtimeInfo.shape.state,
+  reason: runtimeInfo.shape.reason,
+  workers: runtimeInfo.shape.workerCount,
+  failure: runtimeInfo.shape.failure,
 });
 const SandboxList = z.object({ sandboxes: z.array(SandboxRow) });
 const SandboxHistoryRow = z.object({
-  historyId: z.string(),
-  sandboxId: z.string(),
-  type: z.string(),
-  state: z.string(),
-  reason: z.string(),
-  archivedAt: z.string(),
-  expiresAt: z.string(),
+  historyId: runtimeInfo.shape.historyId,
+  sandboxId: archivedSandboxId,
+  type: runtimeInfo.shape.type,
+  state: runtimeInfo.shape.state,
+  reason: runtimeInfo.shape.reason,
+  archivedAt: runtimeInfo.shape.archivedAt,
+  expiresAt: runtimeInfo.shape.expiresAt,
 });
 const SandboxHistoryList = z.object({
   sandboxes: z.array(SandboxHistoryRow),
@@ -60,10 +62,10 @@ const SandboxHistoryList = z.object({
 const ServiceRow = z.object({
   navigation: z.string(),
   serviceId,
-  state: z.string(),
-  enabled: z.boolean(),
-  sandboxes: z.number().int(),
-  workers: z.number().int(),
+  state: serviceInfo.shape.state,
+  enabled: serviceInfo.shape.enabled,
+  sandboxes: runtimeInfo.shape.sandboxCount,
+  workers: runtimeInfo.shape.workerCount,
 });
 const SandboxDetail = z.object({
   sandboxId: field(sandboxField, {
@@ -71,64 +73,57 @@ const SandboxDetail = z.object({
     length: "long",
     readOnly: true,
   }),
-  type: field(z.string(), { label: "Type", length: "short", readOnly: true }),
-  state: field(z.string(), { label: "State", length: "short", readOnly: true }),
-  reason: field(z.string(), {
-    label: "Reason",
+  type: field(runtimeInfo.shape.type, { length: "short", readOnly: true }),
+  state: field(runtimeInfo.shape.state, {
+    label: "State",
+    length: "short",
+    readOnly: true,
+  }),
+  reason: field(runtimeInfo.shape.reason, { length: "long", readOnly: true }),
+  groupKey: field(runtimeInfo.shape.groupKey, { readOnly: true }),
+  workers: field(runtimeInfo.shape.workerCount, {
+    length: "short",
+    readOnly: true,
+  }),
+  activeRequests: field(runtimeInfo.shape.activeRequests, {
+    length: "short",
+    readOnly: true,
+  }),
+  activeExecutions: field(runtimeInfo.shape.activeExecutions, {
+    length: "short",
+    readOnly: true,
+  }),
+  snapshotRevision: field(runtimeInfo.shape.snapshotRevision, {
+    length: "short",
+    readOnly: true,
+  }),
+  snapshotObservedAt: field(runtimeInfo.shape.snapshotObservedAt, {
     length: "long",
     readOnly: true,
   }),
-  groupKey: field(z.string(), { label: "Group key", readOnly: true }),
-  workers: field(z.number().int(), {
-    label: "Workers",
-    length: "short",
-    readOnly: true,
-  }),
-  activeRequests: field(z.number().int().nonnegative(), {
-    label: "Active requests",
-    length: "short",
-    readOnly: true,
-  }),
-  activeExecutions: field(z.number().int().nonnegative(), {
-    label: "Active executions",
-    length: "short",
-    readOnly: true,
-  }),
-  snapshotRevision: field(z.number().int().nonnegative(), {
-    label: "Snapshot revision",
-    length: "short",
-    readOnly: true,
-  }),
-  snapshotObservedAt: field(z.string(), {
-    label: "Snapshot observed",
-    length: "long",
-    readOnly: true,
-  }),
-  failure: field(z.string(), {
+  failure: field(runtimeInfo.shape.failure, {
     label: "Failure",
     length: "long",
     readOnly: true,
   }),
-  memoryBytes: field(z.number().nonnegative(), {
-    label: "Memory bytes",
+  memoryBytes: field(runtimeInfo.shape.memoryBytes, {
     length: "short",
     readOnly: true,
   }),
-  memory: field(z.string(), { label: "Memory in use", readOnly: true }),
-  nodeId: field(z.string(), { label: "Node", readOnly: true }),
-  createdAt: field(z.string(), { label: "Started", readOnly: true }),
+  memory: field(runtimeInfo.shape.memory, { readOnly: true }),
+  nodeId: field(runtimeInfo.shape.nodeId, { readOnly: true }),
+  createdAt: field(runtimeInfo.shape.createdAt, { readOnly: true }),
   workerRows: z.array(z.object({
     workerId,
-    owner: field(z.string(), { label: "Workload owner" }),
-    state: field(z.string(), { label: "Status" }),
-    requests: field(z.number().int(), { label: "Active requests" }),
+    owner: runtimeInfo.shape.owner,
+    state: runtimeInfo.shape.state,
+    requests: runtimeInfo.shape.activeRequests,
   })),
-  cpuMicros: field(z.number().nonnegative(), {
-    label: "CPU microseconds",
+  cpuMicros: field(runtimeInfo.shape.cpuMicros, {
     length: "short",
     readOnly: true,
   }),
-  pids: field(z.number().nonnegative(), {
+  pids: field(runtimeInfo.shape.pids, {
     label: "PIDs",
     length: "short",
     readOnly: true,
@@ -136,43 +131,43 @@ const SandboxDetail = z.object({
   services: z.array(ServiceRow),
 });
 const SandboxHistoryDetail = z.object({
-  nodeId: field(z.string(), { label: "Node ID", readOnly: true }),
-  createdAt: field(z.string(), { label: "Created", readOnly: true }),
-  historyId: field(z.string(), {
-    label: "History ID",
+  nodeId: field(runtimeInfo.shape.nodeId, { label: "Node ID", readOnly: true }),
+  createdAt: field(runtimeInfo.shape.createdAt, {
+    label: "Created",
+    readOnly: true,
+  }),
+  historyId: field(runtimeInfo.shape.historyId, {
     length: "long",
     readOnly: true,
   }),
-  sandboxId: field(z.string(), {
+  sandboxId: field(archivedSandboxId, {
     label: "Sandbox ID",
     length: "long",
     readOnly: true,
   }),
-  type: field(z.string(), { label: "Type", length: "short", readOnly: true }),
-  state: field(z.string(), {
+  type: field(runtimeInfo.shape.type, { length: "short", readOnly: true }),
+  state: field(runtimeInfo.shape.state, {
     label: "Final state",
     length: "short",
     readOnly: true,
   }),
-  reason: field(z.string(), {
+  reason: field(runtimeInfo.shape.reason, {
     label: "Cleanup reason",
     length: "long",
     readOnly: true,
   }),
-  failure: field(z.string(), {
+  failure: field(runtimeInfo.shape.failure, {
     label: "Failure",
     length: "long",
     readOnly: true,
   }),
-  archivedAt: field(z.string(), { label: "Archived", readOnly: true }),
-  expiresAt: field(z.string(), { label: "History expires", readOnly: true }),
-  logStatus: field(z.string(), {
-    label: "Log status",
+  archivedAt: field(runtimeInfo.shape.archivedAt, { readOnly: true }),
+  expiresAt: field(runtimeInfo.shape.expiresAt, { readOnly: true }),
+  logStatus: field(runtimeInfo.shape.logStatus, {
     length: "long",
     readOnly: true,
   }),
-  logs: field(z.string(), {
-    label: "Logs",
+  logs: field(runtimeInfo.shape.logs, {
     control: "textarea",
     rowSpan: 8,
     length: "long",

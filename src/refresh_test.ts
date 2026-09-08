@@ -1,5 +1,9 @@
-import { assertEquals } from "@std/assert";
-import { type KernelInvoke, kernelInvokeSymbol } from "@the8020/kernel";
+import { assert, assertEquals } from "@std/assert";
+import {
+  kernelDatabaseBackendSymbol,
+  type KernelInvoke,
+  kernelInvokeSymbol,
+} from "@the8020/kernel";
 import {
   BACK_EVENT,
   type ScreenSnapshot,
@@ -17,7 +21,7 @@ import {
   sandboxList,
 } from "./sandboxes.ts";
 import { secretList } from "./secrets.ts";
-import { serviceDetail, serviceList } from "./services.ts";
+import { serviceDetail, serviceList, serviceSettings } from "./services.ts";
 
 class TestChannel {
   readonly sessionId = "session-refresh";
@@ -558,8 +562,36 @@ async function waitForScreen(
 ): Promise<ScreenSnapshot> {
   for (let attempt = 0; attempt < 100; attempt++) {
     const screen = channel.screens()[count - 1];
-    if (screen !== undefined) return screen;
-    await Promise.resolve();
+    if (screen !== undefined) {
+      for (
+        const control of screen.controls.filter((control) =>
+          control.control !== "list" && !control.hidden
+        )
+      ) {
+        assert(
+          control.label?.trim(),
+          `${screen.title}: ${control.bind} needs a label`,
+        );
+        assert(
+          control.description?.trim(),
+          `${screen.title}: ${control.bind} needs help`,
+        );
+      }
+      for (const list of screen.lists) {
+        for (const column of list.columns) {
+          assert(
+            column.heading.trim(),
+            `${screen.title}: ${column.key} needs a heading`,
+          );
+          assert(
+            column.description?.trim(),
+            `${screen.title}: ${column.key} needs help`,
+          );
+        }
+      }
+      return screen;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 0));
   }
   throw new Error(`screen ${count} was not shown`);
 }
@@ -660,6 +692,64 @@ Deno.test("navigation retains a list Model across detail and refreshed list fram
     await pending;
   } finally {
     unbind();
+    if (previous === undefined) delete runtime[kernelInvokeSymbol];
+    else runtime[kernelInvokeSymbol] = previous;
+  }
+});
+
+Deno.test("service settings accept the documented zero idle session timeout", async () => {
+  const runtime = globalThis as unknown as Record<symbol, unknown>;
+  const previous = runtime[kernelInvokeSymbol];
+  const previousBackend = runtime[kernelDatabaseBackendSymbol];
+  runtime[kernelDatabaseBackendSymbol] = "sqlite";
+  let reachedWrite = false;
+  runtime[kernelInvokeSymbol] = ((operation, input) => {
+    if (operation === "database.transaction.begin") {
+      reachedWrite = true;
+      return Promise.reject(new Error("Test stopped at the write boundary"));
+    }
+    const call = decodeKernelCall(operation, input);
+    assertEquals(call.command, "service.inspect");
+    const result = structuredClone(commandResults[call.command]!);
+    const service = result.service as {
+      effective_configuration: {
+        lifecycle: { service_type: string; session_keep_alive: number };
+      };
+    };
+    service.effective_configuration.lifecycle = {
+      service_type: "session",
+      session_keep_alive: 0,
+    };
+    return Promise.resolve(kernelSuccess(call, result));
+  }) satisfies KernelInvoke;
+  const channel = new TestChannel();
+  const unbind = bindSession(channel);
+  let pending: Promise<ScreenResult> | undefined;
+  try {
+    await import("/p/the8020/services/src/admin.ts");
+    pending = serviceSettings("the8020/example/api");
+    const first = await waitForScreen(channel, 1);
+    assertEquals(
+      (first.model as { sessionKeepAlive: string }).sessionKeepAlive,
+      "0ns",
+    );
+    channel.push({
+      ...screenEvent(channel, first, "save", 1),
+      changes: [{ bind: "sessionKeepAlive", value: "0s" }],
+    });
+    const second = await waitForScreen(channel, 2);
+    assert(
+      reachedWrite,
+      "the form rejected zero before calling the owning mutation API",
+    );
+    channel.push(screenEvent(channel, second, BACK_EVENT, 2));
+    await pending;
+  } finally {
+    unbind();
+    await pending?.catch(() => {});
+    if (previousBackend === undefined) {
+      delete runtime[kernelDatabaseBackendSymbol];
+    } else runtime[kernelDatabaseBackendSymbol] = previousBackend;
     if (previous === undefined) delete runtime[kernelInvokeSymbol];
     else runtime[kernelInvokeSymbol] = previous;
   }

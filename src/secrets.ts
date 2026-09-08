@@ -1,3 +1,4 @@
+import { secretInfo } from "/p/the8020/secrets/types/secret.ts";
 import { ScreenFrame } from "./screen_frame.ts";
 import { kernel } from "@the8020/kernel";
 import {
@@ -18,10 +19,7 @@ import { secretName } from "/p/the8020/secrets/types/secret.ts";
 
 const SecretRow = z.object({
   name: secretName,
-  updatedAt: field(z.string(), {
-    label: "Last changed",
-    semanticType: "datetime",
-  }),
+  updatedAt: field(secretInfo.shape.updatedAt, { semanticType: "datetime" }),
 });
 const SecretList = z.object({ secrets: z.array(SecretRow) });
 
@@ -35,7 +33,7 @@ function secretEditSchema(existing: boolean) {
       open: undefined,
       valueHelp: undefined,
     }),
-    value: field(z.string(), {
+    value: field(secretInfo.shape.value, {
       label: existing ? "Replacement value" : "Value",
       description: existing
         ? "Paste the new credential. Saving **replaces** the current value."

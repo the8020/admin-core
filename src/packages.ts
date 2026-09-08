@@ -1,3 +1,14 @@
+import { packageInfo } from "/p/the8020/packages/types/package.ts";
+import { programInfo } from "/p/the8020/packages/types/program.ts";
+import {
+  repositoryFields,
+  sourceInfo,
+} from "/p/the8020/packages/types/source.ts";
+import {
+  serviceId as serviceField,
+  serviceInfo,
+} from "/p/the8020/services/types/service.ts";
+import { runtimeInfo } from "../types/runtime.ts";
 import { ScreenFrame } from "./screen_frame.ts";
 import {
   AdminCommandError,
@@ -32,148 +43,106 @@ import type {
 } from "./contracts.ts";
 import type { ScreenResult } from "./navigation.ts";
 import { packageDetailModel, packageRows } from "./view.ts";
-import { choiceHelp } from "./value_help.ts";
-import { secretName } from "/p/the8020/secrets/types/secret.ts";
 
 const PackageRow = z.object({
   canonicalName: packageField,
-  valid: z.boolean(),
-  status: field(z.string(), { label: "Status" }),
-  services: z.number().int(),
-  description: z.string(),
+  valid: packageInfo.shape.valid,
+  status: packageInfo.shape.status,
+  services: packageInfo.shape.serviceCount,
+  description: packageInfo.shape.description,
 });
 const PackageList = z.object({ packages: z.array(PackageRow) });
 
 const ServiceRow = z.object({
   navigation: z.string(),
-  serviceId: z.string(),
-  path: z.string(),
-  serviceType: z.string(),
-  access: z.string(),
-  entrypoint: z.string(),
-  valid: z.boolean(),
-  description: z.string(),
+  serviceId: serviceField,
+  path: sourceInfo.shape.path,
+  serviceType: serviceInfo.shape.serviceType,
+  access: serviceInfo.shape.accessMode,
+  entrypoint: sourceInfo.shape.entrypoint,
+  valid: sourceInfo.shape.valid,
+  description: serviceInfo.shape.description,
 });
 const ProgramRow = z.object({
   programId: programField,
-  path: z.string(),
-  entrypoint: z.string(),
-  defaultLayout: z.string(),
-  discoverable: z.boolean(),
-  uui: z.boolean(),
-  valid: z.boolean(),
-  description: z.string(),
+  path: sourceInfo.shape.path,
+  entrypoint: sourceInfo.shape.entrypoint,
+  defaultLayout: programInfo.shape.defaultLayout,
+  discoverable: programInfo.shape.discoverable,
+  uui: programInfo.shape.uui,
+  valid: sourceInfo.shape.valid,
+  description: programInfo.shape.description,
 });
 const FileRow = z.object({
-  path: z.string(),
-  type: z.string(),
-  size: z.number().int(),
+  path: sourceInfo.shape.path,
+  type: sourceInfo.shape.type,
+  size: sourceInfo.shape.size,
 });
 export function packageDetailSchema(
   repository: PackageRepository,
   canPersistSecret = true,
 ) {
+  const git = repositoryFields(repository).shape;
   return z.object({
     packageId: field(packageField, {
       length: "long",
       readOnly: true,
       open: undefined,
     }),
-    path: field(z.string(), { label: "Path", length: "long", readOnly: true }),
-    description: field(z.string(), {
-      label: "Description",
+    path: field(sourceInfo.shape.path, { length: "long", readOnly: true }),
+    description: field(packageInfo.shape.description, {
       length: "long",
       readOnly: true,
     }),
-    documentationUrl: field(z.string(), {
-      label: "Documentation",
+    documentationUrl: field(packageInfo.shape.documentationUrl, {
       length: "long",
       readOnly: true,
     }),
-    license: field(z.string(), {
-      label: "License",
+    license: field(packageInfo.shape.license, {
       length: "short",
       readOnly: true,
     }),
-    valid: field(z.boolean(), {
-      label: "Valid",
+    valid: field(packageInfo.shape.valid, { length: "short", readOnly: true }),
+    serviceCount: field(packageInfo.shape.serviceCount, {
       length: "short",
       readOnly: true,
     }),
-    serviceCount: field(z.number().int(), {
-      label: "Services",
+    programCount: field(packageInfo.shape.programCount, {
       length: "short",
       readOnly: true,
     }),
-    programCount: field(z.number().int(), {
-      label: "Programs",
+    fileCount: field(packageInfo.shape.fileCount, {
       length: "short",
       readOnly: true,
     }),
-    fileCount: field(z.number().int(), {
-      label: "Visible files",
-      length: "short",
-      readOnly: true,
-    }),
-    validation: field(z.string(), {
-      label: "Validation",
+    validation: field(packageInfo.shape.validation, {
       length: "long",
       readOnly: true,
     }),
-    inspection: field(z.string(), {
-      label: "Inspection",
+    inspection: field(packageInfo.shape.inspection, {
       length: "long",
       readOnly: true,
     }),
-    repositoryStatus: field(z.string(), {
-      label: "Status",
+    repositoryStatus: field(sourceInfo.shape.repositoryStatus, {
       length: "short",
       readOnly: true,
     }),
-    activationReady: field(z.boolean(), {
-      label: "Activation ready",
+    activationReady: field(sourceInfo.shape.activationReady, {
       length: "short",
       readOnly: true,
     }),
-    clean: field(z.boolean(), {
-      label: "Clean",
+    clean: field(sourceInfo.shape.clean, { length: "short", readOnly: true }),
+    branch: field(git.branch, { label: "Current branch", length: "long" }),
+    head: field(git.commit, { label: "Current commit", length: "long" }),
+    remoteName: field(sourceInfo.shape.remoteName, {
       length: "short",
       readOnly: true,
     }),
-    branch: field(z.string(), {
-      label: "Current branch",
-      length: "long",
-      valueHelp: choiceHelp(repository.branches.map((branch) => ({
-        value: branch.name,
-        label: branch.remote
-          ? `${branch.name} (remote)`
-          : branch.current
-          ? `${branch.name} (current)`
-          : branch.name,
-      }))),
-    }),
-    head: field(z.string(), {
-      label: "Current commit",
-      length: "long",
-      valueHelp: choiceHelp(repository.commits.map((commit) => ({
-        value: commit.commit,
-        label: `${commit.short_commit} — ${commit.subject}`,
-      }))),
-    }),
-    remoteName: field(z.string(), {
-      label: "Remote",
-      length: "short",
-      readOnly: true,
-    }),
-    remoteUrl: field(z.string(), {
-      label: "Remote URL",
+    remoteUrl: field(sourceInfo.shape.remoteUrl, {
       length: "long",
       readOnly: true,
     }),
-    secretName: field(secretName, {
-      label: "Authentication secret",
-      description:
-        "Choose credentials for a private repository. Leave empty for public access.",
+    secretName: field(sourceInfo.shape.secretName, {
       length: "long",
       hidden: !canPersistSecret,
     }),
@@ -274,43 +243,38 @@ export async function packageDetail(
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
   const Screen = z.object({
-    description: field(z.string(), {
-      label: "Description",
+    description: field(packageInfo.shape.description, {
       readOnly: true,
       length: "long",
     }),
-    status: field(z.string(), {
-      label: "Status",
+    status: field(packageInfo.shape.status, {
       readOnly: true,
       length: "short",
     }),
-    license: field(z.string(), {
-      label: "License",
+    license: field(packageInfo.shape.license, {
       readOnly: true,
       length: "short",
     }),
-    documentation: field(z.string(), {
-      label: "Documentation",
+    documentation: field(packageInfo.shape.documentationUrl, {
       readOnly: true,
       length: "long",
     }),
-    issue: field(z.string(), {
-      label: "Needs attention",
+    issue: field(packageInfo.shape.issue, {
       readOnly: true,
       length: "long",
       control: "textarea",
       rowSpan: 2,
     }),
     services: z.array(z.object({
-      id: z.string(),
-      description: field(z.string(), { label: "Service" }),
-      state: field(z.string(), { label: "Status" }),
-      workers: field(z.number(), { label: "Workers" }),
+      id: serviceField,
+      description: field(serviceInfo.shape.description, { label: "Service" }),
+      state: serviceInfo.shape.state,
+      workers: runtimeInfo.shape.workerCount,
     })),
     programs: z.array(z.object({
       id: programField,
-      description: field(z.string(), { label: "Program" }),
-      kind: field(z.string(), { label: "Runs as" }),
+      description: field(programInfo.shape.description, { label: "Program" }),
+      kind: programInfo.shape.kind,
     })),
   });
   while (true) {

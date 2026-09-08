@@ -113,7 +113,8 @@ below.
   package, secret, service, sandbox, and Worker administration entrypoints.
 - [src/AGENTS.md](src/AGENTS.md): Implement shared administration screens,
   navigation, and typed result models.
-- [types/AGENTS.md](types/AGENTS.md): Share sandbox and Worker reference fields.
+- [types/AGENTS.md](types/AGENTS.md): Share runtime references, status,
+  capacity, diagnostics, and archive fields.
 
 # Purpose
 
@@ -173,11 +174,11 @@ below.
   identity, writes the desired index, and may install in one action. Versions
   lists readable changes/tags and accepts row or field-help selection before
   Apply version. Branch/commit/tag choices use searchable help over bounded
-  reference snapshots through `src/value_help.ts`. Advanced retains pull, push,
-  and checkout. Its credential field reuses `the8020/secrets/types/secret.ts`
-  and loads names only when help opens. Git operations remain typed kernel calls
-  and refresh only affected services; the existing explicit desired-version
-  synchronization action remains available.
+  reference snapshots through `the8020/packages/types/source.ts`. Advanced
+  retains pull, push, and checkout. Its credential field reuses
+  `the8020/secrets/types/secret.ts` and loads names only when help opens. Git
+  operations remain typed kernel calls and refresh only affected services; the
+  existing explicit desired-version synchronization action remains available.
 - Secrets lists names and update times. Add/edit starts with a blank password
   field, never calls secret get, clears the submitted model value, and
   overwrites the named value through the typed kernel API. One field group owns

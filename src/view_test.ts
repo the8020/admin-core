@@ -1,3 +1,4 @@
+import { sourceVersionOptions } from "/p/the8020/packages/types/source.ts";
 import { assertEquals } from "@std/assert";
 import type { PackageRepository } from "@the8020/kernel";
 import { validateLayout } from "/p/the8020/uui/mod.ts";
@@ -26,7 +27,6 @@ import {
   installSchema,
   LocalPackage,
   requiredText,
-  sourceVersionOptions,
 } from "./package-management.ts";
 import {
   formatDuration,

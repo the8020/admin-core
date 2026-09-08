@@ -23,12 +23,15 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 - Package overview reads package inspection/index and indexed services. Keep
   Git, file inventory, and technical diagnostics in its separate Advanced
   navigation frame. Both main content lists open the related entity.
-- `value_help.ts` pages existing bounded branch/version snapshots for multiple
-  fields. Credentials use the secrets package's on-demand name-only lookup and
-  its linked edit screen; opening Advanced never preloads credentials.
+- Package fields and bounded Git selectors come from `the8020/packages/types/`.
+  Service policy comes from `the8020/services/types/service.ts`; runtime fields
+  come from `../types/runtime.ts`. Screens customize placement and editability.
+  Credentials use the secrets package's on-demand name-only lookup and its
+  linked edit screen; opening Advanced never preloads credentials.
 - Services separate overview, settings, and diagnostics. Configuration keeps
   every editable setting, including Enabled, in one draft on one page, uses the
-  original scaling groups, and calls the shared mutation API only on Save.
+  original scaling groups, and calls the shared mutation API only on Save. Idle
+  session timeout accepts `0s` under the shared service lifecycle contract.
 - Sandbox and Worker screens use existing runtime snapshots and explicit
   relationships. Worker workload owners must never be treated as usernames.
 - Secret editing starts empty, writes through the typed API, and never loads the

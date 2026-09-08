@@ -1,3 +1,9 @@
+import { packageInfo } from "/p/the8020/packages/types/package.ts";
+import {
+  installedVersion,
+  sourceInfo,
+  sourceVersion,
+} from "/p/the8020/packages/types/source.ts";
 import { ScreenFrame } from "./screen_frame.ts";
 import {
   kernel,
@@ -23,7 +29,6 @@ import packageVersionsLayout from "./layouts/package-versions.json" with {
   type: "json",
 };
 import type { ScreenResult } from "./navigation.ts";
-import { choiceHelp } from "./value_help.ts";
 
 interface InstallModel {
   source: string;
@@ -42,87 +47,66 @@ interface InstallModel {
 export function installSchema(inspection?: PackageSourceInspection) {
   const Reference = z.object({
     referenceKey: z.string(),
-    kind: z.string(),
-    name: z.string(),
-    commit: z.string(),
+    kind: sourceInfo.shape.kind,
+    name: sourceInfo.shape.name,
+    commit: sourceInfo.shape.commit,
   });
   return z.object({
-    source: field(z.string(), {
-      label: "Git URL",
+    source: field(sourceInfo.shape.source, {
       length: "long",
       placeholder: "https://github.com/author/repository.git",
     }),
-    author: field(z.string(), {
-      label: "Author",
+    author: field(packageInfo.shape.author, {
       length: "medium",
       readOnly: true,
       hidden: inspection === undefined,
     }),
-    repository: field(z.string(), {
-      label: "Repository",
+    repository: field(packageInfo.shape.repository, {
       length: "medium",
       readOnly: true,
       hidden: inspection === undefined,
     }),
-    defaultBranch: field(z.string(), {
+    defaultBranch: field(sourceInfo.shape.branch, {
       label: "Default branch",
       length: "medium",
       readOnly: true,
       hidden: inspection === undefined,
     }),
-    version: field(z.string().min(1), {
-      label: "Version",
-      length: "long",
-      description:
-        "Choose Latest or find a branch, tag, or commit in field help.",
-      valueHelp: choiceHelp(sourceVersionOptions(inspection)),
-    }),
+    version: field(sourceVersion(inspection), { length: "long" }),
     references: field(z.array(Reference), { hidden: true }),
   });
 }
 
 export const LocalPackage = z.object({
-  author: field(z.string(), {
-    label: "Author",
-    length: "medium",
-  }),
-  repository: field(z.string(), {
-    label: "Repository",
-    length: "medium",
-  }),
-  description: field(z.string(), {
-    label: "Description",
-    length: "long",
-  }),
+  author: field(packageInfo.shape.author, { length: "medium" }),
+  repository: field(packageInfo.shape.repository, { length: "medium" }),
+  description: field(packageInfo.shape.description, { length: "long" }),
 });
 
 function versionsSchema(versions: PackageVersions) {
   const Version = z.object({
-    commit: z.string(),
-    authoredAt: z.string(),
-    author: z.string(),
-    tags: z.string(),
-    current: z.boolean(),
-    selected: z.boolean(),
-    subject: z.string(),
+    commit: sourceInfo.shape.commit,
+    authoredAt: sourceInfo.shape.authoredAt,
+    author: sourceInfo.shape.author,
+    tags: sourceInfo.shape.tags,
+    current: sourceInfo.shape.current,
+    selected: sourceInfo.shape.selected,
+    subject: sourceInfo.shape.subject,
   });
   return z.object({
-    source: field(z.string(), {
+    source: field(sourceInfo.shape.source, {
       label: "Git source",
       length: "long",
       readOnly: true,
     }),
-    currentCommit: field(z.string(), {
+    currentCommit: field(sourceInfo.shape.commit, {
       label: "Installed commit",
       length: "long",
       readOnly: true,
     }),
-    selection: field(z.string().min(1), {
+    selection: field(installedVersion(versions), {
       label: "Version to install",
       length: "long",
-      description:
-        "Choose Latest, a tag, or a specific commit. Applying replaces the installed version.",
-      valueHelp: choiceHelp(installedVersionOptions(versions)),
     }),
     versions: z.array(Version),
   });
@@ -337,40 +321,6 @@ export function requiredText(value: string, label: string): string {
   const normalized = value.trim();
   if (normalized === "") throw new TypeError(`${label} is required`);
   return normalized;
-}
-
-export function sourceVersionOptions(inspection?: PackageSourceInspection) {
-  const options = [{ value: "latest", label: "Latest default branch" }];
-  if (inspection === undefined) return options;
-  const seen = new Set<string>(["latest"]);
-  for (const reference of inspection.references) {
-    const value = reference.kind === "tag"
-      ? `tag:${reference.name}`
-      : `commit:${reference.commit}`;
-    if (seen.has(value)) continue;
-    seen.add(value);
-    options.push({
-      value,
-      label: reference.kind === "tag"
-        ? `Tag ${reference.name}`
-        : `${reference.name} (${reference.commit.slice(0, 12)})`,
-    });
-  }
-  return options;
-}
-
-function installedVersionOptions(versions: PackageVersions) {
-  const options = [{ value: "latest", label: "Latest default branch" }];
-  for (const version of versions.versions) {
-    for (const tag of version.tags) {
-      options.push({ value: `tag:${tag}`, label: `Tag ${tag}` });
-    }
-    options.push({
-      value: `commit:${version.commit}`,
-      label: `${version.short_commit} — ${version.subject}`,
-    });
-  }
-  return options;
 }
 
 function selectedVersion(index: PackageIndex): string {

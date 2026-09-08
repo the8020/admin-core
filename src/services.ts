@@ -1,3 +1,8 @@
+import {
+  serviceInfo,
+  serviceSettings as servicePolicy,
+} from "/p/the8020/services/types/service.ts";
+import { runtimeInfo } from "../types/runtime.ts";
 import { ScreenFrame } from "./screen_frame.ts";
 import { kernel } from "@the8020/kernel";
 import {
@@ -11,7 +16,6 @@ import {
 } from "/p/the8020/uui/mod.ts";
 import { serviceId as serviceField } from "/p/the8020/services/types/service.ts";
 import { packageId as packageField } from "/p/the8020/packages/types/package.ts";
-import { username } from "/p/the8020/users/types/user.ts";
 import { sandboxId as sandboxField } from "../types/runtime.ts";
 import serviceSettingsLayout from "./layouts/service-settings.json" with {
   type: "json",
@@ -32,112 +36,64 @@ import { serviceDetailModel, serviceRows } from "./view.ts";
 
 const ServiceRow = z.object({
   serviceId: serviceField,
-  state: field(z.string(), { label: "Status" }),
-  enabled: z.boolean(),
-  versions: z.number().int(),
-  sandboxes: z.number().int(),
-  workers: z.number().int(),
-  serviceType: z.string(),
-  description: field(z.string(), { label: "Description" }),
+  state: serviceInfo.shape.state,
+  enabled: serviceInfo.shape.enabled,
+  versions: serviceInfo.shape.versionCount,
+  sandboxes: runtimeInfo.shape.sandboxCount,
+  workers: runtimeInfo.shape.workerCount,
+  serviceType: serviceInfo.shape.serviceType,
+  description: serviceInfo.shape.description,
 });
 const ServiceList = z.object({ services: z.array(ServiceRow) });
 
 const SandboxRow = z.object({
   navigation: z.string(),
   sandboxId: sandboxField,
-  version: z.number().int(),
-  state: z.string(),
-  workers: z.number().int(),
-  activeRequests: z.number().int(),
-  activeExecutions: z.number().int(),
-  snapshotRevision: z.number().int().nonnegative(),
-  snapshotObservedAt: z.string(),
+  version: serviceInfo.shape.version,
+  state: runtimeInfo.shape.state,
+  workers: runtimeInfo.shape.workerCount,
+  activeRequests: runtimeInfo.shape.activeRequests,
+  activeExecutions: runtimeInfo.shape.activeExecutions,
+  snapshotRevision: runtimeInfo.shape.snapshotRevision,
+  snapshotObservedAt: runtimeInfo.shape.snapshotObservedAt,
 });
 function serviceDetailSchema(serviceType: string, editing = false) {
   return z.object({
     serviceId: field(serviceField, { readOnly: true, open: undefined }),
     packageId: field(packageField, { readOnly: true }),
-    description: field(z.string(), { label: "Description", readOnly: true }),
-    path: field(z.string(), { label: "Address", readOnly: true }),
-    state: field(z.string(), { label: "Status", readOnly: true }),
-    workerCount: field(z.number().int(), {
+    description: field(serviceInfo.shape.description, { readOnly: true }),
+    path: field(serviceInfo.shape.path, { readOnly: true }),
+    state: field(serviceInfo.shape.state, { readOnly: true }),
+    workerCount: field(runtimeInfo.shape.workerCount, {
       label: "Running Workers",
       readOnly: true,
     }),
-    sandboxCount: field(z.number().int(), {
-      label: "Sandboxes",
-      readOnly: true,
-    }),
-    versionCount: field(z.number().int(), {
-      label: "Live versions",
-      readOnly: true,
-    }),
-    enabled: field(z.boolean(), { label: "Enabled", readOnly: !editing }),
-    accessMode: field(z.string(), { label: "Access", readOnly: true }),
-    anonymousUser: field(username, {
-      label: "Public execution user",
-      description:
-        "Runs unauthenticated requests with this identity. You can enter an identity directly or choose an account; account sign-in settings do not limit service execution.",
-    }),
-    desiredVersion: field(z.number().int(), {
-      label: "Desired version",
-      readOnly: true,
-    }),
-    loadedVersion: field(z.number().int(), {
-      label: "Loaded version",
-      readOnly: true,
-    }),
-    minimumWorkers: field(z.number().int().nonnegative(), {
-      label: "Minimum Workers",
-      description:
-        "Keep this many Workers ready. **0** allows the service to stop idle Workers and start them when needed.",
-    }),
-    maximumWorkers: field(z.number().int().nonnegative(), {
-      label: "Maximum Workers",
-      description:
-        "Limit the number of Workers this service may start. **0** means no service limit; available resources still limit capacity.",
-    }),
-    concurrencyPerWorker: field(z.number().int().positive(), {
-      label: "Requests per Worker",
-      description: "Maximum concurrent requests handled by one Worker.",
-    }),
-    targetUtilization: field(z.number().min(1).max(100), {
-      label: "Target utilization",
+    sandboxCount: field(runtimeInfo.shape.sandboxCount, { readOnly: true }),
+    versionCount: field(serviceInfo.shape.versionCount, { readOnly: true }),
+    enabled: field(serviceInfo.shape.enabled, { readOnly: !editing }),
+    accessMode: field(serviceInfo.shape.accessMode, { readOnly: true }),
+    anonymousUser: servicePolicy.shape.anonymousUser,
+    desiredVersion: field(serviceInfo.shape.desiredVersion, { readOnly: true }),
+    loadedVersion: field(serviceInfo.shape.loadedVersion, { readOnly: true }),
+    minimumWorkers: servicePolicy.shape.minimumWorkers,
+    maximumWorkers: servicePolicy.shape.maximumWorkers,
+    concurrencyPerWorker: servicePolicy.shape.concurrencyPerWorker,
+    targetUtilization: field(servicePolicy.shape.targetUtilizationPercent, {
       control: "range",
       minimum: 1,
       maximum: 100,
       step: 0.1,
       valueSuffix: "%",
     }),
-    workerKeepAlive: field(z.string().min(1), {
-      label: "Idle Worker timeout",
-      description:
-        "How long an excess idle Worker stays ready. Use a duration such as `30s`, `5m`, or `1h`.",
-    }),
-    sandboxGroup: field(z.string(), {
-      label: "Sandbox group",
-      description: "Only compatible services in the same group may share.",
-    }),
-    minimumSandboxes: field(z.number().int().nonnegative(), {
-      label: "Minimum sandboxes",
-      description: "Keeps warm compatible sandboxes even with zero Workers.",
-    }),
-    workersPerSandbox: field(z.number().int().positive(), {
-      label: "Workers per sandbox",
-      description: "Per-service packing limit in one sandbox.",
-    }),
-    serviceType: field(z.enum(["stateless", "session"]), {
-      label: "Service type",
-      reactive: true,
-      description: "Session services retain a persistent session environment.",
-    }),
-    sessionKeepAlive: field(z.string().min(1), {
-      label: "Idle session timeout",
+    workerKeepAlive: servicePolicy.shape.workerKeepAlive,
+    sandboxGroup: servicePolicy.shape.sandboxGroup,
+    minimumSandboxes: servicePolicy.shape.minimumSandboxes,
+    workersPerSandbox: servicePolicy.shape.workersPerSandbox,
+    serviceType: field(servicePolicy.shape.serviceType, { reactive: true }),
+    sessionKeepAlive: field(servicePolicy.shape.sessionKeepAlive, {
       hidden: serviceType !== "session",
-      description:
-        "How long a session stays available after activity ends, for example `30m` or `2h`.",
     }),
-    failure: field(z.string(), { label: "Attention", readOnly: true }),
+    failure: field(runtimeInfo.shape.failure, { readOnly: true }),
     sandboxes: z.array(SandboxRow),
   });
 }
@@ -379,7 +335,7 @@ export async function serviceSettings(
           minimumSandboxes: model.minimumSandboxes,
           serviceType: model.serviceType,
           sessionKeepAliveMs:
-            duration(model.sessionKeepAlive, "Idle session timeout") /
+            duration(model.sessionKeepAlive, "Idle session timeout", true) /
             1_000_000,
         },
       }, false);

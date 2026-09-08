@@ -2,13 +2,16 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 
 # Purpose
 
-- Share semantic references to kernel runtime entities across administration
-  UIs.
+- Share runtime identity, status, capacity, diagnostic, and archive fields
+  across administration forms and lists.
 
 # Ownership
 
-- `runtime.ts` defines sandbox and Worker fields. The kernel owns their identity
-  validation, authority, and lifecycle; this package owns their presentation.
+- `runtime.ts` defines sandbox/Worker references and `runtimeInfo` metadata.
+  Sandbox-group fields are shared by service and job configuration. Archived
+  sandbox references suppress live lookup and navigation. Source entrypoints
+  reuse package fields. The kernel owns runtime identity validation, authority,
+  and lifecycle; this package owns their presentation.
 
 # Local Contracts
 

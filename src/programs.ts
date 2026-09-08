@@ -1,3 +1,5 @@
+import { programInfo } from "/p/the8020/packages/types/program.ts";
+import { sourceInfo } from "/p/the8020/packages/types/source.ts";
 import { kernel, type ProgramSummary } from "@the8020/kernel";
 import {
   BACK_EVENT,
@@ -27,25 +29,19 @@ const Program = z.object({
     length: "long",
     readOnly: true,
   }),
-  name: field(z.string(), { label: "Name", readOnly: true }),
-  kind: field(z.string(), {
-    label: "Runs as",
-    readOnly: true,
-    length: "short",
-  }),
-  description: field(z.string(), {
-    label: "Description",
+  name: field(programInfo.shape.name, { readOnly: true }),
+  kind: field(programInfo.shape.kind, { readOnly: true, length: "short" }),
+  description: field(programInfo.shape.description, {
     length: "long",
     readOnly: true,
   }),
-  uui: field(z.boolean(), { label: "Interactive", readOnly: true }),
-  discoverable: field(z.boolean(), { label: "Listed on Home", readOnly: true }),
-  entrypoint: field(z.string(), {
-    label: "Entrypoint",
+  uui: field(programInfo.shape.uui, { readOnly: true }),
+  discoverable: field(programInfo.shape.discoverable, { readOnly: true }),
+  entrypoint: field(sourceInfo.shape.entrypoint, {
     length: "long",
     readOnly: true,
   }),
-  commit: field(z.string(), {
+  commit: field(sourceInfo.shape.commit, {
     label: "Package commit",
     length: "long",
     readOnly: true,
