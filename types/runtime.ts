@@ -5,26 +5,28 @@ export const sandboxId: z.ZodString = field(z.string(), {
   label: "Sandbox",
   description:
     "A running environment for services and background work. Open it to see activity, resource use, and Workers.",
-  valueHelp: async ({ query, offset, limit }) => {
+  valueHelp: async (request) => {
     const { kernel } = await import("@the8020/kernel");
+    const { queryValueHelp } = await import("/p/the8020/uui/lists.ts");
     const { sandboxes } = await kernel.admin.execute<{
       sandboxes: Array<{ sandbox_id: string; reason: string; state: string }>;
     }>("sandbox.list");
-    const search = query.trim().toLowerCase();
-    const matches = sandboxes.filter((row) =>
-      `${row.sandbox_id} ${row.reason} ${row.state}`.toLowerCase().includes(
-        search,
-      )
-    )
-      .sort((a, b) => a.sandbox_id.localeCompare(b.sandbox_id));
-    return {
-      items: matches.slice(offset, offset + limit).map((row) => ({
-        value: row.sandbox_id,
-        label: row.sandbox_id,
-        description: `${row.state} · ${row.reason}`,
-      })),
-      more: offset + limit < matches.length,
-    };
+    const rows = sandboxes.sort((a, b) =>
+      a.sandbox_id.localeCompare(b.sandbox_id)
+    ).map((row) => ({
+      sandboxId: row.sandbox_id,
+      state: row.state,
+      reason: row.reason,
+    }));
+    return queryValueHelp(
+      z.object({
+        sandboxId,
+        state: runtimeInfo.shape.state,
+        reason: runtimeInfo.shape.reason,
+      }),
+      rows,
+      request,
+    );
   },
   open: async (value) => {
     const { default: sandboxes } = await import(

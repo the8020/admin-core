@@ -152,20 +152,16 @@ Deno.test("advanced package detail exposes Git selectors and persists only the s
       "text",
     );
     const help = packageDetailSchema(repository);
-    assertEquals(
-      await fieldMetadata(help.shape.branch)?.valueHelp?.({
-        query: "",
-        offset: 0,
-        limit: 50,
-      }),
-      {
-        items: [
-          { value: "main", label: "main (current)" },
-          { value: "stable", label: "stable (remote)" },
-        ],
-        more: false,
-      },
-    );
+    const choices = await fieldMetadata(help.shape.branch)?.valueHelp?.({
+      query: { search: "", filters: {}, sort: null },
+      offset: 0,
+      limit: 50,
+    });
+    assertEquals(choices?.rows, [
+      { value: "main", label: "main (current)" },
+      { value: "stable", label: "stable (remote)" },
+    ]);
+    assertEquals(choices?.more, false);
     channel.push(screenEvent(first, "pull", 1));
     const second = await waitForScreen(channel, 2);
     channel.push(screenEvent(second, "push", 2));

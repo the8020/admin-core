@@ -16,9 +16,9 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 # Local Contracts
 
 - Field callbacks open the owning public UUI program with a selected ID.
-- Sandbox help filters the existing cached kernel catalog server-side and sends
-  only the requested batch to the browser. The kernel API returns a full
-  catalog.
+- Sandbox help exposes sandbox ID, state, and reason fields, with ID first.
+  Apply ordinary list queries to the cached kernel catalog before paging; send
+  only the requested rows. The kernel API returns a full catalog.
 
 # Work Guidance
 
