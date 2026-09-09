@@ -69,7 +69,6 @@ const ServiceRow = z.object({
 });
 const SandboxDetail = z.object({
   sandboxId: field(sandboxField, {
-    open: undefined,
     length: "long",
     readOnly: true,
   }),

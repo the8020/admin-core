@@ -22,7 +22,6 @@ const Program = z.object({
     label: "Program ID",
     length: "long",
     readOnly: true,
-    open: undefined,
   }),
   packageId: field(packageField, {
     label: "Package",

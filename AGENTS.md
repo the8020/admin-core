@@ -183,7 +183,7 @@ below.
   field, never calls secret get, clears the submitted model value, and
   overwrites the named value through the typed kernel API. One field group owns
   name and replacement value. Shared secret-name help can open this screen from
-  another entity; the edit form suppresses its own recursive record link.
+  another entity and remains available on the secret's own name field.
 - Package management screens call the typed `kernel.packages` API backed by
   private kernel operations; they never read host paths or run Git.
 - Package detail exposes Delete package with a modal naming the selected package

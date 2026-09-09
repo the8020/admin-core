@@ -59,7 +59,7 @@ const SandboxRow = z.object({
 });
 function serviceDetailSchema(serviceType: string, editing = false) {
   return z.object({
-    serviceId: field(serviceField, { readOnly: true, open: undefined }),
+    serviceId: field(serviceField, { readOnly: true }),
     packageId: field(packageField, { readOnly: true }),
     description: field(serviceInfo.shape.description, { readOnly: true }),
     path: field(serviceInfo.shape.path, { readOnly: true }),

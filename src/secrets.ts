@@ -30,8 +30,6 @@ function secretEditSchema(existing: boolean) {
       length: "medium",
       readOnly: existing,
       placeholder: "github",
-      open: undefined,
-      valueHelp: undefined,
     }),
     value: field(secretInfo.shape.value, {
       label: existing ? "Replacement value" : "Value",

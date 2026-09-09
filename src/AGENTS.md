@@ -31,6 +31,9 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   come from `../types/runtime.ts`. Screens customize placement and editability.
   Credentials use the secrets package's on-demand name-only lookup and its
   linked edit screen; opening Advanced never preloads credentials.
+- Identifier fields retain semantic value help and navigation on their own
+  detail screens as well as references. Read-only placement prevents editing,
+  not inspecting or opening the entity.
 - Services separate overview, settings, and diagnostics. Configuration keeps
   every editable setting, including Enabled, in one draft on one page, uses the
   original scaling groups, and calls the shared mutation API only on Save. Idle

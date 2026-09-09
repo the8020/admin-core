@@ -15,7 +15,7 @@ import type { ScreenResult } from "./navigation.ts";
 import type { WorkerInspectResult, WorkerListResult } from "./contracts.ts";
 
 const Worker = z.object({
-  workerId: field(workerId, { readOnly: true, open: undefined }),
+  workerId: field(workerId, { readOnly: true }),
   sandboxId: field(sandboxId, { readOnly: true }),
   serviceId: field(serviceId, { readOnly: true }),
   owner: field(runtimeInfo.shape.owner, { readOnly: true }),

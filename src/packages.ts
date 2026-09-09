@@ -89,7 +89,6 @@ export function packageDetailSchema(
     packageId: field(packageField, {
       length: "long",
       readOnly: true,
-      open: undefined,
     }),
     path: field(sourceInfo.shape.path, { length: "long", readOnly: true }),
     description: field(packageInfo.shape.description, {
