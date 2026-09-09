@@ -20,6 +20,8 @@ import {
   BACK_EVENT,
   callScreen,
   field,
+  Model,
+  presentModal,
   sendMessage,
   z,
 } from "/p/the8020/uui/mod.ts";
@@ -341,10 +343,41 @@ export async function packageDetail(
             : []),
           { id: "refresh", label: "Refresh" },
           { id: "advanced", label: "Advanced" },
+          { id: "delete", label: "Delete package", kind: "danger" },
         ],
       },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
+    if (event.action === "delete") {
+      const confirmation = await presentModal(() =>
+        callScreen({
+          id: "core-admin-package-delete",
+          title: `Delete ${packageId}?`,
+          description:
+            "The package and its installed source will be removed. Database data will be retained.",
+          schema: z.object({}),
+          model: new Model({}),
+          header: {
+            actions: [
+              { id: "delete", label: "Delete package", kind: "danger" },
+              { id: "cancel", label: "Cancel" },
+            ],
+          },
+        })
+      );
+      if (confirmation.action !== "delete") continue;
+      try {
+        await kernel.packages.delete(packageId, true);
+        sendMessage(`Deleted ${packageId}`, "success");
+        return { view: "back" };
+      } catch (error) {
+        sendMessage(
+          error instanceof Error ? error.message : "Package deletion failed",
+          "error",
+        );
+      }
+      continue;
+    }
     if (event.action === "advanced") {
       return { view: "packageAdvanced", packageId };
     }

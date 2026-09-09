@@ -186,6 +186,10 @@ below.
   another entity; the edit form suppresses its own recursive record link.
 - Package management screens call the typed `kernel.packages` API backed by
   private kernel operations; they never read host paths or run Git.
+- Package detail exposes Delete package with a modal naming the selected package
+  and explaining retained database data. Confirmation calls the shared deletion
+  API; cancellation and errors retain the detail, and success returns through
+  ordinary Back navigation.
 - Detail headings identify `Package <id>`, `Service <short name>`,
   `Sandbox <id>`, or `Archived sandbox <id>`. Unboxed H1 sections contain
   second-level detail, list, or field-group cards.

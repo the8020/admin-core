@@ -23,6 +23,9 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 - Package overview reads package inspection/index and indexed services. Keep
   Git, file inventory, and technical diagnostics in its separate Advanced
   navigation frame. Both main content lists open the related entity.
+- Package detail owns the Delete package header action and confirmation modal.
+  Call the typed deletion API only after confirmation, display errors on the
+  detail, and return to the preceding screen after success.
 - Package fields and bounded Git selectors come from `the8020/packages/types/`.
   Service policy comes from `the8020/services/types/service.ts`; runtime fields
   come from `../types/runtime.ts`. Screens customize placement and editability.

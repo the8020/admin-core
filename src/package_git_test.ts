@@ -12,7 +12,11 @@ import {
   kernelFailure,
   kernelSuccess,
 } from "./kernel_test_support.ts";
-import { packageAdvanced, packageDetailSchema } from "./packages.ts";
+import {
+  packageAdvanced,
+  packageDetail,
+  packageDetailSchema,
+} from "./packages.ts";
 import { fieldMetadata } from "/p/the8020/db/fields.ts";
 
 class TestChannel {
@@ -269,6 +273,83 @@ Deno.test("package detail keeps Git controls available without index metadata", 
     assertEquals(calls.includes("secret.list"), false);
     channel.push(screenEvent(screen, BACK_EVENT, 1));
     assertEquals(await pending, { view: "back" });
+  } finally {
+    unbind();
+    delete (globalThis as unknown as Record<symbol, unknown>)[
+      kernelInvokeSymbol
+    ];
+  }
+});
+
+Deno.test("package deletion confirms, preserves detail on failure, and returns after success", async () => {
+  const calls: Record<string, unknown>[] = [];
+  (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
+    ((operation, input) => {
+      const call = decodeKernelCall(operation, input);
+      if (call.command === "package.delete") {
+        calls.push(call.arguments);
+        return Promise.resolve(
+          calls.length === 1
+            ? kernelFailure(
+              call,
+              "runtime_operation_failed",
+              "Package is dirty",
+            )
+            : kernelSuccess(call, { deleted: true }),
+        );
+      }
+      const result = {
+        "package.inspect": { package: { valid: true, programs: [] } },
+        "package.index.inspect": { package: index },
+        "service.list": { services: [] },
+      }[call.command];
+      if (result === undefined) throw new Error(call.command);
+      return Promise.resolve(kernelSuccess(call, result));
+    }) satisfies KernelInvoke;
+  const channel = new TestChannel();
+  const seen = new Set<string>();
+  const actions = ["delete", "cancel", "delete", "delete", "delete", "delete"];
+  const send = channel.send.bind(channel);
+  let sequence = 0;
+  channel.send = (message) => {
+    send(message);
+    if (
+      typeof message !== "object" || message === null ||
+      !("type" in message) || message.type !== "presentation.show" ||
+      !("presentation" in message)
+    ) return;
+    const presentation = message.presentation as {
+      activeSurfaceId: string;
+      surfaces: Array<{ screen: ScreenSnapshot }>;
+    };
+    const screen = presentation.surfaces.at(-1)!.screen;
+    const key = `${screen.id}:${screen.state.instanceId}:${screen.revision}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    assertEquals(
+      screen.header.actions.some((action) => action.id === "delete"),
+      true,
+    );
+    if (sequence === 2) assertEquals(calls.length, 0);
+    const action = actions[sequence++];
+    if (action === undefined) throw new Error("Unexpected screen");
+    channel.push({
+      ...screenEvent(screen, action, sequence),
+      surfaceId: presentation.activeSurfaceId,
+    });
+  };
+  const unbind = bindSession(channel);
+  try {
+    assertEquals(await packageDetail("the8020/example"), { view: "back" });
+    assertEquals(sequence, actions.length);
+    assertEquals(calls, [
+      { package_id: "the8020/example", confirm: true },
+      { package_id: "the8020/example", confirm: true },
+    ]);
+    assertEquals(
+      JSON.stringify(channel.sent).includes("Package is dirty"),
+      true,
+    );
   } finally {
     unbind();
     delete (globalThis as unknown as Record<symbol, unknown>)[
