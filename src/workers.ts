@@ -19,7 +19,7 @@ const Worker = z.object({
   sandboxId: field(sandboxId, { readOnly: true }),
   serviceId: field(serviceId, { readOnly: true }),
   owner: field(runtimeInfo.shape.owner, { readOnly: true }),
-  state: field(runtimeInfo.shape.state, { readOnly: true }),
+  state: field(runtimeInfo.shape.workerState, { readOnly: true }),
   requests: field(runtimeInfo.shape.activeRequests, { readOnly: true }),
   executions: field(runtimeInfo.shape.activeExecutions, {
     label: "Persistent executions",

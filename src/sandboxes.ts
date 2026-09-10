@@ -115,7 +115,7 @@ const SandboxDetail = z.object({
   workerRows: z.array(z.object({
     workerId,
     owner: runtimeInfo.shape.owner,
-    state: runtimeInfo.shape.state,
+    state: runtimeInfo.shape.workerState,
     requests: runtimeInfo.shape.activeRequests,
   })),
   cpuMicros: field(runtimeInfo.shape.cpuMicros, {

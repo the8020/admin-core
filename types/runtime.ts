@@ -1,5 +1,5 @@
 import { sourceInfo } from "/p/the8020/packages/types/source.ts";
-import { field, z } from "/p/the8020/db/fields.ts";
+import { choiceHelp, field, z } from "/p/the8020/db/fields.ts";
 
 export const sandboxId: z.ZodString = field(z.string(), {
   label: "Sandbox",
@@ -62,12 +62,34 @@ export const runtimeInfo = z.object({
   }),
   state: field(z.string(), {
     label: "Status",
-    description:
-      "The observed lifecycle state of this runtime environment or Worker.",
+    description: "The observed lifecycle state of this runtime environment.",
+    valueHelp: choiceHelp(z.string(), [
+      "CREATING",
+      "STARTING",
+      "READY",
+      "ACTIVE",
+      "DRAINING",
+      "STOPPING",
+      "STOPPED",
+      "FAILED",
+      "DELETING",
+    ]),
+  }),
+  workerState: field(z.string(), {
+    label: "Status",
+    description: "The observed lifecycle state of this Worker.",
+    valueHelp: choiceHelp(z.string(), [
+      "starting",
+      "ready",
+      "stopping",
+      "stopped",
+      "failed",
+    ]),
   }),
   type: field(z.string(), {
     label: "Type",
     description: "The kind of work for which this sandbox was created.",
+    valueHelp: choiceHelp(z.string(), ["service", "job"]),
   }),
   reason: field(z.string(), {
     label: "Reason",

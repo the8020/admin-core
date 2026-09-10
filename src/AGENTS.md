@@ -40,6 +40,8 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   session timeout accepts `0s` under the shared service lifecycle contract.
 - Sandbox and Worker screens use existing runtime snapshots and explicit
   relationships. Worker workload owners must never be treated as usernames.
+- Worker rows and details reuse `runtimeInfo.workerState`; sandbox statuses use
+  `runtimeInfo.state`, preserving their distinct value-help sets.
 - Secret editing starts empty, writes through the typed API, and never loads the
   stored secret value.
 - Sandbox history lists read metadata only. Details query the owning node's

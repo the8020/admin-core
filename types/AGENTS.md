@@ -19,6 +19,9 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 - Sandbox help exposes sandbox ID, state, and reason fields, with ID first.
   Apply ordinary list queries to the cached kernel catalog before paging; send
   only the requested rows. The kernel API returns a full catalog.
+- Runtime fields supply known sandbox lifecycle/workload choices. `workerState`
+  separately describes the supervisor's lowercase Worker states. Observed fields
+  remain strings so incomplete diagnostics stay readable.
 
 # Work Guidance
 
