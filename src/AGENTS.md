@@ -35,9 +35,10 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   detail screens as well as references. Read-only placement prevents editing,
   not inspecting or opening the entity.
 - Services separate overview, settings, and diagnostics. Configuration keeps
-  every editable setting, including Enabled, in one draft on one page, uses the
-  original scaling groups, and calls the shared mutation API only on Save. Idle
-  session timeout accepts `0s` under the shared service lifecycle contract.
+  every editable setting, including Enabled and Public/Private visibility, in
+  one draft on one page, uses the original scaling groups, and calls the shared
+  mutation API only on Save. Idle session timeout accepts `0s` under the shared
+  service lifecycle contract.
 - Sandbox and Worker screens use existing runtime snapshots and explicit
   relationships. Worker workload owners must never be treated as usernames.
 - Worker rows and details reuse `runtimeInfo.workerState`; sandbox statuses use

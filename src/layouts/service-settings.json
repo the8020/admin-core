@@ -10,7 +10,10 @@
         "type": "field-group",
         "title": "Service",
         "controls": [
-          "enabled"
+          "enabled",
+          "accessMode",
+          "anonymousUser",
+          "serviceType"
         ]
       },
       {
@@ -67,8 +70,6 @@
             "type": "field-group",
             "title": "Service lifecycle",
             "controls": [
-              "anonymousUser",
-              "serviceType",
               "sessionKeepAlive"
             ]
           }

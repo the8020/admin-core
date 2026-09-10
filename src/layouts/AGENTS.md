@@ -24,11 +24,12 @@ Parent DOX: [admin-core/src DOX](../AGENTS.md).
   and readable changes. Their field help owns reference selection. Secret
   editing uses one field group for name and value without redundant section
   headings.
-- Service overview contains Enabled, health, and running capacity. One settings
-  layout contains Enabled, the Scaling section with Worker threads, Single
-  worker, and Replication cards, plus lifecycle and execution identity. There is
-  no Advanced configuration layout. Sandbox detail contains readable activity
-  and linked services/Workers.
+- Service overview contains Enabled, health, and running capacity. Configure
+  starts with one Service group ordered Enabled, Visibility, Public execution
+  user, and Service type. Scaling retains Worker threads, Single worker, and
+  Replication cards; Lifecycle contains the conditional idle session timeout.
+  There is no Advanced configuration layout. Sandbox detail contains readable
+  activity and linked services/Workers.
 - Historical sandbox detail presents one bounded log page in a read-only
   multiline field. Its metadata list has no copied-log file/size columns.
 

@@ -71,7 +71,12 @@ Deno.test("service configuration keeps all policy in one page with the original 
     "scaling-section",
     "lifecycle-section",
   ]);
-  assertEquals(groups[0]?.controls, ["enabled"]);
+  assertEquals(groups[0]?.controls, [
+    "enabled",
+    "accessMode",
+    "anonymousUser",
+    "serviceType",
+  ]);
   assertEquals(
     groups[1]?.children?.[0]?.children?.map((group) => ({
       title: group.title,
@@ -97,8 +102,6 @@ Deno.test("service configuration keeps all policy in one page with the original 
     ],
   );
   assertEquals(groups[2]?.children?.[0]?.controls, [
-    "anonymousUser",
-    "serviceType",
     "sessionKeepAlive",
   ]);
 });

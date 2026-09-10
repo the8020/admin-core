@@ -71,7 +71,14 @@ function serviceDetailSchema(serviceType: string, editing = false) {
     sandboxCount: field(runtimeInfo.shape.sandboxCount, { readOnly: true }),
     versionCount: field(serviceInfo.shape.versionCount, { readOnly: true }),
     enabled: field(serviceInfo.shape.enabled, { readOnly: !editing }),
-    accessMode: field(serviceInfo.shape.accessMode, { readOnly: true }),
+    accessMode: editing
+      ? field(servicePolicy.shape.accessMode, {
+        options: [
+          { value: "public", label: "Public" },
+          { value: "authenticated", label: "Private" },
+        ],
+      })
+      : field(serviceInfo.shape.accessMode, { readOnly: true }),
     anonymousUser: servicePolicy.shape.anonymousUser,
     desiredVersion: field(serviceInfo.shape.desiredVersion, { readOnly: true }),
     loadedVersion: field(serviceInfo.shape.loadedVersion, { readOnly: true }),
@@ -288,16 +295,17 @@ export async function serviceSettings(
       model: settings,
       controls: [
         "enabled",
+        "accessMode",
+        "anonymousUser",
+        "serviceType",
         "targetUtilization",
         "sandboxGroup",
         "minimumSandboxes",
         "workersPerSandbox",
-        "anonymousUser",
         "minimumWorkers",
         "maximumWorkers",
         "concurrencyPerWorker",
         "workerKeepAlive",
-        "serviceType",
         "sessionKeepAlive",
       ].map((bind) => ({ bind })),
       layout: serviceSettingsLayout,
@@ -323,6 +331,7 @@ export async function serviceSettings(
       await applyDesired(serviceId, {
         enabled: model.enabled,
         overrides: {
+          accessMode: servicePolicy.shape.accessMode.parse(model.accessMode),
           anonymousUser: model.anonymousUser,
           minimumWorkers: model.minimumWorkers,
           maximumWorkers: model.maximumWorkers,
