@@ -248,14 +248,13 @@ export async function serviceDetail(
     }
     try {
       if (["enable", "disable", "restart"].includes(event.action)) {
-        const { applyDesired } = await import(
+        const { applyDesired, restart } = await import(
           "/p/the8020/services/src/admin.ts"
         );
-        await applyDesired(
-          serviceId,
-          { enabled: event.action !== "disable" },
-          false,
-        );
+        if (event.action === "restart") await restart(serviceId);
+        else {await applyDesired(serviceId, {
+            enabled: event.action !== "disable",
+          }, false);}
         sendMessage(
           event.action === "disable"
             ? "Disabled"

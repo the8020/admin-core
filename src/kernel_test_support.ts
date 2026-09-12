@@ -1,3 +1,6 @@
+import { installContextProvider } from "../../kernel/defaults/config/runtime/deno/context/runtime.ts";
+import type { ExecutionContext } from "@the8020/context";
+installContextProvider(() => ({ username: "system" } as ExecutionContext));
 import type { KernelOperation } from "@the8020/kernel";
 
 export interface TestKernelCall {

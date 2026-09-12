@@ -13,6 +13,11 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 
 # Local Contracts
 
+- Package mutations use `the8020/packages/src/admin.ts`; service configuration
+  and restarts use `the8020/services/src/admin.ts`. These application owners
+  enforce authorization against the current user. Screens never substitute
+  native mutation calls or system commands for these APIs.
+
 - Retain each navigation frame's UUI Model and context across refreshes and
   returns.
 - Programs lists description, execution kind, and package. Its main detail owns
@@ -60,8 +65,8 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 - Runtime placement uses one sandbox identity alongside node and Worker IDs. Do
   not store or display a second identity for the same sandbox.
 
-- Keep source/version/Git operations in the kernel package API and service
-  policy mutations in the shared services package API.
+- Native source/version/Git operations stay behind the authorized packages API;
+  service mutations stay behind the shared services API.
 
 # Verification
 

@@ -1,3 +1,4 @@
+import { packages } from "/p/the8020/packages/src/admin.ts";
 import { packageInfo } from "/p/the8020/packages/types/package.ts";
 import {
   installedVersion,
@@ -6,7 +7,6 @@ import {
 } from "/p/the8020/packages/types/source.ts";
 import { ScreenFrame } from "./screen_frame.ts";
 import {
-  kernel,
   type PackageIndex,
   type PackageSourceInspection,
   type PackageSynchronization,
@@ -148,7 +148,7 @@ export async function packageInstall(
     try {
       if (event.action === "detect") {
         model.source = requiredText(model.source, "Git URL");
-        inspection = await kernel.packages.source.inspect(model.source);
+        inspection = await packages.source.inspect(model.source);
         applyInspection(model, inspection);
         sendMessage(`Detected ${inspection.package_id}`, "success");
         continue;
@@ -159,11 +159,11 @@ export async function packageInstall(
           inspection === undefined ||
           inspection.source !== normalizedURL(model.source)
         ) {
-          inspection = await kernel.packages.source.inspect(model.source);
+          inspection = await packages.source.inspect(model.source);
           applyInspection(model, inspection);
         }
         const selected = desiredVersion(model.version);
-        await kernel.packages.index.set({
+        await packages.index.set({
           author: inspection.author,
           repository: inspection.repository,
           source: inspection.source,
@@ -173,7 +173,7 @@ export async function packageInstall(
           sendMessage(`Saved ${inspection.package_id}`, "success");
           continue;
         }
-        const synchronized = await kernel.packages.synchronize([
+        const synchronized = await packages.synchronize([
           inspection.package_id,
         ]);
         requireSuccessfulSynchronization(synchronized);
@@ -199,8 +199,8 @@ export async function packageVersions(
     let versions: PackageVersions;
     try {
       [index, versions] = await Promise.all([
-        kernel.packages.index.inspect(packageId),
-        kernel.packages.versions.list(packageId, 100),
+        packages.index.inspect(packageId),
+        packages.versions.list(packageId, 100),
       ]);
     } catch (error) {
       sendMessage(errorMessage(error, "Version lookup failed"), "error");
@@ -255,14 +255,14 @@ export async function packageVersions(
     if (event.action !== "save") continue;
     try {
       const selected = desiredVersion(model.selection);
-      await kernel.packages.index.set({
+      await packages.index.set({
         author: index.author,
         repository: index.repository,
         source: index.source,
         secret: index.secret,
         ...selected,
       });
-      const synchronized = await kernel.packages.synchronize([packageId]);
+      const synchronized = await packages.synchronize([packageId]);
       requireSuccessfulSynchronization(synchronized);
       sendMessage(`Synchronized ${packageId}`, "success");
       draft = undefined;
@@ -291,7 +291,7 @@ export async function packageLocal(
     if (event.action === BACK_EVENT) return { view: "back" };
     if (event.action !== "create") continue;
     try {
-      const created = await kernel.packages.local.create({
+      const created = await packages.local.create({
         author: requiredText(model.author, "Author"),
         repository: requiredText(model.repository, "Repository"),
         description: model.description,

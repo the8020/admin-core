@@ -1,3 +1,4 @@
+import { packages as packageAdmin } from "/p/the8020/packages/src/admin.ts";
 import { packageInfo } from "/p/the8020/packages/types/package.ts";
 import { programInfo } from "/p/the8020/packages/types/program.ts";
 import {
@@ -158,7 +159,7 @@ export async function packageList(
 ): Promise<ScreenResult> {
   while (true) {
     const [packages, services] = await Promise.all([
-      kernel.packages.list<PackageSummary>(),
+      packageAdmin.list<PackageSummary>(),
       kernel.services.list<ServiceSummary>(),
     ]);
     const result: PackageListResult = { packages, services };
@@ -212,14 +213,14 @@ export async function packageList(
 }
 
 async function updateAllPackages(): Promise<number> {
-  const indexes = await kernel.packages.index.list();
+  const indexes = await packageAdmin.index.list();
   const published = indexes.filter((index) => index.valid && !index.local);
 
   await Promise.all(
     published
       .filter((index) => index.commit !== undefined || index.tag !== undefined)
       .map((index) =>
-        kernel.packages.index.set({
+        packageAdmin.index.set({
           author: index.author,
           repository: index.repository,
           source: index.source,
@@ -229,7 +230,7 @@ async function updateAllPackages(): Promise<number> {
   );
 
   if (published.length === 0) return 0;
-  const results = await kernel.packages.synchronize(
+  const results = await packageAdmin.synchronize(
     published.map((index) => index.package_id),
   );
   const failure = results.find((result) => !result.success);
@@ -280,7 +281,7 @@ export async function packageDetail(
   });
   while (true) {
     const [inspection, services, index] = await Promise.all([
-      kernel.packages.inspect<PackageInspection>(packageId),
+      packageAdmin.inspect<PackageInspection>(packageId),
       kernel.services.list<ServiceSummary>(),
       optionalPackageIndex(packageId),
     ]);
@@ -366,7 +367,7 @@ export async function packageDetail(
       );
       if (confirmation.action !== "delete") continue;
       try {
-        await kernel.packages.delete(packageId, true);
+        await packageAdmin.delete(packageId, true);
         sendMessage(`Deleted ${packageId}`, "success");
         return { view: "back" };
       } catch (error) {
@@ -400,8 +401,8 @@ export async function packageAdvanced(
 ): Promise<ScreenResult> {
   while (true) {
     const [inspection, repository, index, services] = await Promise.all([
-      kernel.packages.inspect<PackageInspection>(packageId),
-      kernel.packages.repository.inspect(packageId),
+      packageAdmin.inspect<PackageInspection>(packageId),
+      packageAdmin.repository.inspect(packageId),
       optionalPackageIndex(packageId),
       kernel.services.list<ServiceSummary>(),
     ]);
@@ -456,22 +457,22 @@ export async function packageAdvanced(
     try {
       switch (event.action) {
         case "pull":
-          await kernel.packages.repository.pull(packageId);
+          await packageAdmin.repository.pull(packageId);
           sendMessage(`Pulled ${packageId}`, "success");
           break;
         case "push":
-          await kernel.packages.repository.push(packageId);
+          await packageAdmin.repository.push(packageId);
           sendMessage(`Pushed ${packageId}`, "success");
           break;
         case "checkout-branch":
-          await kernel.packages.repository.checkout({
+          await packageAdmin.repository.checkout({
             packageId,
             branch: requiredSelection(model.branch, "branch"),
           });
           sendMessage(`Checked out branch ${model.branch}`, "success");
           break;
         case "checkout-commit":
-          await kernel.packages.repository.checkout({
+          await packageAdmin.repository.checkout({
             packageId,
             commit: requiredSelection(model.head, "commit"),
           });
@@ -488,7 +489,7 @@ export async function packageAdvanced(
           );
           break;
         case "synchronize": {
-          const results = await kernel.packages.synchronize([packageId]);
+          const results = await packageAdmin.synchronize([packageId]);
           const failure = results.find((result) => !result.success);
           if (failure !== undefined) {
             throw new Error(`Could not synchronize ${failure.package_id}`);
@@ -510,7 +511,7 @@ async function optionalPackageIndex(
   packageId: string,
 ): Promise<PackageIndex | undefined> {
   try {
-    return await kernel.packages.index.inspect(packageId);
+    return await packageAdmin.index.inspect(packageId);
   } catch (error) {
     if (error instanceof AdminCommandError && error.code === "not_found") {
       return undefined;
@@ -528,7 +529,7 @@ function savePackageSecret(
   index: PackageIndex,
   secret: string,
 ): Promise<PackageIndex> {
-  return kernel.packages.index.set({
+  return packageAdmin.index.set({
     author: index.author,
     repository: index.repository,
     source: index.source,

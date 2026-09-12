@@ -134,6 +134,11 @@ below.
 
 # Local Contracts
 
+- Package mutations use `the8020/packages/src/admin.ts`; service configuration
+  and restarts use `the8020/services/src/admin.ts`. These application owners
+  enforce authorization against the current user. Screens never substitute
+  native mutation calls or system commands for these APIs.
+
 - Administration programs open their catalogs without arguments. Packages and
   Programs, Secrets, Services, Sandboxes, and Workers also accept a selected
   identifier for semantic field clickthrough. Use typed kernel/package APIs and
@@ -184,7 +189,7 @@ below.
   overwrites the named value through the typed kernel API. One field group owns
   name and replacement value. Shared secret-name help can open this screen from
   another entity and remains available on the secret's own name field.
-- Package management screens call the typed `kernel.packages` API backed by
+- Package management screens use the authorized packages API backed by typed
   private kernel operations; they never read host paths or run Git.
 - Package detail exposes Delete package with a modal naming the selected package
   and explaining retained database data. Confirmation calls the shared deletion
