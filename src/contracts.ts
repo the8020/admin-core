@@ -86,37 +86,12 @@ export interface PackageListResult extends Record<string, unknown> {
   services: ServiceSummary[];
 }
 
-export interface PackageProgram {
-  program_id: string;
-  path: string;
-  description?: string;
-  entrypoint?: string;
-  default_layout?: string;
-  discoverable: boolean;
-  uui: boolean;
-  valid: boolean;
-  validation_errors?: string[] | null;
-}
-
-export interface PackageFile {
-  path: string;
-  type: string;
-  size: number;
-}
-
-export interface PackageInspection {
-  package_id: string;
-  path: string;
-  description?: string;
-  documentation_url?: string;
-  license?: string;
-  valid: boolean;
-  programs?: PackageProgram[] | null;
-  files?: PackageFile[] | null;
-  contents_truncated?: boolean;
-  validation_errors?: string[] | null;
-  inspection_errors?: string[] | null;
-}
+import type { PackageInspection } from "/p/the8020/packages/src/admin.ts";
+export type {
+  PackageFile,
+  PackageInspection,
+  PackageProgram,
+} from "/p/the8020/packages/src/admin.ts";
 
 export interface PackageInspectResult extends Record<string, unknown> {
   package: PackageInspection;

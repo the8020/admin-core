@@ -9,6 +9,7 @@ import {
 import { bindSession } from "../../uui/session.ts";
 import {
   decodeKernelCall,
+  developmentProfileRead,
   kernelFailure,
   kernelSuccess,
 } from "./kernel_test_support.ts";
@@ -106,6 +107,9 @@ Deno.test("advanced package detail exposes Git selectors and persists only the s
     [];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
+      if (operation === "database.execute") {
+        return developmentProfileRead(input);
+      }
       const call = decodeKernelCall(operation, input);
       const command = call.command;
       const arguments_ = call.arguments;
@@ -146,6 +150,8 @@ Deno.test("advanced package detail exposes Git selectors and persists only the s
   const unbind = bindSession(channel);
   try {
     const pending = packageAdvanced("the8020/example");
+    // The run is awaited below; do not let cleanup hide an earlier assertion.
+    void pending.catch(() => {});
     const first = await waitForScreen(channel, 1);
     assertEquals(
       first.header.actions.map((action) => action.id).slice(0, 5),
@@ -230,6 +236,9 @@ Deno.test("package detail keeps Git controls available without index metadata", 
   const calls: string[] = [];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
+      if (operation === "database.execute") {
+        return developmentProfileRead(input);
+      }
       const call = decodeKernelCall(operation, input);
       const command = call.command;
       calls.push(command);
@@ -285,6 +294,9 @@ Deno.test("package deletion confirms, preserves detail on failure, and returns a
   const calls: Record<string, unknown>[] = [];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
+      if (operation === "database.execute") {
+        return developmentProfileRead(input);
+      }
       const call = decodeKernelCall(operation, input);
       if (call.command === "package.delete") {
         calls.push(call.arguments);
@@ -362,10 +374,11 @@ async function waitForScreen(
   channel: TestChannel,
   count: number,
 ): Promise<ScreenSnapshot> {
-  for (let attempt = 0; attempt < 100; attempt++) {
+  const deadline = Date.now() + 1000;
+  while (Date.now() < deadline) {
     const screen = channel.screens()[count - 1];
     if (screen !== undefined) return screen;
-    await Promise.resolve();
+    await new Promise((resolve) => setTimeout(resolve, 1));
   }
   throw new Error(`screen ${count} was not shown`);
 }

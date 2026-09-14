@@ -18,6 +18,9 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   enforce authorization against the current user. Screens never substitute
   native mutation calls or system commands for these APIs.
 
+- Program catalogs and selected package inspection use the packages
+  application's metadata reader. Show metadata failures separately from native
+  executable diagnostics; screens never parse manifests themselves.
 - Retain each navigation frame's UUI Model and context across refreshes and
   returns.
 - Programs lists description, execution kind, and package. Its main detail owns
@@ -31,6 +34,9 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 - Package detail owns the Delete package header action and confirmation modal.
   Call the typed deletion API only after confirmation, display errors on the
   detail, and return to the preceding screen after success.
+- Package detail's Deploy version action opens the deployments package's
+  ordinary UUI program with the package ID. That owner selects the development
+  source/version and records an ad hoc deployment run without a list reference.
 - Package fields and bounded Git selectors come from `the8020/packages/types/`.
   Service policy comes from `the8020/services/types/service.ts`; runtime fields
   come from `../types/runtime.ts`. Screens customize placement and editability.

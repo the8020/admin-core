@@ -79,8 +79,8 @@ export function packageDetailModel(
       defaultLayout: program.default_layout ?? "",
       discoverable: program.discoverable,
       uui: program.uui,
-      valid: program.valid,
-      description: program.description ??
+      valid: program.valid && !program.metadata_error,
+      description: program.metadata_error || program.description ||
         (program.validation_errors ?? []).join("; "),
     })),
     files: files.map((file) => ({

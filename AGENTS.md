@@ -144,11 +144,11 @@ below.
   identifier for semantic field clickthrough. Use typed kernel/package APIs and
   ordinary `/p/` imports.
 - All interactive entrypoints declare `uui = true`. The
-  `the8020/admin-core/programs` uses `kernel.programs.list()` to display all
-  ready programs, including hidden and non-UUI programs. Its retained list and
-  detail models put the description, execution kind, and linked package first.
-  Advanced owns program ID, entrypoint, commit, and Home/interactive flags.
-  Program headings use the short program name. Execute calls the ordinary
+  `the8020/admin-core/programs` uses `the8020/packages/programs.ts` to display
+  all ready programs, including hidden and non-UUI programs. Its retained list
+  and detail models put the description, execution kind, and linked package
+  first. Advanced owns program ID, entrypoint, commit, and Home/interactive
+  flags. Program headings use the short program name. Execute calls the ordinary
   `/p/the8020/jobs/programs/run-program/program.ts` entrypoint with the selected
   ID; Jobs owns input collection, execution mode, and results. Back returns
   through the existing navigation frames, preserving list state.
@@ -195,6 +195,8 @@ below.
   and explaining retained database data. Confirmation calls the shared deletion
   API; cancellation and errors retain the detail, and success returns through
   ordinary Back navigation.
+- Package detail also opens `the8020/deployments/deployments` with its package
+  ID for an ad hoc version deployment and immutable run history.
 - Detail headings identify `Package <id>`, `Service <short name>`,
   `Sandbox <id>`, or `Archived sandbox <id>`. Unboxed H1 sections contain
   second-level detail, list, or field-group cards.
@@ -236,6 +238,12 @@ below.
   widths and compact headings.
 
 # Work Guidance
+
+- Build only what the request and established contracts require. Before adding a
+  mechanism, identify that need and why existing owners or standard tools cannot
+  meet it. Do not invent stronger guarantees for hypothetical cases. Remove
+  unsupported additions at closeout; agent-written tests and DOX do not
+  authorize them. Preserve required correctness, security, and data integrity.
 
 - Keep administration features within their owning domain and reuse its public
   program or mutation API. Package unrelated capabilities separately; a screen

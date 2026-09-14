@@ -12,7 +12,11 @@ import {
 } from "/p/the8020/uui/mod.ts";
 import { bindSession } from "../../uui/session.ts";
 import type { ScreenResult } from "./navigation.ts";
-import { decodeKernelCall, kernelSuccess } from "./kernel_test_support.ts";
+import {
+  decodeKernelCall,
+  developmentProfileRead,
+  kernelSuccess,
+} from "./kernel_test_support.ts";
 import { packageAdvanced, packageDetail, packageList } from "./packages.ts";
 import {
   sandboxDetail,
@@ -203,6 +207,9 @@ Deno.test("live list and detail screens refresh their current target", async () 
   const calls: string[] = [];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
+      if (operation === "database.execute") {
+        return developmentProfileRead(input);
+      }
       const call = decodeKernelCall(operation, input);
       const command = call.command;
       calls.push(command);
@@ -472,6 +479,9 @@ Deno.test("package list updates all published packages to latest", async () => {
   }];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
+      if (operation === "database.execute") {
+        return developmentProfileRead(input);
+      }
       const call = decodeKernelCall(operation, input);
       const command = call.command;
       const arguments_ = structuredClone(call.arguments);

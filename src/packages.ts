@@ -21,6 +21,7 @@ import {
   BACK_EVENT,
   callScreen,
   field,
+  invokeProgram,
   Model,
   presentModal,
   sendMessage,
@@ -38,7 +39,6 @@ import packageAdvancedLayout from "./layouts/package-advanced.json" with {
 import { packageId as packageField } from "/p/the8020/packages/types/package.ts";
 import { programId as programField } from "/p/the8020/packages/types/program.ts";
 import type {
-  PackageInspection,
   PackageInspectResult,
   PackageListResult,
   PackageSummary,
@@ -281,7 +281,7 @@ export async function packageDetail(
   });
   while (true) {
     const [inspection, services, index] = await Promise.all([
-      packageAdmin.inspect<PackageInspection>(packageId),
+      packageAdmin.inspect(packageId),
       kernel.services.list<ServiceSummary>(),
       optionalPackageIndex(packageId),
     ]);
@@ -305,7 +305,7 @@ export async function packageDetail(
       programs: (inspection.programs ?? []).map((program) => ({
         id: program.program_id,
         description: program.description || program.program_id,
-        kind: !program.valid
+        kind: !program.valid || program.metadata_error
           ? "Unavailable"
           : program.uui
           ? "Interactive"
@@ -338,6 +338,7 @@ export async function packageDetail(
       ],
       header: {
         actions: [
+          { id: "deploy", label: "Deploy version", kind: "primary" },
           ...(index !== undefined && !index.local
             ? [{ id: "versions", label: "Versions", kind: "primary" as const }]
             : []),
@@ -348,6 +349,10 @@ export async function packageDetail(
       },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
+    if (event.action === "deploy") {
+      await invokeProgram("the8020/deployments/deployments", [packageId]);
+      continue;
+    }
     if (event.action === "delete") {
       const confirmation = await presentModal(() =>
         callScreen({
@@ -401,7 +406,7 @@ export async function packageAdvanced(
 ): Promise<ScreenResult> {
   while (true) {
     const [inspection, repository, index, services] = await Promise.all([
-      packageAdmin.inspect<PackageInspection>(packageId),
+      packageAdmin.inspect(packageId),
       packageAdmin.repository.inspect(packageId),
       optionalPackageIndex(packageId),
       kernel.services.list<ServiceSummary>(),

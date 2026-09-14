@@ -1,6 +1,9 @@
 import { programInfo } from "/p/the8020/packages/types/program.ts";
 import { sourceInfo } from "/p/the8020/packages/types/source.ts";
-import { kernel, type ProgramSummary } from "@the8020/kernel";
+import {
+  listPrograms,
+  type ProgramSummary,
+} from "/p/the8020/packages/programs.ts";
 import {
   BACK_EVENT,
   callScreen,
@@ -40,6 +43,10 @@ const Program = z.object({
     length: "long",
     readOnly: true,
   }),
+  metadataError: field(programInfo.shape.metadataError, {
+    readOnly: true,
+    length: "long",
+  }),
   commit: field(sourceInfo.shape.commit, {
     label: "Package commit",
     length: "long",
@@ -53,12 +60,17 @@ function programModel(program: ProgramSummary): z.infer<typeof Program> {
     id: program.program_id,
     packageId: program.package_id,
     name: program.name,
-    kind: program.uui ? "Interactive" : "Background job",
+    kind: program.metadata_error
+      ? "Unavailable"
+      : program.uui
+      ? "Interactive"
+      : "Background job",
     description: program.description || program.name,
     uui: program.uui,
     discoverable: program.discoverable,
     entrypoint: program.entrypoint,
     commit: program.commit,
+    metadataError: program.metadata_error ?? "",
   };
 }
 
@@ -66,7 +78,7 @@ export async function programList(
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
   while (true) {
-    const programs = await kernel.programs.list();
+    const programs = await listPrograms();
     const event = await callScreen({
       id: "core-admin-programs",
       title: "Programs",
@@ -92,7 +104,7 @@ export async function programDetail(
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
   while (true) {
-    const program = (await kernel.programs.list()).find((item) =>
+    const program = (await listPrograms()).find((item) =>
       item.program_id === programId
     );
     if (!program) {
@@ -126,7 +138,14 @@ export async function programDetail(
           title: `Advanced · ${program.name}`,
           schema: Program,
           model: new Model(programModel(program)),
-          controls: ["id", "entrypoint", "commit", "uui", "discoverable"].map((
+          controls: [
+            "id",
+            "entrypoint",
+            "commit",
+            "uui",
+            "discoverable",
+            ...(program.metadata_error ? ["metadataError"] : []),
+          ].map((
             bind,
           ) => ({ bind })),
         })
