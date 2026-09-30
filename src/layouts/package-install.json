@@ -6,6 +6,7 @@
     "type": "field-group",
     "controls": [
       "source",
+      "secretName",
       "version",
       "author",
       "repository",

@@ -264,6 +264,7 @@ Deno.test("blank package forms render before required values are entered", () =>
   assertEquals(
     installSchema().safeParse({
       source: "",
+      secretName: "",
       author: "",
       repository: "",
       defaultBranch: "",

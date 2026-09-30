@@ -32,6 +32,7 @@ import type { ScreenResult } from "./navigation.ts";
 
 interface InstallModel {
   source: string;
+  secretName: string;
   author: string;
   repository: string;
   defaultBranch: string;
@@ -56,6 +57,7 @@ export function installSchema(inspection?: PackageSourceInspection) {
       length: "long",
       placeholder: "https://github.com/author/repository.git",
     }),
+    secretName: field(sourceInfo.shape.secretName, { length: "long" }),
     author: field(packageInfo.shape.author, {
       length: "medium",
       readOnly: true,
@@ -117,6 +119,7 @@ export async function packageInstall(
 ): Promise<ScreenResult> {
   const model: InstallModel = {
     source: "",
+    secretName: "",
     author: "",
     repository: "",
     defaultBranch: "",
@@ -148,7 +151,7 @@ export async function packageInstall(
     try {
       if (event.action === "detect") {
         model.source = requiredText(model.source, "Git URL");
-        inspection = await packages.source.inspect(model.source);
+        inspection = await inspectSource(model);
         applyInspection(model, inspection);
         sendMessage(`Detected ${inspection.package_id}`, "success");
         continue;
@@ -159,15 +162,17 @@ export async function packageInstall(
           inspection === undefined ||
           inspection.source !== normalizedURL(model.source)
         ) {
-          inspection = await packages.source.inspect(model.source);
+          inspection = await inspectSource(model);
           applyInspection(model, inspection);
         }
         const selected = desiredVersion(model.version);
+        const secret = model.secretName.trim();
         await packages.index.set({
           author: inspection.author,
           repository: inspection.repository,
           source: inspection.source,
           ...selected,
+          ...(secret === "" ? {} : { secret }),
         });
         if (event.action === "save") {
           sendMessage(`Saved ${inspection.package_id}`, "success");
@@ -344,6 +349,22 @@ function applyInspection(
     referenceKey: `${reference.kind}:${reference.name}`,
     ...reference,
   }));
+}
+
+async function inspectSource(
+  model: InstallModel,
+): Promise<PackageSourceInspection> {
+  const secret = model.secretName.trim();
+  try {
+    return await packages.source.inspect(model.source, { secret });
+  } catch (error) {
+    if (secret !== "") throw error;
+    throw new Error(
+      `${
+        errorMessage(error, "Repository check failed")
+      }. For a private repository, choose an authentication secret.`,
+    );
+  }
 }
 
 function normalizedURL(source: string): string {

@@ -19,6 +19,7 @@ import {
   packageDetailSchema,
 } from "./packages.ts";
 import { fieldMetadata } from "/p/the8020/db/fields.ts";
+import { packageInstall } from "./package-management.ts";
 
 class TestChannel {
   readonly sessionId = "session-package-git";
@@ -423,6 +424,108 @@ Deno.test("advanced package detail keeps the remote read-only before repository 
     );
     channel.push(screenEvent(screen, BACK_EVENT, 1));
     assertEquals(await pending, { view: "back" });
+  } finally {
+    unbind();
+    delete (globalThis as unknown as Record<symbol, unknown>)[
+      kernelInvokeSymbol
+    ];
+  }
+});
+
+Deno.test("package install checks and records a private source with its secret", async () => {
+  const calls: Array<{ command: string; arguments: Record<string, unknown> }> =
+    [];
+  const source = "https://gitlab.example.com/group/team/private.git";
+  (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
+    ((operation, input) => {
+      if (operation === "database.execute") {
+        return developmentProfileRead(input);
+      }
+      const call = decodeKernelCall(operation, input);
+      calls.push({
+        command: call.command,
+        arguments: structuredClone(call.arguments),
+      });
+      if (call.command === "package.source.inspect") {
+        if (call.arguments.secret === undefined) {
+          return Promise.resolve(
+            kernelFailure(
+              call,
+              "runtime_operation_failed",
+              "inspect Git source: authentication required",
+            ),
+          );
+        }
+        return Promise.resolve(kernelSuccess(call, {
+          source: {
+            source,
+            author: "team",
+            repository: "private",
+            package_id: "team/private",
+            default_branch: "main",
+            references: [],
+          },
+        }));
+      }
+      const result: Record<string, unknown> | undefined = {
+        "package.index.set": { package: { ...index, secret: "gitlab" } },
+        "package.synchronize": {
+          packages: [{ package_id: "team/private", success: true }],
+        },
+      }[call.command];
+      if (result === undefined) {
+        return Promise.reject(new Error(`unexpected command ${call.command}`));
+      }
+      return Promise.resolve(kernelSuccess(call, result));
+    }) satisfies KernelInvoke;
+
+  const channel = new TestChannel();
+  const unbind = bindSession(channel);
+  try {
+    const pending = packageInstall();
+    void pending.catch(() => {});
+    const first = await waitForScreen(channel, 1);
+    const secretField = first.fields.find((field) =>
+      field.bind === "secretName"
+    );
+    assertEquals(secretField?.label, "Authentication secret");
+    assertEquals(secretField?.readOnly === true, false);
+    channel.push(screenEvent(first, "detect", 1, [{
+      bind: "source",
+      value: source,
+    }]));
+    const second = await waitForScreen(channel, 2);
+    assertEquals(
+      JSON.stringify(channel.sent).includes(
+        "For a private repository, choose an authentication secret.",
+      ),
+      true,
+    );
+    channel.push(screenEvent(second, "detect", 2, [{
+      bind: "secretName",
+      value: "gitlab",
+    }]));
+    const third = await waitForScreen(channel, 3);
+    channel.push(screenEvent(third, "save-sync", 3));
+    assertEquals(await pending, { view: "back" });
+    assertEquals(calls, [{
+      command: "package.source.inspect",
+      arguments: { source },
+    }, {
+      command: "package.source.inspect",
+      arguments: { source, secret: "gitlab" },
+    }, {
+      command: "package.index.set",
+      arguments: {
+        author: "team",
+        repository: "private",
+        source,
+        secret: "gitlab",
+      },
+    }, {
+      command: "package.synchronize",
+      arguments: { packages: "team/private" },
+    }]);
   } finally {
     unbind();
     delete (globalThis as unknown as Record<symbol, unknown>)[
