@@ -176,7 +176,10 @@ below.
   contain no service declarations or counts.
 - Package list header actions open ordinary Install package and Create local
   package screens. Install validates an HTTPS Git URL, displays detected
-  identity, writes the desired index, and may install in one action. Versions
+  identity, writes the desired index, and may install in one action. Its
+  optional authentication secret uses the shared secret-name field; the name is
+  passed to source inspection and stored on the desired index, and a failed
+  check without one suggests choosing it for a private repository. Versions
   lists readable changes/tags and accepts row or field-help selection before
   Apply version. Branch/commit/tag choices use searchable help over bounded
   reference snapshots through `the8020/packages/types/source.ts`. Advanced
