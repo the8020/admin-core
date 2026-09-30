@@ -138,11 +138,11 @@ export function packageDetailSchema(
     head: field(git.commit, { label: "Current commit", length: "long" }),
     remoteName: field(sourceInfo.shape.remoteName, {
       length: "short",
-      readOnly: true,
+      readOnly: !repository.activation_ready,
     }),
     remoteUrl: field(sourceInfo.shape.remoteUrl, {
       length: "long",
-      readOnly: true,
+      readOnly: !repository.activation_ready,
     }),
     secretName: field(sourceInfo.shape.secretName, {
       length: "long",
@@ -435,6 +435,9 @@ export async function packageAdvanced(
           ...(index === undefined
             ? []
             : [{ id: "save-secret", label: "Save secret" }]),
+          ...(repository.activation_ready
+            ? [{ id: "save-remote", label: "Save remote" }]
+            : []),
           { id: "versions", label: "Versions" },
           { id: "synchronize", label: "Synchronize" },
           {
@@ -493,6 +496,16 @@ export async function packageAdvanced(
             "success",
           );
           break;
+        case "save-remote": {
+          const name = model.remoteName.trim() || "origin";
+          await packageAdmin.repository.remote({
+            package_id: packageId,
+            name,
+            url: requiredSelection(model.remoteUrl.trim(), "remote URL"),
+          });
+          sendMessage(`Saved remote ${name} for ${packageId}`, "success");
+          break;
+        }
         case "synchronize": {
           const results = await packageAdmin.synchronize([packageId]);
           const failure = results.find((result) => !result.success);

@@ -290,6 +290,147 @@ Deno.test("package detail keeps Git controls available without index metadata", 
   }
 });
 
+Deno.test("advanced package detail saves the Git remote and rejects a blank URL", async () => {
+  const calls: Array<{ command: string; arguments: Record<string, unknown> }> =
+    [];
+  (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
+    ((operation, input) => {
+      if (operation === "database.execute") {
+        return developmentProfileRead(input);
+      }
+      const call = decodeKernelCall(operation, input);
+      calls.push({
+        command: call.command,
+        arguments: structuredClone(call.arguments),
+      });
+      const result: Record<string, unknown> | undefined = {
+        "package.inspect": {
+          package: {
+            package_id: "the8020/example",
+            path: "/workspace/packages/the8020/example",
+            valid: true,
+            programs: [],
+            files: [],
+          },
+        },
+        "package.repository.inspect": { repository },
+        "package.repository.remote": { repository },
+        "package.index.inspect": { package: index },
+        "service.list": { services: [] },
+      }[call.command];
+      if (result === undefined) {
+        return Promise.reject(new Error(`unexpected command ${call.command}`));
+      }
+      return Promise.resolve(kernelSuccess(call, result));
+    }) satisfies KernelInvoke;
+
+  const channel = new TestChannel();
+  const unbind = bindSession(channel);
+  try {
+    const pending = packageAdvanced("the8020/example");
+    void pending.catch(() => {});
+    const first = await waitForScreen(channel, 1);
+    assertEquals(
+      first.header.actions.some((action) => action.id === "save-remote"),
+      true,
+    );
+    for (const bind of ["remoteName", "remoteUrl"]) {
+      assertEquals(
+        first.fields.find((field) => field.bind === bind)?.readOnly,
+        false,
+      );
+    }
+    channel.push(screenEvent(first, "save-remote", 1, [{
+      bind: "remoteUrl",
+      value: "  ",
+    }]));
+    const second = await waitForScreen(channel, 2);
+    channel.push(screenEvent(second, "save-remote", 2, [{
+      bind: "remoteName",
+      value: "",
+    }, {
+      bind: "remoteUrl",
+      value: " https://gitlab.example.com/group/example.git ",
+    }]));
+    const third = await waitForScreen(channel, 3);
+    channel.push(screenEvent(third, BACK_EVENT, 3));
+    assertEquals(await pending, { view: "back" });
+    assertEquals(
+      calls.filter((call) => call.command === "package.repository.remote"),
+      [{
+        command: "package.repository.remote",
+        arguments: {
+          package_id: "the8020/example",
+          name: "origin",
+          url: "https://gitlab.example.com/group/example.git",
+        },
+      }],
+    );
+  } finally {
+    unbind();
+    delete (globalThis as unknown as Record<symbol, unknown>)[
+      kernelInvokeSymbol
+    ];
+  }
+});
+
+Deno.test("advanced package detail keeps the remote read-only before repository initialization", async () => {
+  (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
+    ((operation, input) => {
+      if (operation === "database.execute") {
+        return developmentProfileRead(input);
+      }
+      const call = decodeKernelCall(operation, input);
+      const result: Record<string, unknown> | undefined = {
+        "package.inspect": {
+          package: {
+            package_id: "the8020/example",
+            path: "/workspace/packages/the8020/example",
+            valid: true,
+            programs: [],
+            files: [],
+          },
+        },
+        "package.repository.inspect": {
+          repository: {
+            ...repository,
+            activation_ready: false,
+            remote_name: undefined,
+            remote_url: undefined,
+          },
+        },
+        "package.index.inspect": { package: index },
+        "service.list": { services: [] },
+      }[call.command];
+      if (result === undefined) {
+        return Promise.reject(new Error(`unexpected command ${call.command}`));
+      }
+      return Promise.resolve(kernelSuccess(call, result));
+    }) satisfies KernelInvoke;
+
+  const channel = new TestChannel();
+  const unbind = bindSession(channel);
+  try {
+    const pending = packageAdvanced("the8020/example");
+    const screen = await waitForScreen(channel, 1);
+    assertEquals(
+      screen.header.actions.some((action) => action.id === "save-remote"),
+      false,
+    );
+    assertEquals(
+      screen.fields.find((field) => field.bind === "remoteUrl")?.readOnly,
+      true,
+    );
+    channel.push(screenEvent(screen, BACK_EVENT, 1));
+    assertEquals(await pending, { view: "back" });
+  } finally {
+    unbind();
+    delete (globalThis as unknown as Record<symbol, unknown>)[
+      kernelInvokeSymbol
+    ];
+  }
+});
+
 Deno.test("package deletion confirms, preserves detail on failure, and returns after success", async () => {
   const calls: Record<string, unknown>[] = [];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =

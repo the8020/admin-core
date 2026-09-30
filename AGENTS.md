@@ -180,7 +180,10 @@ below.
   lists readable changes/tags and accepts row or field-help selection before
   Apply version. Branch/commit/tag choices use searchable help over bounded
   reference snapshots through `the8020/packages/types/source.ts`. Advanced
-  retains pull, push, and checkout. Its credential field reuses
+  retains pull, push, and checkout. Once the repository is initialized it also
+  edits the remote name and URL; Save remote requires a nonblank URL, defaults
+  the name to `origin`, and calls the authorized packages repository API, which
+  rejects embedded credentials. Its credential field reuses
   `the8020/secrets/types/secret.ts` and loads names only when help opens. Git
   operations remain typed kernel calls and refresh only affected services; the
   existing explicit desired-version synchronization action remains available.
@@ -270,8 +273,9 @@ below.
 
 - `deno task check` formats, lints, and type-checks all programs;
   `deno task test` covers package summary/detail, source/version/Git selectors,
-  secret overwrite-without-read behavior, mapping, fractional utilization
-  conversion, canonical scaling/lifecycle bindings, nullable Worker/history
-  arrays, duration rendering, and current-target refresh behavior for all live
-  collection/detail screens, including targeted refresh and snapshot freshness.
-  The explicit browser E2E exercises navigation and service mutation.
+  remote editing, secret overwrite-without-read behavior, mapping, fractional
+  utilization conversion, canonical scaling/lifecycle bindings, nullable
+  Worker/history arrays, duration rendering, and current-target refresh behavior
+  for all live collection/detail screens, including targeted refresh and
+  snapshot freshness. The explicit browser E2E exercises navigation and service
+  mutation.
