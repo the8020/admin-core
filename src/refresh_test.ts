@@ -103,7 +103,6 @@ const commandResults: Record<string, Record<string, unknown>> = {
       valid: true,
     },
   },
-  "secret.list": { secrets: [] },
   "service.list": { services: [] },
   "service.inspect": {
     service: {
@@ -208,6 +207,10 @@ Deno.test("live list and detail screens refresh their current target", async () 
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
       if (operation === "database.execute") {
+        if (String(input.statement).includes("the8020__secrets__secrets")) {
+          calls.push("secrets.list");
+          return Promise.resolve({ columns: ["name", "updatedAt"], rows: [] });
+        }
         return developmentProfileRead(input);
       }
       const call = decodeKernelCall(operation, input);
@@ -264,7 +267,7 @@ Deno.test("live list and detail screens refresh their current target", async () 
     {
       name: "secret list",
       run: secretList,
-      commands: ["secret.list", "secret.list"],
+      commands: ["secrets.list", "secrets.list"],
     },
     {
       name: "service list",
@@ -639,19 +642,18 @@ Deno.test("navigation retains a list Model across detail and refreshed list fram
   const runtime = globalThis as unknown as Record<symbol, unknown>;
   const previous = runtime[kernelInvokeSymbol];
   runtime[kernelInvokeSymbol] = ((operation, input) => {
-    const call = decodeKernelCall(operation, input);
-    assertEquals(call.command, "secret.list");
+    assertEquals(operation, "database.execute");
+    assert(String(input.statement).startsWith("select "));
+    assert(String(input.statement).includes("the8020__secrets__secrets"));
     reads++;
     return Promise.resolve(
-      kernelSuccess(call, {
-        secrets: Array.from(
+      {
+        columns: ["name", "updatedAt"],
+        rows: Array.from(
           { length: 103 },
-          (_, index) => ({
-            name: `example-${index}`,
-            updated_at: "2026-09-05T00:00:00Z",
-          }),
+          (_, index) => [`example-${index}`, "2026-09-05T00:00:00Z"],
         ),
-      }),
+      },
     );
   }) satisfies KernelInvoke;
   const unbind = bindSession(channel);

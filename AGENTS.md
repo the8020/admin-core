@@ -175,7 +175,7 @@ below.
   applicable; it never inspects Git or lists credentials. Kernel package records
   contain no service declarations or counts.
 - Package list header actions open ordinary Install package and Create local
-  package screens. Install validates an HTTPS Git URL, displays detected
+  package screens. Install validates an HTTP or HTTPS Git URL, displays detected
   identity, writes the desired index, and may install in one action. Its
   optional authentication secret uses the shared secret-name field; the name is
   passed to source inspection and stored on the desired index, and a failed
@@ -192,9 +192,9 @@ below.
   existing explicit desired-version synchronization action remains available.
 - Secrets lists names and update times. Add/edit starts with a blank password
   field, never calls secret get, clears the submitted model value, and
-  overwrites the named value through the typed kernel API. One field group owns
-  name and replacement value. Shared secret-name help can open this screen from
-  another entity and remains available on the secret's own name field.
+  overwrites the named value through `the8020/secrets/mod.ts`. One field group
+  owns name and replacement value. Shared secret-name help can open this screen
+  from another entity and remains available on the secret's own name field.
 - Package management screens use the authorized packages API backed by typed
   private kernel operations; they never read host paths or run Git.
 - Package detail exposes Delete package with a modal naming the selected package

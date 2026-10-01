@@ -56,18 +56,23 @@ Deno.test("secret edit starts blank, stays masked, and overwrites without readin
     [];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
+      if (operation === "database.execute") {
+        calls.push({ command: operation, arguments: structuredClone(input) });
+        return Promise.resolve({
+          columns: [],
+          rows: [],
+          affected_rows: { type: "bigint", value: "1" },
+        });
+      }
       const call = decodeKernelCall(operation, input);
       const command = call.command;
       const arguments_ = call.arguments;
       calls.push({ command, arguments: structuredClone(arguments_) });
-      if (command !== "secret.set") {
+      if (command !== "crypto.encrypt") {
         return Promise.reject(new Error(`unexpected command ${command}`));
       }
       return Promise.resolve(kernelSuccess(call, {
-        secret: {
-          name: arguments_.name,
-          updated_at: "2026-09-01T00:00:00Z",
-        },
+        encrypted: "v1:encrypted",
       }));
     }) satisfies KernelInvoke;
 
@@ -106,10 +111,27 @@ Deno.test("secret edit starts blank, stays masked, and overwrites without readin
       changes: [{ bind: "value", value: "  replacement-token  " }],
     });
     assertEquals(await pending, { view: "back" });
-    assertEquals(calls, [{
-      command: "secret.set",
-      arguments: { name: "github", value: "  replacement-token  " },
-    }]);
+    assertEquals(calls.map((call) => call.command), [
+      "crypto.encrypt",
+      "database.execute",
+    ]);
+    assertEquals(calls[0]!.arguments, {
+      purpose: "app-secret-store",
+      data: new TextEncoder().encode("  replacement-token  ").toBase64(),
+      associated_data: new TextEncoder().encode("github").toBase64(),
+    });
+    assertEquals(
+      String(calls[1]!.arguments.statement).startsWith("insert "),
+      true,
+    );
+    assertEquals(
+      (calls[1]!.arguments.parameters as unknown[]).includes("v1:encrypted"),
+      true,
+    );
+    assertEquals(
+      JSON.stringify(calls[1]!.arguments).includes("replacement-token"),
+      false,
+    );
   } finally {
     unbind();
     delete (globalThis as unknown as Record<symbol, unknown>)[

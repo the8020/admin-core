@@ -1,6 +1,6 @@
+import { listSecrets, setSecret } from "/p/the8020/secrets/mod.ts";
 import { secretInfo } from "/p/the8020/secrets/types/secret.ts";
 import { ScreenFrame } from "./screen_frame.ts";
-import { kernel } from "@the8020/kernel";
 import {
   BACK_EVENT,
   callScreen,
@@ -46,7 +46,7 @@ export async function secretList(
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
   while (true) {
-    const secrets = await kernel.secrets.list();
+    const secrets = await listSecrets();
     const event = await callScreen({
       id: "core-admin-secrets",
       title: "Secrets",
@@ -96,7 +96,7 @@ export async function secretEdit(
     if (event.action !== "save") continue;
     try {
       const secretName = requiredName(model.name);
-      await kernel.secrets.set({
+      await setSecret({
         name: secretName,
         value: requiredValue(model.value),
       });

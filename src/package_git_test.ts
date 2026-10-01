@@ -134,12 +134,6 @@ Deno.test("advanced package detail exposes Git selectors and persists only the s
         "package.index.set": {
           package: { ...index, secret: arguments_.secret },
         },
-        "secret.list": {
-          secrets: [{
-            name: "github",
-            updated_at: "2026-09-01T00:00:00Z",
-          }],
-        },
       }[command];
       if (result === undefined) {
         return Promise.reject(new Error(`unexpected command ${command}`));
@@ -224,7 +218,10 @@ Deno.test("advanced package detail exposes Git selectors and persists only the s
         secret: "github",
       },
     });
-    assertEquals(calls.some((call) => call.command === "secret.get"), false);
+    assertEquals(
+      calls.some((call) => call.command === "crypto.decrypt"),
+      false,
+    );
   } finally {
     unbind();
     delete (globalThis as unknown as Record<symbol, unknown>)[
@@ -280,7 +277,6 @@ Deno.test("package detail keeps Git controls available without index metadata", 
       screen.fields.find((field) => field.bind === "secretName")?.hidden,
       true,
     );
-    assertEquals(calls.includes("secret.list"), false);
     channel.push(screenEvent(screen, BACK_EVENT, 1));
     assertEquals(await pending, { view: "back" });
   } finally {

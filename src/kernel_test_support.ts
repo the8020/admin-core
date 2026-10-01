@@ -17,7 +17,7 @@ export function developmentProfileRead(input: Record<string, unknown>) {
     columns: ["value"],
     rows: [[
       JSON.stringify({
-        id: "00000000-0000-4000-8000-000000000001",
+        id: "sys-aaaaaaaaaa",
         name: "Development",
         role: "development",
       }),
