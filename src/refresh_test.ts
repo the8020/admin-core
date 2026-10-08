@@ -10,7 +10,11 @@ import {
   UUI_PROTOCOL_VERSION,
   type UUIClientMessage,
 } from "/p/the8020/uui/mod.ts";
-import { bindSession } from "../../uui/session.ts";
+import {
+  bindSession,
+  commandScreen,
+  connectChannels,
+} from "../../uui/session.ts";
 import type { ScreenResult } from "./navigation.ts";
 import {
   decodeKernelCall,
@@ -661,28 +665,43 @@ Deno.test("navigation retains a list Model across detail and refreshed list fram
     const pending = runAdmin({ view: "secrets" });
     const initial = await waitForScreen(channel, 1);
     let list = initial.lists[0]!;
-    channel.push({
-      ...screenEvent(channel, initial, "", 1),
-      type: "screen.list",
-      updates: [{
-        id: list.id,
-        revision: list.revision,
-        operation: "capacity",
-        pageSize: 10,
-      }],
-    });
+    await commandScreen({ op: "list", id: list.id, pageSize: 10 }, 1);
     const measured = await waitForScreen(channel, 2);
     list = measured.lists[0]!;
+    connectChannels("refresh-connection");
+    const {
+      type: _type,
+      action: _action,
+      eventType: _eventType,
+      protocol,
+      sessionId,
+      clientSequence,
+      ...interaction
+    } = screenEvent(channel, measured, "", 2);
     channel.push({
-      ...screenEvent(channel, measured, "", 2),
-      type: "screen.list",
-      updates: [{
-        id: list.id,
-        revision: list.revision,
-        operation: "page",
-        page: 5,
-      }],
-      screenState: { version: 0, scroll: { x: 0, y: 260 }, elements: {} },
+      type: "channel.frame",
+      protocol,
+      sessionId,
+      clientSequence,
+      connection: "refresh-connection",
+      generation: measured.channelGeneration!,
+      namespace: list.channelNamespace!,
+      kind: "message",
+      requestId: "client-1",
+      id: "update",
+      value: {
+        token: "page-five",
+        request: {
+          ...interaction,
+          updates: [{
+            id: list.id,
+            revision: list.revision,
+            operation: "page",
+            page: 5,
+          }],
+          screenState: { version: 0, scroll: { x: 0, y: 260 }, elements: {} },
+        },
+      },
     });
     const fifth = await waitForScreen(channel, 3);
     list = fifth.lists[0]!;
