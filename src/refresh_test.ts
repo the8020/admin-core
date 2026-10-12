@@ -451,7 +451,7 @@ Deno.test("sandbox history reads metadata separately and replaces bounded log pa
   }
 });
 
-Deno.test("package list updates all published packages to latest", async () => {
+Deno.test("package list fetches published packages without changing selected versions", async () => {
   const calls: Array<{ command: string; arguments: Record<string, unknown> }> =
     [];
   const indexes = [{
@@ -459,6 +459,7 @@ Deno.test("package list updates all published packages to latest", async () => {
     repository: "alpha",
     source: "https://github.com/the8020/alpha.git",
     tag: "v1.0.0",
+    active_commit: "1111111111111",
     secret: "github",
     local: false,
     package_id: "the8020/alpha",
@@ -468,6 +469,7 @@ Deno.test("package list updates all published packages to latest", async () => {
     repository: "beta",
     source: "https://github.com/the8020/beta.git",
     commit: "abcdef1234567",
+    active_commit: "abcdef1234567",
     local: false,
     package_id: "the8020/beta",
     valid: true,
@@ -483,6 +485,13 @@ Deno.test("package list updates all published packages to latest", async () => {
     local: false,
     package_id: "the8020/invalid",
     valid: false,
+  }, {
+    author: "the8020",
+    repository: "pending",
+    source: "https://github.com/the8020/pending.git",
+    local: false,
+    package_id: "the8020/pending",
+    valid: true,
   }];
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
@@ -504,14 +513,9 @@ Deno.test("package list updates all published packages to latest", async () => {
           kernelSuccess(call, { packages: structuredClone(indexes) }),
         );
       }
-      if (command === "package.index.set") {
-        return Promise.resolve(kernelSuccess(call, { package: arguments_ }));
-      }
-      if (command === "package.synchronize") {
+      if (command === "package.repository.fetch") {
         return Promise.resolve(kernelSuccess(call, {
-          packages: ["the8020/alpha", "the8020/beta"].map(
-            (package_id) => ({ package_id, commit: "latest", success: true }),
-          ),
+          repository: { package_id: arguments_.package_id },
         }));
       }
       return Promise.reject(new Error(`unexpected command ${command}`));
@@ -523,10 +527,10 @@ Deno.test("package list updates all published packages to latest", async () => {
     const pending = packageList();
     const first = await waitForScreen(channel, 1);
     assertEquals(
-      first.header.actions.some((action) => action.id === "update-all"),
+      first.header.actions.some((action) => action.id === "fetch-all"),
       true,
     );
-    channel.push(screenEvent(channel, first, "update-all", 1));
+    channel.push(screenEvent(channel, first, "fetch-all", 1));
 
     const updated = await waitForScreen(channel, 2);
     channel.push(screenEvent(channel, updated, BACK_EVENT, 2));
@@ -541,23 +545,11 @@ Deno.test("package list updates all published packages to latest", async () => {
       command: "package.index.list",
       arguments: {},
     }, {
-      command: "package.index.set",
-      arguments: {
-        author: "the8020",
-        repository: "alpha",
-        source: "https://github.com/the8020/alpha.git",
-        secret: "github",
-      },
+      command: "package.repository.fetch",
+      arguments: { package_id: "the8020/alpha" },
     }, {
-      command: "package.index.set",
-      arguments: {
-        author: "the8020",
-        repository: "beta",
-        source: "https://github.com/the8020/beta.git",
-      },
-    }, {
-      command: "package.synchronize",
-      arguments: { packages: "the8020/alpha,the8020/beta" },
+      command: "package.repository.fetch",
+      arguments: { package_id: "the8020/beta" },
     }, {
       command: "package.list",
       arguments: {},

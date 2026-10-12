@@ -178,7 +178,7 @@ export async function packageList(
         actions: [
           { id: "install", label: "Install package", kind: "primary" },
           { id: "local", label: "Create local package" },
-          { id: "update-all", label: "Update all" },
+          { id: "fetch-all", label: "Fetch all" },
           { id: "refresh", label: "[[icon=refresh]] Refresh" },
         ],
       },
@@ -187,20 +187,18 @@ export async function packageList(
     if (event.action === "refresh") continue;
     if (event.action === "install") return { view: "packageInstall" };
     if (event.action === "local") return { view: "packageLocal" };
-    if (event.action === "update-all") {
+    if (event.action === "fetch-all") {
       try {
-        const updated = await updateAllPackages();
+        const fetched = await fetchAllPackages();
         sendMessage(
-          updated === 0
-            ? "No published packages to update"
-            : `Updated ${updated} ${
-              updated === 1 ? "package" : "packages"
-            } to latest`,
-          updated === 0 ? "info" : "success",
+          fetched === 0
+            ? "No published packages to fetch"
+            : `Fetched ${fetched} ${fetched === 1 ? "package" : "packages"}`,
+          fetched === 0 ? "info" : "success",
         );
       } catch (error) {
         sendMessage(
-          error instanceof Error ? error.message : "Package update failed",
+          error instanceof Error ? error.message : "Package fetch failed",
           "error",
         );
       }
@@ -212,32 +210,16 @@ export async function packageList(
   }
 }
 
-async function updateAllPackages(): Promise<number> {
+async function fetchAllPackages(): Promise<number> {
   const indexes = await packageAdmin.index.list();
-  const published = indexes.filter((index) => index.valid && !index.local);
-
-  await Promise.all(
-    published
-      .filter((index) => index.commit !== undefined || index.tag !== undefined)
-      .map((index) =>
-        packageAdmin.index.set({
-          author: index.author,
-          repository: index.repository,
-          source: index.source,
-          secret: index.secret,
-        })
-      ),
+  const published = indexes.filter((index) =>
+    index.valid && !index.local && index.active_commit
   );
 
-  if (published.length === 0) return 0;
-  const results = await packageAdmin.synchronize(
-    published.map((index) => index.package_id),
-  );
-  const failure = results.find((result) => !result.success);
-  if (failure !== undefined) {
-    throw new Error(`Could not update ${failure.package_id}`);
+  for (const index of published) {
+    await packageAdmin.repository.fetch(index.package_id);
   }
-  return results.length;
+  return published.length;
 }
 
 export async function packageDetail(
@@ -428,7 +410,7 @@ export async function packageAdvanced(
       layout: packageAdvancedLayout,
       header: {
         actions: [
-          { id: "pull", label: "Pull", kind: "primary" },
+          { id: "fetch", label: "Fetch", kind: "primary" },
           { id: "push", label: "Push" },
           { id: "checkout-branch", label: "Checkout branch" },
           { id: "checkout-commit", label: "Checkout commit" },
@@ -464,9 +446,9 @@ export async function packageAdvanced(
     if (event.action === "refresh") continue;
     try {
       switch (event.action) {
-        case "pull":
-          await packageAdmin.repository.pull(packageId);
-          sendMessage(`Pulled ${packageId}`, "success");
+        case "fetch":
+          await packageAdmin.repository.fetch(packageId);
+          sendMessage(`Fetched ${packageId}`, "success");
           break;
         case "push":
           await packageAdmin.repository.push(packageId);

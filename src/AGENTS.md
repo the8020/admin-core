@@ -31,6 +31,11 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 - Package overview reads package inspection/index and indexed services. Keep
   Git, file inventory, and technical diagnostics in its separate Advanced
   navigation frame. Both main content lists open the related entity.
+- Fetch in Advanced and Fetch all in the catalog refresh Git references without
+  changing version selectors or activating code. Fetch all visits installed
+  remote packages sequentially; saved uninstalled sources and local packages are
+  excluded. Versions/Apply and checkout explicitly change the running version,
+  retaining the attached branch. Push uses that branch through the packages API.
 - Package detail owns the Delete package header action and confirmation modal.
   Call the typed deletion API only after confirmation, display errors on the
   detail, and return to the preceding screen after success.

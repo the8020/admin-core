@@ -19,7 +19,7 @@ import {
   packageDetailSchema,
 } from "./packages.ts";
 import { fieldMetadata } from "/p/the8020/db/fields.ts";
-import { packageInstall } from "./package-management.ts";
+import { packageInstall, packageVersions } from "./package-management.ts";
 
 class TestChannel {
   readonly sessionId = "session-package-git";
@@ -127,7 +127,7 @@ Deno.test("advanced package detail exposes Git selectors and persists only the s
         },
         "package.repository.inspect": { repository },
         "service.list": { services: [] },
-        "package.repository.pull": { repository },
+        "package.repository.fetch": { repository },
         "package.repository.push": { repository },
         "package.repository.checkout": { repository },
         "package.index.inspect": { package: index },
@@ -150,7 +150,7 @@ Deno.test("advanced package detail exposes Git selectors and persists only the s
     const first = await waitForScreen(channel, 1);
     assertEquals(
       first.header.actions.map((action) => action.id).slice(0, 5),
-      ["pull", "push", "checkout-branch", "checkout-commit", "save-secret"],
+      ["fetch", "push", "checkout-branch", "checkout-commit", "save-secret"],
     );
     assertEquals(
       first.fields.find((field) => field.bind === "branch")?.control,
@@ -167,7 +167,7 @@ Deno.test("advanced package detail exposes Git selectors and persists only the s
       { value: "stable", label: "stable (remote)" },
     ]);
     assertEquals(choices?.more, false);
-    channel.push(screenEvent(first, "pull", 1));
+    channel.push(screenEvent(first, "fetch", 1));
     const second = await waitForScreen(channel, 2);
     channel.push(screenEvent(second, "push", 2));
     const third = await waitForScreen(channel, 3);
@@ -191,7 +191,7 @@ Deno.test("advanced package detail exposes Git selectors and persists only the s
         call.command !== "package.repository.inspect"
       ),
       [{
-        command: "package.repository.pull",
+        command: "package.repository.fetch",
         arguments: { package_id: "the8020/example" },
       }, {
         command: "package.repository.push",
@@ -521,6 +521,88 @@ Deno.test("package install checks and records a private source with its secret",
     }, {
       command: "package.synchronize",
       arguments: { packages: "team/private" },
+    }]);
+  } finally {
+    unbind();
+    delete (globalThis as unknown as Record<symbol, unknown>)[
+      kernelInvokeSymbol
+    ];
+  }
+});
+
+Deno.test("available versions activate only after Apply version", async () => {
+  const mutations: Array<{ command: string; arguments: unknown }> = [];
+  const newer = "1234567abcdef00";
+  (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
+    ((operation, input) => {
+      if (operation === "database.execute") {
+        return developmentProfileRead(input);
+      }
+      const call = decodeKernelCall(operation, input);
+      if (["package.index.set", "package.synchronize"].includes(call.command)) {
+        mutations.push({
+          command: call.command,
+          arguments: structuredClone(call.arguments),
+        });
+      }
+      const result = {
+        "package.index.inspect": { package: index },
+        "package.version.list": {
+          package: {
+            package_id: "the8020/example",
+            current_commit: repository.head,
+            selected_commit: repository.head,
+            versions: [{
+              commit: newer,
+              parents: [repository.head],
+              short_commit: newer.slice(0, 7),
+              authored_at: "2026-10-12T00:00:00Z",
+              author: "Example",
+              tags: ["0.7.5"],
+              current: false,
+              selected: false,
+              subject: "Newer version",
+            }],
+          },
+        },
+        "package.index.set": { package: index },
+        "package.synchronize": {
+          packages: [{ package_id: "the8020/example", success: true }],
+        },
+      }[call.command];
+      if (result === undefined) throw new Error(call.command);
+      return Promise.resolve(kernelSuccess(call, result));
+    }) satisfies KernelInvoke;
+  const channel = new TestChannel();
+  const unbind = bindSession(channel);
+  try {
+    const pending = packageVersions("the8020/example");
+    void pending.catch(() => {});
+    const first = await waitForScreen(channel, 1);
+    channel.push(screenEvent(first, "refresh", 1));
+    const refreshed = await waitForScreen(channel, 2);
+    assertEquals(mutations, []);
+    channel.push(screenEvent(refreshed, "edit", 2, [{
+      bind: "selection",
+      value: `commit:${newer}`,
+    }]));
+    const selected = await waitForScreen(channel, 3);
+    assertEquals(mutations, []);
+    channel.push(screenEvent(selected, "save", 3));
+    const applied = await waitForScreen(channel, 4);
+    channel.push(screenEvent(applied, BACK_EVENT, 4));
+    assertEquals(await pending, { view: "back" });
+    assertEquals(mutations, [{
+      command: "package.index.set",
+      arguments: {
+        author: index.author,
+        repository: index.repository,
+        source: index.source,
+        commit: newer,
+      },
+    }, {
+      command: "package.synchronize",
+      arguments: { packages: "the8020/example" },
     }]);
   } finally {
     unbind();
