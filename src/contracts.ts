@@ -1,3 +1,5 @@
+import type { WorkerResources } from "@the8020/kernel";
+
 export interface ServiceSummary {
   service_id: string;
   package_id: string;
@@ -30,6 +32,7 @@ export interface ServiceSandbox {
 }
 
 export interface ServiceStatus {
+  resources?: WorkerResources;
   service_id: string;
   description?: string;
   canonical_base_path: string;
@@ -163,6 +166,7 @@ export interface SandboxInspection {
 }
 
 export interface WorkerStatus {
+  resources?: WorkerResources;
   worker_id: string;
   owner_id: string;
   workload_id?: string;

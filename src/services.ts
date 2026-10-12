@@ -70,6 +70,11 @@ function serviceDetailSchema(serviceType: string, editing = false) {
     }),
     sandboxCount: field(runtimeInfo.shape.sandboxCount, { readOnly: true }),
     versionCount: field(serviceInfo.shape.versionCount, { readOnly: true }),
+    heap: field(runtimeInfo.shape.heap, { readOnly: true }),
+    cpu: field(runtimeInfo.shape.cpu, { readOnly: true }),
+    resourceSampledAt: field(runtimeInfo.shape.resourceSampledAt, {
+      readOnly: true,
+    }),
     enabled: field(serviceInfo.shape.enabled, { readOnly: !editing }),
     accessMode: editing
       ? field(servicePolicy.shape.accessMode, {
@@ -147,6 +152,8 @@ export async function serviceDetail(
       "packageId",
       "workerCount",
       "sandboxCount",
+      "heap",
+      "cpu",
       "failure",
     ];
     const event = await callScreen({
@@ -206,6 +213,7 @@ export async function serviceDetail(
             "desiredVersion",
             "loadedVersion",
             "versionCount",
+            "resourceSampledAt",
           ].map((bind) => ({ bind })),
           layout: {
             schema: 1,

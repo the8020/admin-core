@@ -13,6 +13,7 @@ import type {
   ServiceInspectResult,
   ServiceListResult,
 } from "./contracts.ts";
+import { cpuTime, resourceModel } from "./resources.ts";
 
 export function packageRows(result: PackageListResult) {
   return (result.packages ?? []).map((item) => ({
@@ -110,6 +111,7 @@ export function serviceDetailModel(
   const service = result.service;
   const configuration = service.effective_configuration;
   return {
+    ...resourceModel(service.resources),
     serviceId: service.service_id,
     packageId: service.service_id.split("/").slice(0, 2).join("/"),
     workerCount: service.worker_count,
@@ -229,6 +231,9 @@ export function sandboxDetailModel(result: SandboxInspectResult) {
     failure: sandbox.status.failure_reason ?? "",
     memoryBytes: resources.memory_current ?? 0,
     cpuMicros: resources.cpu_usage_micros ?? 0,
+    cpu: resources.cpu_usage_micros === undefined
+      ? "Not measured"
+      : cpuTime(resources.cpu_usage_micros),
     pids: resources.pid_current ?? 0,
     memory: resources.memory_current === undefined
       ? "Not measured"
@@ -236,6 +241,7 @@ export function sandboxDetailModel(result: SandboxInspectResult) {
     nodeId: sandbox.status.node_id,
     createdAt: sandbox.status.created_at,
     workerRows: (sandbox.workers ?? []).map((worker) => ({
+      ...resourceModel(worker.resources),
       workerId: worker.worker_id,
       owner: worker.owner_id,
       state: worker.state,

@@ -15,6 +15,10 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 
 # Local Contracts
 
+- Resource fields distinguish total sandbox RAM from Worker/workload heap used.
+  CPU is accumulated time: sandbox totals include the runtime, while Worker and
+  workload totals cover their live Worker threads. Sample time exposes stale
+  observations; heap totals exclude external allocations and shared overhead.
 - Field callbacks open the owning public UUI program with a selected ID.
 - Sandbox help exposes sandbox ID, state, and reason fields, with ID first.
   Apply ordinary list queries to the cached kernel catalog before paging; send

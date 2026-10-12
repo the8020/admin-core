@@ -30,6 +30,9 @@ Parent DOX: [admin-core/src DOX](../AGENTS.md).
   Replication cards; Lifecycle contains the conditional idle session timeout.
   There is no Advanced configuration layout. Sandbox detail contains readable
   activity and linked services/Workers.
+- Sandbox detail shows RAM and CPU time plus Worker heap/CPU columns. Service
+  detail shows live Worker heap/CPU totals. Program detail includes aggregate
+  heap/CPU and linked running Worker rows.
 - Historical sandbox detail presents one bounded log page in a read-only
   multiline field. Its metadata list has no copied-log file/size columns.
 

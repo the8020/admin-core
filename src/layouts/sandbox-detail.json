@@ -17,6 +17,7 @@
           "activeRequests",
           "activeExecutions",
           "memory",
+          "cpu",
           "failure"
         ]
       },
@@ -59,7 +60,9 @@
           "workerId",
           "owner",
           "state",
-          "requests"
+          "requests",
+          "heap",
+          "cpu"
         ],
         "columnOptions": {
           "workerId": {

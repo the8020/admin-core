@@ -30,6 +30,8 @@ import {
 } from "./sandboxes.ts";
 import { secretList } from "./secrets.ts";
 import { serviceDetail, serviceList, serviceSettings } from "./services.ts";
+import { workerDetail } from "./workers.ts";
+import { programDetail } from "./programs.ts";
 
 class TestChannel {
   readonly sessionId = "session-refresh";
@@ -110,6 +112,11 @@ const commandResults: Record<string, Record<string, unknown>> = {
   "service.list": { services: [] },
   "service.inspect": {
     service: {
+      resources: {
+        heap_used_bytes: 8 * 1024 * 1024,
+        cpu_usage_micros: 2_500_000,
+        sampled_at: "2026-10-12T10:00:00Z",
+      },
       service_id: "the8020/example/api",
       canonical_base_path: "/the8020/example/api",
       service_type: "stateless",
@@ -179,7 +186,24 @@ const commandResults: Record<string, Record<string, unknown>> = {
     },
   },
   "sandbox.list": { sandboxes: [] },
-  "sandbox.inspect": {
+  "worker.inspect": {
+    worker: {
+      sandbox_id: "sbx-example",
+      workload_type: "job",
+      worker: {
+        worker_id: "wrk-example",
+        owner_id: "example",
+        state: "ready",
+        in_flight: 0,
+        resources: {
+          heap_used_bytes: 4 * 1024 * 1024,
+          cpu_usage_micros: 1_250_000,
+          sampled_at: "2026-10-12T10:00:00Z",
+        },
+      },
+    },
+  },
+  "sandbox.refresh": {
     reason: "service:the8020/example/api",
     sandbox: {
       spec: {
@@ -195,6 +219,10 @@ const commandResults: Record<string, Record<string, unknown>> = {
         node_id: "nod-abcdefghij",
         created_at: "2026-08-27T13:00:00Z",
         worker_count: 0,
+        resources: {
+          memory_current: 32 * 1024 * 1024,
+          cpu_usage_micros: 3_000_000,
+        },
       },
       runtime: {},
       workers: [],
@@ -202,9 +230,6 @@ const commandResults: Record<string, Record<string, unknown>> = {
     services: [],
   },
 };
-commandResults["sandbox.refresh"] = structuredClone(
-  commandResults["sandbox.inspect"]!,
-);
 
 Deno.test("live list and detail screens refresh their current target", async () => {
   const calls: string[] = [];
@@ -291,7 +316,18 @@ Deno.test("live list and detail screens refresh their current target", async () 
     {
       name: "sandbox detail",
       run: () => sandboxDetail("sbx-example"),
-      commands: ["sandbox.inspect", "sandbox.refresh"],
+      commands: ["sandbox.refresh", "sandbox.refresh"],
+    },
+    {
+      name: "worker detail",
+      run: () => workerDetail("wrk-example"),
+      commands: [
+        "worker.inspect",
+        "sandbox.refresh",
+        "worker.inspect",
+        "sandbox.refresh",
+        "worker.inspect",
+      ],
     },
   ];
 
@@ -303,6 +339,27 @@ Deno.test("live list and detail screens refresh their current target", async () 
       try {
         const pending = test.run();
         const first = await waitForScreen(channel, 1);
+        if (test.name === "sandbox detail") {
+          assertEquals(
+            (first.model as Record<string, unknown>).memory,
+            "32.0 MiB",
+          );
+          assertEquals((first.model as Record<string, unknown>).cpu, "3.00 s");
+        }
+        if (test.name === "service detail") {
+          assertEquals(
+            (first.model as Record<string, unknown>).heap,
+            "8.0 MiB",
+          );
+          assertEquals((first.model as Record<string, unknown>).cpu, "2.50 s");
+        }
+        if (test.name === "worker detail") {
+          assertEquals(
+            (first.model as Record<string, unknown>).heap,
+            "4.0 MiB",
+          );
+          assertEquals((first.model as Record<string, unknown>).cpu, "1.25 s");
+        }
         assertEquals(
           first.header.actions.some((action) => action.id === "refresh"),
           true,
@@ -322,6 +379,93 @@ Deno.test("live list and detail screens refresh their current target", async () 
     delete (globalThis as unknown as Record<symbol, unknown>)[
       kernelInvokeSymbol
     ];
+  }
+});
+
+Deno.test("program detail sums only its running Workers across selected sandboxes", async () => {
+  const globals = globalThis as unknown as Record<symbol, unknown>;
+  const previous = globals[kernelInvokeSymbol];
+  const refreshed: string[] = [];
+  const resources = {
+    heap_used_bytes: 2 * 1024 * 1024,
+    cpu_usage_micros: 750_000,
+    sampled_at: "2026-10-12T10:00:00Z",
+  };
+  globals[kernelInvokeSymbol] = ((operation, input) => {
+    const call = decodeKernelCall(operation, input);
+    if (call.command === "program.list") {
+      return Promise.resolve(kernelSuccess(call, [{
+        program_id: "example/testing/task",
+        package_id: "example/testing",
+        name: "task",
+        commit: "active",
+        entrypoint: "program.ts",
+        entrypoint_url: "file:///unavailable/program.ts",
+      }]));
+    }
+    if (call.command === "worker.list") {
+      return Promise.resolve(kernelSuccess(call, {
+        workers: [
+          {
+            worker_id: "wrk-one",
+            sandbox_id: "sbx-one",
+            workload_type: "job",
+            workload_id: "example/testing/task",
+          },
+          {
+            worker_id: "wrk-two",
+            sandbox_id: "sbx-two",
+            workload_type: "job",
+            workload_id: "example/testing/task",
+          },
+          {
+            worker_id: "wrk-other",
+            sandbox_id: "sbx-other",
+            workload_type: "job",
+            workload_id: "example/testing/other",
+          },
+        ],
+      }));
+    }
+    assertEquals(call.command, "sandbox.refresh");
+    const sandboxId = String(call.arguments.sandbox_id);
+    refreshed.push(sandboxId);
+    return Promise.resolve(kernelSuccess(call, {
+      sandbox: {
+        workers: [
+          {
+            worker_id: `wrk-${sandboxId}`,
+            owner_id: "example/testing",
+            workload_id: "example/testing/task",
+            state: "ready",
+            in_flight: 0,
+            resources,
+          },
+          {
+            worker_id: "wrk-unrelated",
+            workload_id: "example/testing/other",
+            resources,
+          },
+        ],
+      },
+    }));
+  }) satisfies KernelInvoke;
+  const channel = new TestChannel();
+  const unbind = bindSession(channel);
+  try {
+    const pending = programDetail("example/testing/task");
+    const screen = await waitForScreen(channel, 1);
+    const model = screen.model as Record<string, unknown>;
+    assertEquals(model.workerCount, 2);
+    assertEquals(model.heap, "4.0 MiB");
+    assertEquals(model.cpu, "1.50 s");
+    assertEquals(refreshed, ["sbx-one", "sbx-two"]);
+    channel.push(screenEvent(channel, screen, BACK_EVENT, 1));
+    assertEquals(await pending, { view: "back" });
+  } finally {
+    unbind();
+    if (previous === undefined) delete globals[kernelInvokeSymbol];
+    else globals[kernelInvokeSymbol] = previous;
   }
 });
 

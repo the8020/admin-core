@@ -17,6 +17,8 @@
           "packageId",
           "workerCount",
           "sandboxCount",
+          "heap",
+          "cpu",
           "failure"
         ],
         "actions": [

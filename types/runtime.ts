@@ -139,8 +139,23 @@ export const runtimeInfo = z.object({
     description: "Current memory use in bytes.",
   }),
   memory: field(z.string(), {
-    label: "Memory in use",
-    description: "Current memory use, displayed in readable units.",
+    label: "RAM in use",
+    description: "Total sandbox memory use, displayed in readable units.",
+  }),
+  heap: field(z.string(), {
+    label: "Heap used",
+    description:
+      "JavaScript heap in use by the live Workers. External allocations and shared runtime overhead are excluded.",
+  }),
+  cpu: field(z.string(), {
+    label: "CPU time",
+    description:
+      "Accumulated CPU time. Sandbox totals include the runtime; Worker and workload totals count their currently live Worker threads.",
+  }),
+  resourceSampledAt: field(z.string(), {
+    label: "Resources measured",
+    description:
+      "Time of the oldest resource sample shown. A busy Worker can retain an earlier sample until it can respond.",
   }),
   nodeId: field(z.string(), {
     label: "Node",

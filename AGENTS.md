@@ -219,8 +219,12 @@ below.
   Zero minimum allows scale-to-zero, zero maximum means no service-level limit,
   and switching service type retains its session timeout. Execution identities
   can be entered directly; account sign-in eligibility never limits them.
-- Sandbox overview shows health, work, readable memory use, services, and
+- Sandbox overview shows health, work, total RAM and CPU time, services, and
   Workers. Advanced owns raw metrics, placement, IDs, and snapshot diagnostics.
+  Worker lists/details show heap used and thread CPU time; service details sum
+  all their live Workers, including draining versions. Program detail sums its
+  ordinary running job Workers and links them. Resource samples are dated and
+  remain transient; interactive UUI calls share their session service Worker.
   Worker detail uses the existing inspect API and links its sandbox and, for
   service workloads, its canonical owner service. A workload owner is not an
   execution username. Shared runtime reference fields live in
@@ -230,10 +234,11 @@ below.
 - Live package, service, and sandbox collections and their selected details each
   expose a header Refresh action that reloads the current target without
   navigating.
-- Service and sandbox lists plus ordinary detail opening use cached observed
-  runtime state. Advanced detail shows snapshot revision/time; its Refresh
-  action invokes the targeted live service or sandbox operation and never
-  triggers a global runtime scan.
+- Service and sandbox lists plus ordinary service detail opening use cached
+  observed runtime state. Sandbox detail samples the selected sandbox on entry
+  and Refresh so memory is measured before its first display. Advanced detail
+  shows snapshot revision/time; Refresh invokes the targeted live service or
+  sandbox operation and never triggers a global runtime scan.
 - Sandbox history is a bounded metadata collection. Opening a record reads
   bounded `kernel.logs` pages using its creation node, sandbox ID, time range
   and saved position. First/Recent/Next actions replace the displayed page;

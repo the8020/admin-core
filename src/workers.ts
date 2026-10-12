@@ -13,6 +13,7 @@ import { sandboxId, workerId } from "../types/runtime.ts";
 import { ScreenFrame } from "./screen_frame.ts";
 import type { ScreenResult } from "./navigation.ts";
 import type { WorkerInspectResult, WorkerListResult } from "./contracts.ts";
+import { resourceModel } from "./resources.ts";
 
 const Worker = z.object({
   workerId: field(workerId, { readOnly: true }),
@@ -30,6 +31,11 @@ const Worker = z.object({
   entrypoint: field(runtimeInfo.shape.entrypoint, { readOnly: true }),
   release: field(runtimeInfo.shape.release, { readOnly: true }),
   debugger: field(runtimeInfo.shape.debugger, { readOnly: true }),
+  heap: field(runtimeInfo.shape.heap, { readOnly: true }),
+  cpu: field(runtimeInfo.shape.cpu, { readOnly: true }),
+  resourceSampledAt: field(runtimeInfo.shape.resourceSampledAt, {
+    readOnly: true,
+  }),
 });
 const WorkerList = z.object({
   workers: z.array(
@@ -39,6 +45,8 @@ const WorkerList = z.object({
       owner: true,
       state: true,
       requests: true,
+      heap: true,
+      cpu: true,
     }),
   ),
 });
@@ -59,6 +67,7 @@ export async function workerList(
           owner: worker.owner_id,
           state: worker.state,
           requests: worker.in_flight,
+          ...resourceModel(worker.resources),
         })),
       }),
       layout: {
@@ -69,7 +78,15 @@ export async function workerList(
           type: "list",
           bind: "workers",
           key: "workerId",
-          display: ["workerId", "owner", "state", "requests", "sandboxId"],
+          display: [
+            "workerId",
+            "owner",
+            "state",
+            "requests",
+            "heap",
+            "cpu",
+            "sandboxId",
+          ],
         },
       },
       header: {
@@ -87,7 +104,14 @@ export async function workerDetail(
   id: string,
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  const initial = await kernel.admin.execute<WorkerInspectResult>(
+    "worker.inspect",
+    { worker_id: id },
+  );
   while (true) {
+    await kernel.admin.execute("sandbox.refresh", {
+      sandbox_id: initial.worker.sandbox_id,
+    });
     const { worker: record } = await kernel.admin.execute<WorkerInspectResult>(
       "worker.inspect",
       { worker_id: id },
@@ -95,6 +119,7 @@ export async function workerDetail(
     const worker = record.worker;
     const service = record.workload_type === "service" ? worker.owner_id : "";
     const data = {
+      ...resourceModel(worker.resources),
       workerId: worker.worker_id,
       sandboxId: record.sandbox_id,
       serviceId: service,
@@ -112,6 +137,8 @@ export async function workerDetail(
       "state",
       "requests",
       "executions",
+      "heap",
+      "cpu",
       "sandboxId",
       service ? "serviceId" : "owner",
       ...(data.failure ? ["failure"] : []),
@@ -154,6 +181,7 @@ export async function workerDetail(
             "entrypoint",
             "release",
             "debugger",
+            "resourceSampledAt",
           ].map((bind) => ({ bind })),
         })
       );

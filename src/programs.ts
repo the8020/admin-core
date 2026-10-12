@@ -19,6 +19,10 @@ import listLayout from "./layouts/program-list.json" with { type: "json" };
 import detailLayout from "./layouts/program-detail.json" with { type: "json" };
 import { programId as programField } from "/p/the8020/packages/types/program.ts";
 import { packageId as packageField } from "/p/the8020/packages/types/package.ts";
+import { kernel } from "@the8020/kernel";
+import { runtimeInfo, sandboxId, workerId } from "../types/runtime.ts";
+import type { SandboxInspectResult, WorkerListResult } from "./contracts.ts";
+import { resourceModel, sumWorkerResources } from "./resources.ts";
 
 const Program = z.object({
   id: field(programField, {
@@ -54,6 +58,21 @@ const Program = z.object({
   }),
 });
 const ProgramList = z.object({ programs: z.array(Program) });
+const ProgramDetail = Program.extend({
+  workerCount: field(runtimeInfo.shape.workerCount, { readOnly: true }),
+  heap: field(runtimeInfo.shape.heap, { readOnly: true }),
+  cpu: field(runtimeInfo.shape.cpu, { readOnly: true }),
+  resourceSampledAt: field(runtimeInfo.shape.resourceSampledAt, {
+    readOnly: true,
+  }),
+  runningWorkers: z.array(z.object({
+    workerId,
+    sandboxId,
+    state: runtimeInfo.shape.workerState,
+    heap: runtimeInfo.shape.heap,
+    cpu: runtimeInfo.shape.cpu,
+  })),
+});
 
 function programModel(program: ProgramSummary): z.infer<typeof Program> {
   return {
@@ -111,13 +130,49 @@ export async function programDetail(
       sendMessage("This program is no longer available.", "error");
       return { view: "back" };
     }
+    const listed = await kernel.admin.execute<WorkerListResult>("worker.list");
+    const running = (listed.workers ?? []).filter((worker) =>
+      worker.workload_type === "job" && worker.workload_id === programId
+    );
+    const refreshed = [];
+    for (
+      const sandboxId of new Set(running.map((worker) => worker.sandbox_id))
+    ) {
+      const { sandbox } = await kernel.admin.execute<SandboxInspectResult>(
+        "sandbox.refresh",
+        { sandbox_id: sandboxId },
+      );
+      refreshed.push(
+        ...(sandbox.workers ?? []).filter((worker) =>
+          worker.workload_id === programId
+        ).map((worker) => ({ ...worker, sandbox_id: sandboxId })),
+      );
+    }
+    const model = {
+      ...programModel(program),
+      ...resourceModel(sumWorkerResources(refreshed)),
+      workerCount: refreshed.length,
+      runningWorkers: refreshed.map((worker) => ({
+        workerId: worker.worker_id,
+        sandboxId: worker.sandbox_id,
+        state: worker.state,
+        ...resourceModel(worker.resources),
+      })),
+    };
     const event = await callScreen({
       id: "core-admin-program",
       title: `Program ${program.name}`,
-      schema: Program,
-      model: frame.model(programModel(program)),
+      schema: ProgramDetail,
+      model: frame.model(model),
       layout: detailLayout,
-      controls: ["description", "kind", "packageId"].map((bind) => ({ bind })),
+      controls: [
+        "description",
+        "kind",
+        "packageId",
+        "workerCount",
+        "heap",
+        "cpu",
+      ].map((bind) => ({ bind })),
       actions: [{ id: "package", label: "Open package" }],
       header: {
         actions: [
@@ -130,6 +185,9 @@ export async function programDetail(
     if (event.action === BACK_EVENT) return { view: "back" };
     if (event.action === "package") {
       return { view: "package", packageId: program.package_id };
+    }
+    if (event.action === "select" && typeof event.value === "string") {
+      return { view: "worker", workerId: event.value };
     }
     if (event.action === "advanced") {
       await presentPage(() =>

@@ -27,7 +27,8 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   Execute and package navigation; Advanced owns source metadata and flags. Reuse
   the packages repository's semantic program/package fields.
 - Use cheap observed snapshots for lists and explicit targeted refreshes for
-  live detail.
+  live detail. Sandbox detail invokes `sandbox.refresh` on entry and Refresh to
+  sample the selected sandbox's runtime and resources before displaying them.
 - Package overview reads package inspection/index and indexed services. Keep
   Git, file inventory, and technical diagnostics in its separate Advanced
   navigation frame. Both main content lists open the related entity.
@@ -55,6 +56,12 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   one draft on one page, uses the original scaling groups, and calls the shared
   mutation API only on Save. Idle session timeout accepts `0s` under the shared
   service lifecycle contract.
+- `resources.ts` formats dated resource samples and sums distinct live Workers.
+  Sandbox details show total RAM/CPU; Worker details sample their known sandbox
+  on entry and Refresh, and show heap/CPU. Services show their observed totals;
+  selected programs sample only their running job-Worker sandboxes and sum them.
+  Interactive UUI calls execute inside their session service Worker and have no
+  separate program heap or CPU attribution.
 - Sandbox and Worker screens use existing runtime snapshots and explicit
   relationships. Worker workload owners must never be treated as usernames.
 - Worker rows and details reuse `runtimeInfo.workerState`; sandbox statuses use

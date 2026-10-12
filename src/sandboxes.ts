@@ -110,6 +110,7 @@ const SandboxDetail = z.object({
     readOnly: true,
   }),
   memory: field(runtimeInfo.shape.memory, { readOnly: true }),
+  cpu: field(runtimeInfo.shape.cpu, { readOnly: true }),
   nodeId: field(runtimeInfo.shape.nodeId, { readOnly: true }),
   createdAt: field(runtimeInfo.shape.createdAt, { readOnly: true }),
   workerRows: z.array(z.object({
@@ -117,6 +118,8 @@ const SandboxDetail = z.object({
     owner: runtimeInfo.shape.owner,
     state: runtimeInfo.shape.workerState,
     requests: runtimeInfo.shape.activeRequests,
+    heap: runtimeInfo.shape.heap,
+    cpu: runtimeInfo.shape.cpu,
   })),
   cpuMicros: field(runtimeInfo.shape.cpuMicros, {
     length: "short",
@@ -323,7 +326,7 @@ export async function sandboxDetail(
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
   let result = await kernel.admin.execute<SandboxInspectResult>(
-    "sandbox.inspect",
+    "sandbox.refresh",
     { sandbox_id: sandboxId },
   );
   while (true) {
@@ -341,6 +344,7 @@ export async function sandboxDetail(
         "activeRequests",
         "activeExecutions",
         "memory",
+        "cpu",
         "failure",
       ].map((bind) => ({ bind, hidden: bind === "failure" && !model.failure })),
       layout: {

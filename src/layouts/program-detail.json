@@ -3,8 +3,37 @@
   "id": "core-admin-program-detail",
   "root": {
     "id": "program",
-    "type": "detail",
-    "controls": ["description", "kind", "packageId"],
-    "actions": ["package"]
+    "type": "stack",
+    "children": [
+      {
+        "id": "overview",
+        "type": "detail",
+        "controls": [
+          "description",
+          "kind",
+          "packageId",
+          "workerCount",
+          "heap",
+          "cpu"
+        ],
+        "actions": [
+          "package"
+        ]
+      },
+      {
+        "id": "workers",
+        "type": "list",
+        "title": "Running Workers",
+        "bind": "runningWorkers",
+        "key": "workerId",
+        "display": [
+          "workerId",
+          "state",
+          "heap",
+          "cpu",
+          "sandboxId"
+        ]
+      }
+    ]
   }
 }
