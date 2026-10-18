@@ -23,6 +23,25 @@
       "description": {
         "length": "long"
       }
-    }
+    },
+    "toolbar": [
+      {
+        "id": "install",
+        "label": "Install package",
+        "kind": "primary"
+      },
+      {
+        "id": "local",
+        "label": "Create local package"
+      },
+      {
+        "id": "fetch-all",
+        "label": "Fetch all"
+      },
+      {
+        "id": "refresh",
+        "label": "[[icon=refresh]] Refresh"
+      }
+    ]
   }
 }

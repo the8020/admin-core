@@ -124,9 +124,6 @@ export async function serviceList(
       schema: ServiceList,
       model: frame.model(model),
       layout: serviceListLayout,
-      header: {
-        actions: [{ id: "refresh", label: "[[icon=refresh]] Refresh" }],
-      },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
     if (event.action === "refresh") continue;

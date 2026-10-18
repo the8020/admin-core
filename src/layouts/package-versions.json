@@ -39,7 +39,18 @@
             "heading": "Installed",
             "length": "compact"
           }
-        }
+        },
+        "toolbar": [
+          {
+            "id": "refresh",
+            "label": "[[icon=refresh]] Refresh"
+          },
+          {
+            "id": "save",
+            "label": "Apply version",
+            "kind": "primary"
+          }
+        ]
       }
     ]
   }

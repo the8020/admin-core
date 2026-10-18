@@ -104,9 +104,6 @@ export async function programList(
       schema: ProgramList,
       model: frame.model({ programs: programs.map(programModel) }),
       layout: listLayout,
-      header: {
-        actions: [{ id: "refresh", label: "[[icon=refresh]] Refresh" }],
-      },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
     if (

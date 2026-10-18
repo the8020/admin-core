@@ -74,6 +74,7 @@ export async function workerList(
         schema: 1,
         id: "worker-list",
         root: {
+          toolbar: [{ id: "refresh", label: "[[icon=refresh]] Refresh" }],
           id: "workers",
           type: "list",
           bind: "workers",
@@ -88,9 +89,6 @@ export async function workerList(
             "sandboxId",
           ],
         },
-      },
-      header: {
-        actions: [{ id: "refresh", label: "[[icon=refresh]] Refresh" }],
       },
     });
     if (event.action === BACK_EVENT) return { view: "back" };

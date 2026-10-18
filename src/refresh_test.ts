@@ -361,7 +361,10 @@ Deno.test("live list and detail screens refresh their current target", async () 
           assertEquals((first.model as Record<string, unknown>).cpu, "1.25 s");
         }
         assertEquals(
-          first.header.actions.some((action) => action.id === "refresh"),
+          [
+            ...first.header.actions,
+            ...first.lists.flatMap((list) => list.toolbar ?? []),
+          ].some((action) => action.id === "refresh"),
           true,
           `${test.name} is missing Refresh`,
         );
@@ -671,7 +674,7 @@ Deno.test("package list fetches published packages without changing selected ver
     const pending = packageList();
     const first = await waitForScreen(channel, 1);
     assertEquals(
-      first.header.actions.some((action) => action.id === "fetch-all"),
+      first.lists[0]!.toolbar?.some((action) => action.id === "fetch-all"),
       true,
     );
     channel.push(screenEvent(channel, first, "fetch-all", 1));

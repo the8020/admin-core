@@ -59,12 +59,6 @@ export async function secretList(
         })),
       }),
       layout: secretListLayout,
-      header: {
-        actions: [
-          { id: "add", label: "Add secret", kind: "primary" },
-          { id: "refresh", label: "[[icon=refresh]] Refresh" },
-        ],
-      },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
     if (event.action === "refresh") continue;

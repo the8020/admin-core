@@ -192,11 +192,10 @@ export async function sandboxList(
       model: frame.model(model),
       layout: sandboxListLayout,
       header: {
-        actions: [
-          { id: "workers", label: "Workers" },
-          { id: "history", label: "History" },
-          { id: "refresh", label: "[[icon=refresh]] Refresh" },
-        ],
+        actions: [{ id: "workers", label: "Workers" }, {
+          id: "history",
+          label: "History",
+        }],
       },
     });
     if (event.action === "workers") return { view: "workers" };
@@ -223,11 +222,14 @@ export async function sandboxHistoryList(
       title: "Sandbox history",
       schema: SandboxHistoryList,
       model: frame.model({ sandboxes: sandboxHistoryRows(result) }),
-      layout: sandboxHistoryListLayout,
-      header: {
-        actions: result.next_cursor
-          ? [{ id: "older", label: "Older" } as const]
-          : [],
+      layout: {
+        ...sandboxHistoryListLayout,
+        root: {
+          ...sandboxHistoryListLayout.root,
+          toolbar: result.next_cursor
+            ? [{ id: "older", label: "Older" } as const]
+            : [],
+        },
       },
     });
     if (event.action === "older") {

@@ -174,7 +174,7 @@ below.
   Main-page refresh reads the desired index to offer remote Versions only when
   applicable; it never inspects Git or lists credentials. Kernel package records
   contain no service declarations or counts.
-- Package list header actions open ordinary Install package and Create local
+- Package list toolbar actions open ordinary Install package and Create local
   package screens. Install validates an HTTP or HTTPS Git URL, displays detected
   identity, writes the desired index, and may install in one action. Its
   optional authentication secret uses the shared secret-name field; the name is
@@ -229,11 +229,12 @@ below.
   service workloads, its canonical owner service. A workload owner is not an
   execution username. Shared runtime reference fields live in
   `types/runtime.ts`.
-- Every screen uses shell-owned `BACK_EVENT`; refresh, history, paging,
-  service-state, restart, and save actions belong in the header.
+- Every screen uses shell-owned `BACK_EVENT`; list refresh and paging belong in
+  list toolbars; navigation, service-state, restart, and form save actions
+  belong in screen headers.
 - Live package, service, and sandbox collections and their selected details each
-  expose a header Refresh action that reloads the current target without
-  navigating.
+  expose a Refresh action in the owning list toolbar or detail header that
+  reloads the current target without navigating.
 - Service and sandbox lists plus ordinary service detail opening use cached
   observed runtime state. Sandbox detail samples the selected sandbox on entry
   and Refresh so memory is measured before its first display. Advanced detail

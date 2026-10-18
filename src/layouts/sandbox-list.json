@@ -22,6 +22,12 @@
       "workers": {
         "length": "short"
       }
-    }
+    },
+    "toolbar": [
+      {
+        "id": "refresh",
+        "label": "[[icon=refresh]] Refresh"
+      }
+    ]
   }
 }

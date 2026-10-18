@@ -240,12 +240,6 @@ export async function packageVersions(
       schema: versionsSchema(versions),
       model: frame.model(model),
       layout: packageVersionsLayout,
-      header: {
-        actions: [
-          { id: "refresh", label: "[[icon=refresh]] Refresh" },
-          { id: "save", label: "Apply version", kind: "primary" },
-        ],
-      },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
     if (event.action === "refresh") {

@@ -11,6 +11,10 @@ Parent DOX: [admin-core/src DOX](../AGENTS.md).
 
 # Local Contracts
 
+- List creation, fetch-all, version application, refresh, and backend paging
+  belong in the owning list toolbar. Keep related-page navigation and
+  entity/form actions in screen headers.
+
 - Layouts stay serializable and contain no executable code or backend-provided
   CSS.
 - Keep bindings aligned with the owning screen schema, retain declarative column
@@ -38,7 +42,7 @@ Parent DOX: [admin-core/src DOX](../AGENTS.md).
 
 # Work Guidance
 
-- Use shell-owned Back navigation. Put primary/global actions in headers and
+- Use shell-owned Back navigation. Put form/global actions in screen headers and
   relationship actions alongside their detail fields.
 
 # Verification

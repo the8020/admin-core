@@ -174,14 +174,6 @@ export async function packageList(
         })),
       }),
       layout: packageListLayout,
-      header: {
-        actions: [
-          { id: "install", label: "Install package", kind: "primary" },
-          { id: "local", label: "Create local package" },
-          { id: "fetch-all", label: "Fetch all" },
-          { id: "refresh", label: "[[icon=refresh]] Refresh" },
-        ],
-      },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
     if (event.action === "refresh") continue;

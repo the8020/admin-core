@@ -6,11 +6,30 @@
     "type": "list",
     "bind": "programs",
     "key": "id",
-    "display": ["description", "kind", "packageId"],
+    "display": [
+      "description",
+      "kind",
+      "packageId"
+    ],
     "columnOptions": {
-      "packageId": { "heading": "Package", "length": "medium" },
-      "description": { "heading": "Program", "length": "long" },
-      "kind": { "heading": "Runs as", "length": "short" }
-    }
+      "packageId": {
+        "heading": "Package",
+        "length": "medium"
+      },
+      "description": {
+        "heading": "Program",
+        "length": "long"
+      },
+      "kind": {
+        "heading": "Runs as",
+        "length": "short"
+      }
+    },
+    "toolbar": [
+      {
+        "id": "refresh",
+        "label": "[[icon=refresh]] Refresh"
+      }
+    ]
   }
 }
