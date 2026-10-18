@@ -831,7 +831,6 @@ Deno.test("navigation retains a list Model across detail and refreshed list fram
           ...interaction,
           updates: [{
             id: list.id,
-            revision: list.revision,
             operation: "page",
             page: 5,
           }],
@@ -844,7 +843,7 @@ Deno.test("navigation retains a list Model across detail and refreshed list fram
     channel.push({
       ...screenEvent(channel, fifth, "select", 3),
       eventType: "select",
-      selection: { id: list.id, revision: list.revision, index: 2 },
+      selection: { id: list.id, index: 2 },
     });
     const detail = await waitForScreen(channel, 4);
     assertEquals(detail.title, "Secret example-42");
