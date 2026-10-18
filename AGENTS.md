@@ -181,14 +181,18 @@ below.
   passed to source inspection and stored on the desired index, and a failed
   check without one suggests choosing it for a private repository. Versions
   lists readable changes/tags and accepts row or field-help selection before
-  Apply version. Fetch and Fetch all refresh available versions while retaining
-  installed commits and desired selectors. Fetch all visits installed remote
-  packages sequentially. Branch/commit/tag choices use searchable help over
-  bounded reference snapshots through `the8020/packages/types/source.ts`.
-  Advanced retains fetch, push, and checkout. Once the repository is initialized
-  it also edits the remote name and URL; Save remote requires a nonblank URL,
-  defaults the name to `origin`, and calls the authorized packages repository
-  API, which rejects embedded credentials. Its credential field reuses
+  Apply version. The catalog's Fetch and Update act only on checkbox-selected
+  packages, including ordinary Select all. Preserve selection between actions;
+  skip repositories without remotes and finish with one counted notification.
+  Fetch retains installed code; Update advances to the newest fetched numeric
+  release tag, or the current remote branch when no release tags exist. Status
+  icons show the last check, availability, local changes, and unavailable or
+  failed checks. Branch/commit/tag choices use searchable help over bounded
+  reference snapshots through `the8020/packages/types/source.ts`. Advanced
+  retains fetch, push, and checkout. Once the repository is initialized it also
+  edits the remote name and URL; Save remote requires a nonblank URL, defaults
+  the name to `origin`, and calls the authorized packages repository API, which
+  rejects embedded credentials. Its credential field reuses
   `the8020/secrets/types/secret.ts` and loads names only when help opens. Git
   operations remain typed kernel calls and refresh only affected services; the
   existing explicit desired-version synchronization action remains available.
@@ -299,3 +303,9 @@ below.
   for all live collection/detail screens, including targeted refresh and
   snapshot freshness. The explicit browser E2E exercises navigation and service
   mutation.
+- `package_updates_native_fixture.ts` runs through UUI's native browser harness
+  with `--fixture=../admin-core/package_updates_native_fixture.ts`. It creates
+  an isolated HTTP Git remote and verifies Select all, individual selection,
+  retained selection, fetch without activation, exact release updates, no-remote
+  skips, status icons, counts, and detail navigation. Follow workspace CPU,
+  memory, runtime, and fresh numbered-instance limits.

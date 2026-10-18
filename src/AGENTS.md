@@ -32,11 +32,23 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 - Package overview reads package inspection/index and indexed services. Keep
   Git, file inventory, and technical diagnostics in its separate Advanced
   navigation frame. Both main content lists open the related entity.
-- Fetch in Advanced and Fetch all in the catalog refresh Git references without
-  changing version selectors or activating code. Fetch all visits installed
-  remote packages sequentially; saved uninstalled sources and local packages are
-  excluded. Versions/Apply and checkout explicitly change the running version,
-  retaining the attached branch. Push uses that branch through the packages API.
+- Catalog Fetch and Update use the list's `selected` field and retain selected
+  IDs in the navigation frame. No selection performs no work. Process selected
+  packages sequentially, skip absent remotes/uninitialized repositories,
+  continue after per-package failures, and report fetched/updated, current,
+  skipped, and failed counts in one notification with bounded failure details.
+- `package-updates.ts` owns this screen's update choice and status presentation
+  through the authorized packages API. Fetch reads at most 1000 commits and
+  keeps only the checked HEAD and target in the navigation frame. Opening or
+  refreshing the list inspects local repository metadata without fetching;
+  unchecked packages remain explicit. Update prefers the highest numeric
+  `major.minor.patch` tag (optional `v`), otherwise the current remote branch.
+  Require proven ancestry, a clean tree, and the same checked HEAD; skip
+  diverged/incomplete history and never downgrade. Native checkout owns
+  activation; successful remote updates also record their desired selector.
+- Advanced Fetch refreshes Git references without changing installed code.
+  Versions/Apply and checkout explicitly change the running version, retaining
+  the attached branch. Push uses that branch through the packages API.
 - Package detail owns the Delete package header action and confirmation modal.
   Call the typed deletion API only after confirmation, display errors on the
   detail, and return to the preceding screen after success.

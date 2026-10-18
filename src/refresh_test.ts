@@ -19,6 +19,7 @@ import type { ScreenResult } from "./navigation.ts";
 import {
   decodeKernelCall,
   developmentProfileRead,
+  kernelFailure,
   kernelSuccess,
 } from "./kernel_test_support.ts";
 import { packageAdvanced, packageDetail, packageList } from "./packages.ts";
@@ -263,8 +264,10 @@ Deno.test("live list and detail screens refresh their current target", async () 
       commands: [
         "package.list",
         "service.list",
+        "package.repository.inspect",
         "package.list",
         "service.list",
+        "package.repository.inspect",
       ],
     },
     {
@@ -598,117 +601,200 @@ Deno.test("sandbox history reads metadata separately and replaces bounded log pa
   }
 });
 
-Deno.test("package list fetches published packages without changing selected versions", async () => {
-  const calls: Array<{ command: string; arguments: Record<string, unknown> }> =
-    [];
-  const indexes = [{
-    author: "the8020",
-    repository: "alpha",
-    source: "https://github.com/the8020/alpha.git",
-    tag: "v1.0.0",
-    active_commit: "1111111111111",
-    secret: "github",
-    local: false,
-    package_id: "the8020/alpha",
-    valid: true,
-  }, {
-    author: "the8020",
-    repository: "beta",
-    source: "https://github.com/the8020/beta.git",
-    commit: "abcdef1234567",
-    active_commit: "abcdef1234567",
-    local: false,
-    package_id: "the8020/beta",
-    valid: true,
-  }, {
-    author: "the8020",
-    repository: "local",
-    local: true,
-    package_id: "the8020/local",
-    valid: true,
-  }, {
-    author: "the8020",
-    repository: "invalid",
-    local: false,
-    package_id: "the8020/invalid",
-    valid: false,
-  }, {
-    author: "the8020",
-    repository: "pending",
-    source: "https://github.com/the8020/pending.git",
-    local: false,
-    package_id: "the8020/pending",
-    valid: true,
-  }];
-  (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
-    ((operation, input) => {
-      if (operation === "database.execute") {
-        return developmentProfileRead(input);
-      }
-      const call = decodeKernelCall(operation, input);
-      const command = call.command;
-      const arguments_ = structuredClone(call.arguments);
-      calls.push({ command, arguments: arguments_ });
-      if (command === "package.list") {
-        return Promise.resolve(kernelSuccess(call, { packages: [] }));
-      }
-      if (command === "service.list") {
-        return Promise.resolve(kernelSuccess(call, { services: [] }));
-      }
-      if (command === "package.index.list") {
-        return Promise.resolve(
-          kernelSuccess(call, { packages: structuredClone(indexes) }),
-        );
-      }
-      if (command === "package.repository.fetch") {
-        return Promise.resolve(kernelSuccess(call, {
-          repository: { package_id: arguments_.package_id },
-        }));
-      }
-      return Promise.reject(new Error(`unexpected command ${command}`));
-    }) satisfies KernelInvoke;
-
+Deno.test("package selection fetches and updates independently, skips no remote, and summarizes failures", async () => {
+  const ids = ["alpha", "broken", "beta", "local", "unselected"];
+  const heads = new Map(ids.map((id) => [id, id === "beta" ? "new" : "old"]));
+  const mutations: Array<
+    { command: string; id: string; arguments: Record<string, unknown> }
+  > = [];
+  const runtime = globalThis as unknown as Record<symbol, unknown>;
+  const previous = runtime[kernelInvokeSymbol];
+  runtime[kernelInvokeSymbol] = ((operation, input) => {
+    if (operation === "database.execute") return developmentProfileRead(input);
+    const call = decodeKernelCall(operation, input);
+    const args = call.arguments;
+    const id = String(args.package_id ?? "").split("/")[1]!;
+    const repository = () => ({
+      package_id: `the8020/${id}`,
+      path: `/workspace/packages/the8020/${id}`,
+      activation_ready: true,
+      clean: true,
+      status: "ready",
+      branch: "main",
+      head: heads.get(id),
+      branches: [],
+      commits: [],
+      ...(id === "local" ? {} : {
+        remote_name: "origin",
+        remote_url: `https://example.test/the8020/${id}.git`,
+      }),
+    });
+    let result: unknown;
+    switch (call.command) {
+      case "package.list":
+        result = {
+          packages: ids.map((id) => ({
+            package_id: `the8020/${id}`,
+            valid: true,
+          })),
+        };
+        break;
+      case "service.list":
+        result = { services: [] };
+        break;
+      case "package.repository.inspect":
+        result = { repository: repository() };
+        break;
+      case "package.repository.fetch":
+        mutations.push({ command: call.command, id, arguments: args });
+        if (id === "broken") {
+          return Promise.resolve(
+            kernelFailure(
+              call,
+              "runtime_operation",
+              "Remote unavailable: " + "x".repeat(20_000),
+            ),
+          );
+        }
+        result = { repository: repository() };
+        break;
+      case "package.version.list":
+        result = {
+          package: {
+            package_id: `the8020/${id}`,
+            current_commit: heads.get(id),
+            versions: [
+              { commit: "new", parents: ["old"], tags: ["0.9.1"] },
+              { commit: "old", parents: [], tags: ["0.9.0"] },
+            ],
+          },
+        };
+        break;
+      case "package.index.inspect":
+        result = {
+          package: {
+            package_id: `the8020/${id}`,
+            author: "the8020",
+            repository: id,
+            source: `https://example.test/the8020/${id}.git`,
+            secret: "github",
+            local: false,
+          },
+        };
+        break;
+      case "package.repository.checkout":
+        mutations.push({ command: call.command, id, arguments: args });
+        heads.set(id, String(args.commit));
+        result = { repository: repository() };
+        break;
+      case "package.index.set":
+        mutations.push({
+          command: call.command,
+          id: String(args.repository),
+          arguments: args,
+        });
+        result = { package: args };
+        break;
+      default:
+        throw new Error(`Unexpected command ${call.command}`);
+    }
+    return Promise.resolve(kernelSuccess(call, result));
+  }) satisfies KernelInvoke;
   const channel = new TestChannel();
   const unbind = bindSession(channel);
   try {
     const pending = packageList();
-    const first = await waitForScreen(channel, 1);
-    assertEquals(
-      first.lists[0]!.toolbar?.some((action) => action.id === "fetch-all"),
-      true,
+    void pending.catch(() => {});
+    let screen = await waitForScreen(channel, 1);
+    let sequence = 0;
+    assertEquals(screen.lists[0]!.selection?.bind, "selected");
+    assertEquals(screen.lists[0]!.toolbar?.map((action) => action.id), [
+      "install",
+      "local",
+      "fetch",
+      "update",
+      "refresh",
+    ]);
+    const action = async (id: string) => {
+      const next = channel.screens().length + 1;
+      channel.push(screenEvent(channel, screen, id, ++sequence));
+      screen = await waitForScreen(channel, next);
+    };
+    const selection = async (
+      selected: boolean,
+      range?: { from: number; to: number },
+    ) => {
+      await commandScreen({
+        op: "list",
+        id: screen.lists[0]!.id,
+        selection: { selected, ...(range ? { range } : {}) },
+      }, ++sequence);
+      screen = channel.screens().at(-1)!;
+    };
+    await action("fetch");
+    assertEquals(mutations, []);
+    assert(JSON.stringify(channel.sent).includes("Select packages first"));
+    await commandScreen(
+      { op: "list", id: screen.lists[0]!.id, pageSize: 10 },
+      ++sequence,
     );
-    channel.push(screenEvent(channel, first, "fetch-all", 1));
-
-    const updated = await waitForScreen(channel, 2);
-    channel.push(screenEvent(channel, updated, BACK_EVENT, 2));
+    screen = channel.screens().at(-1)!;
+    await selection(true);
+    await selection(false, { from: 4, to: 4 });
+    await action("fetch");
+    assertEquals(mutations.map((call) => call.id), ["alpha", "broken", "beta"]);
+    assertEquals(screen.lists[0]!.selection?.selectedItems, 4);
+    const labels = JSON.stringify(screen.lists[0]);
+    assert(labels.includes("Update available"));
+    assert(labels.includes("Up to date"));
+    assert(labels.includes("No remote"));
+    assert(labels.includes("Check failed"));
+    assert(
+      JSON.stringify(channel.sent).includes(
+        "Fetched 2; 1 up to date; 1 skipped; 1 failed",
+      ),
+    );
+    await action("update");
+    assertEquals(
+      mutations.filter((call) => call.command === "package.repository.checkout")
+        .map((call) => call.id),
+      ["alpha"],
+    );
+    assertEquals(mutations.at(-1), {
+      command: "package.index.set",
+      id: "alpha",
+      arguments: {
+        author: "the8020",
+        repository: "alpha",
+        source: "https://example.test/the8020/alpha.git",
+        secret: "github",
+        tag: "0.9.1",
+      },
+    });
+    assertEquals(heads.get("unselected"), "old");
+    assertEquals(screen.lists[0]!.selection?.selectedItems, 4);
+    assert(
+      JSON.stringify(channel.sent).includes(
+        "Updated 1; 1 up to date; 2 skipped; 0 failed",
+      ),
+    );
+    await action("update");
+    assert(
+      JSON.stringify(channel.sent).includes(
+        "Updated 0; 2 up to date; 2 skipped; 0 failed",
+      ),
+    );
+    await selection(false);
+    await selection(true, { from: 4, to: 4 });
+    await action("fetch");
+    assertEquals(mutations.at(-1)?.id, "unselected");
+    assertEquals(screen.lists[0]!.selection?.selectedItems, 1);
+    channel.push(screenEvent(channel, screen, BACK_EVENT, ++sequence));
     assertEquals(await pending, { view: "back" });
-    assertEquals(calls, [{
-      command: "package.list",
-      arguments: {},
-    }, {
-      command: "service.list",
-      arguments: {},
-    }, {
-      command: "package.index.list",
-      arguments: {},
-    }, {
-      command: "package.repository.fetch",
-      arguments: { package_id: "the8020/alpha" },
-    }, {
-      command: "package.repository.fetch",
-      arguments: { package_id: "the8020/beta" },
-    }, {
-      command: "package.list",
-      arguments: {},
-    }, {
-      command: "service.list",
-      arguments: {},
-    }]);
   } finally {
     unbind();
-    delete (globalThis as unknown as Record<symbol, unknown>)[
-      kernelInvokeSymbol
-    ];
+    if (previous === undefined) delete runtime[kernelInvokeSymbol];
+    else runtime[kernelInvokeSymbol] = previous;
   }
 });
 

@@ -46,11 +46,21 @@ import type {
 } from "./contracts.ts";
 import type { ScreenResult } from "./navigation.ts";
 import { packageDetailModel, packageRows } from "./view.ts";
+import {
+  applyPackageUpdate,
+  fetchPackageUpdate,
+  type PackageUpdate,
+  packageUpdateField,
+  updateLabels,
+  updateState,
+} from "./package-updates.ts";
 
 const PackageRow = z.object({
   canonicalName: packageField,
   valid: packageInfo.shape.valid,
   status: packageInfo.shape.status,
+  updates: packageUpdateField,
+  selected: z.boolean(),
   services: packageInfo.shape.serviceCount,
   description: packageInfo.shape.description,
 });
@@ -157,61 +167,101 @@ export function packageDetailSchema(
 export async function packageList(
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  const state = frame.context({
+    selected: new Set<string>(),
+    updates: new Map<string, PackageUpdate>(),
+  });
   while (true) {
     const [packages, services] = await Promise.all([
       packageAdmin.list<PackageSummary>(),
       kernel.services.list<ServiceSummary>(),
     ]);
     const result: PackageListResult = { packages, services };
+    const rows = [];
+    for (const item of packageRows(result)) {
+      let status: PackageUpdate;
+      try {
+        const repository = await packageAdmin.repository.inspect(
+          item.canonicalName,
+        );
+        status = updateState(repository, state.updates.get(item.canonicalName));
+      } catch {
+        status = { state: "failed" };
+      }
+      rows.push({
+        ...item,
+        status: item.valid ? "Ready" : "Needs attention",
+        updates: updateLabels[status.state],
+        selected: state.selected.has(item.canonicalName),
+      });
+    }
+    const model = frame.model({ packages: rows });
     const event = await callScreen({
       id: "core-admin-packages",
       title: "Packages",
       schema: PackageList,
-      model: frame.model({
-        packages: packageRows(result).map((item) => ({
-          ...item,
-          status: item.valid ? "Ready" : "Needs attention",
-        })),
-      }),
+      model,
       layout: packageListLayout,
     });
+    state.selected = new Set(
+      model.data.packages.filter((row) => row.selected)
+        .map((row) => row.canonicalName),
+    );
     if (event.action === BACK_EVENT) return { view: "back" };
     if (event.action === "refresh") continue;
     if (event.action === "install") return { view: "packageInstall" };
     if (event.action === "local") return { view: "packageLocal" };
-    if (event.action === "fetch-all") {
-      try {
-        const fetched = await fetchAllPackages();
-        sendMessage(
-          fetched === 0
-            ? "No published packages to fetch"
-            : `Fetched ${fetched} ${fetched === 1 ? "package" : "packages"}`,
-          fetched === 0 ? "info" : "success",
-        );
-      } catch (error) {
-        sendMessage(
-          error instanceof Error ? error.message : "Package fetch failed",
-          "error",
-        );
+    if (event.action === "fetch" || event.action === "update") {
+      if (!state.selected.size) {
+        sendMessage("Select packages first", "info");
+        continue;
       }
+      let completed = 0, current = 0, skipped = 0, failed = 0;
+      const errors: string[] = [];
+      for (const packageId of state.selected) {
+        try {
+          if (event.action === "fetch") {
+            const checked = await fetchPackageUpdate(packageId);
+            state.updates.set(packageId, checked);
+            if (checked.state === "unavailable" || !checked.current) skipped++;
+            else {
+              completed++;
+              if (checked.state === "current") current++;
+            }
+          } else {
+            const outcome = await applyPackageUpdate(
+              packageId,
+              state.updates.get(packageId),
+            );
+            if (outcome === "updated") completed++;
+            else if (outcome === "current") current++;
+            else skipped++;
+          }
+        } catch (error) {
+          failed++;
+          state.updates.set(packageId, { state: "failed" });
+          if (errors.length < 10) {
+            errors.push(
+              `${packageId}: ${
+                error instanceof Error ? error.message : String(error)
+              }`.slice(0, 1000),
+            );
+          }
+        }
+      }
+      sendMessage(
+        `${
+          event.action === "fetch" ? "Fetched" : "Updated"
+        } ${completed}; ${current} up to date; ${skipped} skipped; ${failed} failed` +
+          (errors.length ? `\n${errors.join("\n")}` : ""),
+        failed ? "warning" : completed ? "success" : "info",
+      );
       continue;
     }
     return event.action === "select" && typeof event.value === "string"
       ? { view: "package", packageId: event.value }
       : { view: "back" };
   }
-}
-
-async function fetchAllPackages(): Promise<number> {
-  const indexes = await packageAdmin.index.list();
-  const published = indexes.filter((index) =>
-    index.valid && !index.local && index.active_commit
-  );
-
-  for (const index of published) {
-    await packageAdmin.repository.fetch(index.package_id);
-  }
-  return published.length;
 }
 
 export async function packageDetail(

@@ -19,7 +19,7 @@
     "@the8020/protocol": "file:///opt/runtime/protocol.ts"
   },
   "tasks": {
-    "check": "deno fmt --check . && deno lint . && deno check --import-map=deno.local.json types/*.ts programs/*/program.ts",
+    "check": "deno fmt --check . && deno lint . && deno check --import-map=deno.local.json types/*.ts programs/*/program.ts package_updates_native_fixture.ts",
     "test": "deno test --import-map=deno.local.json ."
   }
 }

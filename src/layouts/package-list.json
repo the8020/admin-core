@@ -6,8 +6,10 @@
     "type": "list",
     "bind": "packages",
     "key": "canonicalName",
+    "selection": "selected",
     "display": [
       "canonicalName",
+      "updates",
       "status",
       "services",
       "description"
@@ -35,8 +37,12 @@
         "label": "Create local package"
       },
       {
-        "id": "fetch-all",
-        "label": "Fetch all"
+        "id": "fetch",
+        "label": "Fetch"
+      },
+      {
+        "id": "update",
+        "label": "Update"
       },
       {
         "id": "refresh",
