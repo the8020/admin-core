@@ -295,6 +295,9 @@ below.
 
 # Verification
 
+- Run package tasks inside an 80|20 Deno workspace; its root config supplies
+  platform imports. The package config owns dependencies and tasks.
+
 - `deno task check` formats, lints, and type-checks all programs;
   `deno task test` covers package summary/detail, source/version/Git selectors,
   remote editing, secret overwrite-without-read behavior, mapping, fractional
