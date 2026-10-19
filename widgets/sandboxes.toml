@@ -1,0 +1,9 @@
+schema = 1
+title = "Sandboxes"
+description = "Inspect sandboxes"
+icon = "inventory_2"
+category = "operations"
+order = 30
+
+[open]
+program = "the8020/admin-core/sandboxes"

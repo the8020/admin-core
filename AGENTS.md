@@ -125,6 +125,8 @@ below.
 
 # Ownership
 
+- `widgets/` declares this package's Home tiles and categories through the
+  `the8020/packages/widgets.ts` format.
 - Own linked package list/detail/install/version/local-create, named-secret
   list/edit, program list/detail, service overview/settings, live sandbox and
   Worker list/detail, and separate historical sandbox list/detail screens plus

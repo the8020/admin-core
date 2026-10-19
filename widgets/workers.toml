@@ -1,0 +1,9 @@
+schema = 1
+title = "Workers"
+description = "Inspect Workers"
+icon = "memory"
+category = "operations"
+order = 40
+
+[open]
+program = "the8020/admin-core/workers"

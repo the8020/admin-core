@@ -1,0 +1,13 @@
+schema = 1
+title = "Services"
+description = "Manage services"
+icon = "dns"
+category = "operations"
+order = 10
+
+[open]
+program = "the8020/admin-core/services"
+
+[data]
+program = "the8020/admin-core/services-status"
+refresh = 30

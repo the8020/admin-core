@@ -1,0 +1,9 @@
+schema = 1
+title = "Packages"
+description = "Inspect installed packages and repositories"
+icon = "deployed_code"
+category = "administration/packages"
+order = 10
+
+[open]
+program = "the8020/admin-core/packages"

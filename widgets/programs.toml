@@ -1,0 +1,9 @@
+schema = 1
+title = "Programs"
+description = "Browse and run installed programs"
+icon = "apps"
+category = "administration/packages"
+order = 20
+
+[open]
+program = "the8020/admin-core/programs"

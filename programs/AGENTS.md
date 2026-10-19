@@ -17,6 +17,9 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   accept an optional selected identifier.
 - Route entrypoints through the shared admin navigation; the Programs catalog
   hands execution inputs to the Jobs package.
+- `services-status` is the non-interactive data program of the Home Services
+  tile: enabled/total services, with `danger` when an enabled service failed or
+  has a validation error.
 
 # Work Guidance
 
