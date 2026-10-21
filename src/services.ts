@@ -1,3 +1,4 @@
+import { inspectService, listServices } from "/p/the8020/services/src/admin.ts";
 import {
   serviceInfo,
   serviceSettings as servicePolicy,
@@ -115,7 +116,7 @@ export async function serviceList(
 ): Promise<ScreenResult> {
   while (true) {
     const result = {
-      services: await kernel.services.list<ServiceSummary>(),
+      services: await listServices<ServiceSummary>(),
     } as ServiceListResult;
     const model = { services: serviceRows(result) };
     const event = await callScreen({
@@ -137,7 +138,7 @@ export async function serviceDetail(
   serviceId: string,
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
-  let service = await kernel.services.inspect<ServiceStatus>(serviceId);
+  let service = await inspectService<ServiceStatus>(serviceId);
   while (true) {
     const model = serviceDetailModel({ service });
     const controls = [
@@ -271,7 +272,7 @@ export async function serviceDetail(
       }
       service = event.action === "refresh"
         ? await kernel.services.refresh<ServiceStatus>(serviceId)
-        : await kernel.services.inspect<ServiceStatus>(serviceId);
+        : await inspectService<ServiceStatus>(serviceId);
     } catch (error) {
       sendMessage(
         error instanceof Error
@@ -288,7 +289,7 @@ export async function serviceSettings(
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
   const model = serviceDetailModel({
-    service: await kernel.services.inspect<ServiceStatus>(serviceId),
+    service: await inspectService<ServiceStatus>(serviceId),
   });
   const settings = frame.model(model);
   while (true) {

@@ -1,3 +1,4 @@
+import { listServices } from "/p/the8020/services/src/admin.ts";
 import { packages as packageAdmin } from "/p/the8020/packages/src/admin.ts";
 import { packageInfo } from "/p/the8020/packages/types/package.ts";
 import { programInfo } from "/p/the8020/packages/types/program.ts";
@@ -13,7 +14,6 @@ import { runtimeInfo } from "../types/runtime.ts";
 import { ScreenFrame } from "./screen_frame.ts";
 import {
   AdminCommandError,
-  kernel,
   type PackageIndex,
   type PackageRepository,
 } from "@the8020/kernel";
@@ -174,7 +174,7 @@ export async function packageList(
   while (true) {
     const [packages, services] = await Promise.all([
       packageAdmin.list<PackageSummary>(),
-      kernel.services.list<ServiceSummary>(),
+      listServices<ServiceSummary>(),
     ]);
     const result: PackageListResult = { packages, services };
     const rows = [];
@@ -306,7 +306,7 @@ export async function packageDetail(
   while (true) {
     const [inspection, services, index] = await Promise.all([
       packageAdmin.inspect(packageId),
-      kernel.services.list<ServiceSummary>(),
+      listServices<ServiceSummary>(),
       optionalPackageIndex(packageId),
     ]);
     const issue = [
@@ -433,7 +433,7 @@ export async function packageAdvanced(
       packageAdmin.inspect(packageId),
       packageAdmin.repository.inspect(packageId),
       optionalPackageIndex(packageId),
-      kernel.services.list<ServiceSummary>(),
+      listServices<ServiceSummary>(),
     ]);
     const result: PackageInspectResult = { package: inspection, services };
     const model = packageDetailModel(

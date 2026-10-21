@@ -11,3 +11,6 @@ program = "the8020/admin-core/services"
 [data]
 program = "the8020/admin-core/services-status"
 refresh = 30
+
+[visible]
+permission = "the8020.services.service.view"

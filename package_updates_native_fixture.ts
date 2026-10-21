@@ -72,7 +72,7 @@ export default async function verify(context: NativeBrowserFixtureContext) {
     await admin([
       "auth.roles.grant",
       "package-updates-fixture",
-      "packages.*",
+      "the8020.packages.*",
       "fixtures/*",
     ]);
     await admin([

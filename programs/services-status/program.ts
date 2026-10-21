@@ -1,9 +1,9 @@
-import { kernel } from "@the8020/kernel";
+import { listServices } from "/p/the8020/services/src/admin.ts";
 import type { ServiceSummary } from "../../src/contracts.ts";
 
 /** Live status for the Home Services tile. */
 export default async function servicesStatus() {
-  const services = await kernel.services.list<ServiceSummary>();
+  const services = await listServices<ServiceSummary>();
   const enabled = services.filter((service) => service.enabled);
   const failing =
     enabled.filter((service) =>

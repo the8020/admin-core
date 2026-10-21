@@ -7,3 +7,6 @@ order = 20
 
 [open]
 program = "the8020/admin-core/programs"
+
+[visible]
+permission = "the8020.packages.package.view"

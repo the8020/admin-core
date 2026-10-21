@@ -376,7 +376,12 @@ Deno.test("live list and detail screens refresh their current target", async () 
         const refreshed = await waitForScreen(channel, 2);
         channel.push(screenEvent(channel, refreshed, BACK_EVENT, 2));
         assertEquals(await pending, { view: "back" });
-        assertEquals(calls, test.commands, `${test.name} did not reload`);
+        // Concurrent reads may arrive in any order; each must happen once.
+        assertEquals(
+          [...calls].sort(),
+          [...test.commands].sort(),
+          `${test.name} did not reload`,
+        );
       } finally {
         unbind();
       }

@@ -1,6 +1,10 @@
+import { allowed } from "./authorized.ts";
 import { archivedSandboxId, runtimeInfo } from "../types/runtime.ts";
 import { serviceInfo } from "/p/the8020/services/types/service.ts";
 import { ScreenFrame } from "./screen_frame.ts";
+
+const VIEW = "the8020.admin-core.sandbox.view";
+
 import { kernel, type LogPage } from "@the8020/kernel";
 import {
   BACK_EVENT,
@@ -180,6 +184,7 @@ const SandboxHistoryDetail = z.object({
 export async function sandboxList(
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  if (!await allowed(VIEW, "")) return { view: "back" };
   while (true) {
     const result = await kernel.admin.execute<SandboxListResult>(
       "sandbox.list",
@@ -211,6 +216,7 @@ export async function sandboxList(
 export async function sandboxHistoryList(
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  if (!await allowed(VIEW, "")) return { view: "back" };
   const context = frame.context({ before: "" });
   while (true) {
     const result = await kernel.admin.execute<SandboxHistoryListResult>(
@@ -247,6 +253,7 @@ export async function sandboxHistoryDetail(
   historyId: string,
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  if (!await allowed(VIEW, historyId)) return { view: "back" };
   const view = frame.context<{ cursor?: string; tail?: boolean }>({});
   while (true) {
     const result = await kernel.admin.execute<SandboxHistoryInspectResult>(
@@ -327,6 +334,7 @@ export async function sandboxDetail(
   sandboxId: string,
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  if (!await allowed(VIEW, sandboxId)) return { view: "back" };
   let result = await kernel.admin.execute<SandboxInspectResult>(
     "sandbox.refresh",
     { sandbox_id: sandboxId },

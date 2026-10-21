@@ -1,3 +1,4 @@
+import { allowed } from "./authorized.ts";
 import { runtimeInfo } from "../types/runtime.ts";
 import { kernel } from "@the8020/kernel";
 import {
@@ -11,6 +12,9 @@ import {
 import { serviceId } from "/p/the8020/services/types/service.ts";
 import { sandboxId, workerId } from "../types/runtime.ts";
 import { ScreenFrame } from "./screen_frame.ts";
+
+const VIEW = "the8020.admin-core.worker.view";
+
 import type { ScreenResult } from "./navigation.ts";
 import type { WorkerInspectResult, WorkerListResult } from "./contracts.ts";
 import { resourceModel } from "./resources.ts";
@@ -54,6 +58,7 @@ const WorkerList = z.object({
 export async function workerList(
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  if (!await allowed(VIEW, "")) return { view: "back" };
   while (true) {
     const result = await kernel.admin.execute<WorkerListResult>("worker.list");
     const event = await callScreen({
@@ -102,6 +107,7 @@ export async function workerDetail(
   id: string,
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  if (!await allowed(VIEW, id)) return { view: "back" };
   const initial = await kernel.admin.execute<WorkerInspectResult>(
     "worker.inspect",
     { worker_id: id },

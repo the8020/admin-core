@@ -1,0 +1,2 @@
+"the8020.admin-core.sandbox.view" = "View live and archived sandboxes, their Workers and logs; value is the sandbox or history ID, or empty for the lists."
+"the8020.admin-core.worker.view" = "View Workers and their resources; value is the Worker ID, or empty for the list."

@@ -126,7 +126,10 @@ below.
 # Ownership
 
 - `widgets/` declares this package's Home tiles and categories through the
-  `the8020/packages/widgets.ts` format.
+  `the8020/packages/widgets.ts` format; tiles are visible with the view
+  permission of what they show (`the8020.packages.package.view` for Packages and
+  Programs, `the8020.secrets.secret.view`, `the8020.services.service.view`,
+  `the8020.admin-core.sandbox.view`, `the8020.admin-core.worker.view`).
 - Own linked package list/detail/install/version/local-create, named-secret
   list/edit, program list/detail, service overview/settings, live sandbox and
   Worker list/detail, and separate historical sandbox list/detail screens plus
@@ -136,6 +139,13 @@ below.
 
 # Local Contracts
 
+- Sandbox and Worker screens read kernel-owned data, so admin-core declares and
+  checks `the8020.admin-core.sandbox.view` and `the8020.admin-core.worker.view`
+  (value the sandbox, history or Worker ID, empty for lists) when each screen
+  opens. `src/authorized.ts` turns such a denial into an error message and an
+  ordinary Back instead of a terminated program.
+- Service lists and details read through `the8020/services/src/admin.ts`
+  (`listServices`, `inspectService`) so service view permissions apply.
 - Package mutations use `the8020/packages/src/admin.ts`; service configuration
   and restarts use `the8020/services/src/admin.ts`. These application owners
   enforce authorization against the current user. Screens never substitute
