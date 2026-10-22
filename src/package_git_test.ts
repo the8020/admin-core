@@ -642,7 +642,15 @@ Deno.test("package deletion confirms, preserves detail on failure, and returns a
     }) satisfies KernelInvoke;
   const channel = new TestChannel();
   const seen = new Set<string>();
-  const actions = ["delete", "cancel", "delete", "delete", "delete", "delete"];
+  // Detail screens delete; the shared confirmation answers with confirm.
+  const actions = [
+    "delete",
+    "cancel",
+    "delete",
+    "confirm",
+    "delete",
+    "confirm",
+  ];
   const send = channel.send.bind(channel);
   let sequence = 0;
   channel.send = (message) => {
@@ -661,7 +669,10 @@ Deno.test("package deletion confirms, preserves detail on failure, and returns a
     if (seen.has(key)) return;
     seen.add(key);
     assertEquals(
-      screen.header.actions.some((action) => action.id === "delete"),
+      screen.header.actions.some((action) =>
+        action.id ===
+          (screen.id === "core-admin-package-delete" ? "confirm" : "delete")
+      ),
       true,
     );
     if (sequence === 2) assertEquals(calls.length, 0);

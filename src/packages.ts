@@ -20,10 +20,9 @@ import {
 import {
   BACK_EVENT,
   callScreen,
+  confirmAction,
   field,
   invokeProgram,
-  Model,
-  presentModal,
   sendMessage,
   z,
 } from "/p/the8020/uui/mod.ts";
@@ -378,23 +377,15 @@ export async function packageDetail(
       continue;
     }
     if (event.action === "delete") {
-      const confirmation = await presentModal(() =>
-        callScreen({
-          id: "core-admin-package-delete",
-          title: `Delete ${packageId}?`,
-          description:
-            "The package and its installed source will be removed. Database data will be retained.",
-          schema: z.object({}),
-          model: new Model({}),
-          header: {
-            actions: [
-              { id: "delete", label: "Delete package", kind: "danger" },
-              { id: "cancel", label: "Cancel" },
-            ],
-          },
-        })
-      );
-      if (confirmation.action !== "delete") continue;
+      const confirmed = await confirmAction({
+        id: "core-admin-package-delete",
+        title: `Delete ${packageId}?`,
+        message:
+          "The package and its installed source will be removed. Database data will be retained.",
+        confirm: "Delete package",
+        cancel: "Cancel",
+      });
+      if (!confirmed) continue;
       try {
         await packageAdmin.delete(packageId, true);
         sendMessage(`Deleted ${packageId}`, "success");
