@@ -12,6 +12,10 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 
 # Local Contracts
 
+- `kernel-console` and `kernel-logs` are separate interactive diagnostics
+  entrypoints with their own bounded screen loops. They use ordinary shell Back;
+  they have no retained entity list/detail stack requiring a navigation frame.
+
 - Interactive manifests declare `uui = true`. Calling without arguments opens
   the catalog; Programs, Packages, Secrets, Services, Sandboxes, and Workers
   accept an optional selected identifier.

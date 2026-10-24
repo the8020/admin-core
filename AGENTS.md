@@ -139,6 +139,24 @@ below.
 
 # Local Contracts
 
+- Kernel calls and Kernel logs are separate Home programs. `kernel.execute`
+  (full key `the8020.admin-core.kernel.execute`, empty value) grants native CBus
+  administration, including mutations and package commands executed as system;
+  it is intentionally stronger than individual package permissions. Check it on
+  entry and before every action. `the8020.admin-core.logs.view` checks the exact
+  node before log reads or exports. Tiles use their respective declarations.
+- Kernel calls uses the live catalog and native line parser through the Worker
+  bridge, retaining only the latest 64 KiB result in an ordinary read-only
+  textarea. Required native confirmation flags remain required. Secure-input
+  commands are visible but rejected with guidance to native admin or dedicated
+  screens; browser input never becomes a host secret-file path.
+- Kernel logs uses one 100-record/256 KiB owner page at a time. Filters restart
+  cursors; First, Recent, Next and Refresh use the same query API as history.
+  Copy page and Save page export exactly the displayed page, including readable
+  multiline text, through UUI clipboard/downloads. They do not export all pages.
+  The status exposes recent-window limits, more results, unreadable records,
+  expiration and unavailability. There is no additional log storage.
+
 - Sandbox and Worker screens read kernel-owned data, so admin-core declares and
   checks `the8020.admin-core.sandbox.view` and `the8020.admin-core.worker.view`
   (value the sandbox, history or Worker ID, empty for lists) when each screen
@@ -306,6 +324,19 @@ below.
   explicitly asks for onboarding help.
 
 # Verification
+
+- `diagnostics_native_fixture.ts` runs through the sibling UUI native browser
+  harness (`--fixture=../admin-core/diagnostics_native_fixture.ts`). It stages
+  development helpers through the ordinary installer, verifies real catalog
+  selection/dispatch, a harmless event mutation, native rejection, host log
+  search/continuation, byte-exact browser page copy/download, node
+  authorization, and the installed sandbox helper/discovery plus token
+  isolation. Use disposable runtime images with a current native smoke record
+  and workspace resource limits.
+- `src/diagnostics_test.ts` checks ordinary text controls, result replacement,
+  errors, permission denial, filtered continuation/reset/refresh, multiline
+  copy, expiration and unavailable nodes. Native logging-owner tests cover
+  rotation, retention and limits.
 
 - Run package tasks inside an 80|20 Deno workspace; its root config supplies
   platform imports. The package config owns dependencies and tasks.

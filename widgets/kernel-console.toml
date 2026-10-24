@@ -1,0 +1,12 @@
+schema = 1
+title = "Kernel calls"
+description = "Kernel calls"
+icon = "terminal"
+category = "operations"
+order = 50
+
+[open]
+program = "the8020/admin-core/kernel-console"
+
+[visible]
+permission = "the8020.admin-core.kernel.execute"

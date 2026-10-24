@@ -1,0 +1,12 @@
+schema = 1
+title = "Kernel logs"
+description = "Kernel logs"
+icon = "description"
+category = "operations"
+order = 51
+
+[open]
+program = "the8020/admin-core/kernel-logs"
+
+[visible]
+permission = "the8020.admin-core.logs.view"

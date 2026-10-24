@@ -1,2 +1,5 @@
 "the8020.admin-core.sandbox.view" = "View live and archived sandboxes, their Workers and logs; value is the sandbox or history ID, or empty for the lists."
 "the8020.admin-core.worker.view" = "View Workers and their resources; value is the Worker ID, or empty for the list."
+
+"the8020.admin-core.kernel.execute" = { description = "Execute the native administrative command catalog, including state changes and system package commands; value is empty. Grant only to kernel administrators.", value = false }
+"the8020.admin-core.logs.view" = "Read kernel and execution logs; value is the exact node ID."

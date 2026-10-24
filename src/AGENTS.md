@@ -13,6 +13,18 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 
 # Local Contracts
 
+- `kernel-console.ts` and `kernel-logs.ts` own independent diagnostic screen
+  loops using shell Back, ordinary UUI fields/lists, authorized actions, and the
+  shared native catalog/log SDK. Console output is plain text and replaces the
+  previous result. The log loop retains one page and its applied query; changed
+  filters discard the old cursor before reads, copy or save. Downloads attach to
+  the next pending screen through `nextScreenChannel`. Log filters reuse
+  semantic identifiers but omit live sandbox value help, which would require a
+  separate permission to list sandboxes.
+- The console permission authorizes the complete administrative bus; it is not a
+  substitute for package-specific mutation APIs in other screens. Secure-input
+  commands remain unavailable in this one-field console.
+
 - Package mutations use `the8020/packages/src/admin.ts`; service configuration
   and restarts use `the8020/services/src/admin.ts`. These application owners
   enforce authorization against the current user. Screens never substitute
