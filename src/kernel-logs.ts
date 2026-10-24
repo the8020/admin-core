@@ -125,15 +125,12 @@ export async function kernelLogs(): Promise<void> {
   let status = "";
   let action = "recent";
   while (true) {
-    const values = Filters.parse(model.data);
-    values.node_id = values.node_id.trim() || context.nodeId;
-    model.data.node_id = values.node_id;
-    if (!await allowed(VIEW, values.node_id)) return;
-    const changed = filters !== JSON.stringify(values);
-    if (
-      changed ||
-      ["first", "recent", "next", "refresh", "search"].includes(action)
-    ) {
+    if (["first", "recent", "next", "refresh", "search"].includes(action)) {
+      const values = Filters.parse(model.data);
+      values.node_id = values.node_id.trim() || context.nodeId;
+      model.data.node_id = values.node_id;
+      if (!await allowed(VIEW, values.node_id)) return;
+      const changed = filters !== JSON.stringify(values);
       if (
         changed || action === "search" || action === "first" ||
         action === "recent"
@@ -158,8 +155,9 @@ export async function kernelLogs(): Promise<void> {
         status = error instanceof Error ? error.message : String(error);
       }
     }
+    if (!await allowed(VIEW, query.node_id ?? context.nodeId)) return;
     if (action === "copy") copyText(model.data.output);
-    model.data.status = `Node ${values.node_id} · ${status}`;
+    model.data.status = `Node ${query.node_id} · ${status}`;
     const channel = nextScreenChannel();
     const pending = callScreen({
       id: "kernel-logs",
@@ -207,6 +205,5 @@ export async function kernelLogs(): Promise<void> {
     const event = await pending;
     if (event.action === BACK_EVENT) return;
     action = event.action;
-    if (!await allowed(VIEW, values.node_id)) return;
   }
 }

@@ -168,13 +168,19 @@ kernel-logs "$query"
     `document.querySelector('textarea[data-bind="output"]').value`,
   );
   assert(output.includes(node));
+  const status = await page.evaluate<string>(
+    `document.querySelector('[data-bind="status"]').value`,
+  );
+  assert(status.startsWith(`Node ${node} ·`));
+  await setValue(page, '[data-bind="text"]', "diagnostics pending copy");
+  await setValue(page, '[data-bind="node_id"]', "nod-0000000000");
   await clickButton(page, "Copy page");
   await waitForPage(
     page,
     `(async () => (await navigator.clipboard.readText()) === ${
       JSON.stringify(output)
     })()`,
-    "exact page copy",
+    "exact displayed-page copy with pending filters",
   );
   const downloads = `${c.root}/diagnostics-downloads`;
   await Deno.mkdir(downloads);
@@ -182,6 +188,7 @@ kernel-logs "$query"
     behavior: "allow",
     downloadPath: downloads,
   });
+  await setValue(page, '[data-bind="text"]', "diagnostics pending save");
   await clickButton(page, "Save page");
   let saved = "";
   for (let i = 0; i < 100; i++) {
@@ -192,6 +199,20 @@ kernel-logs "$query"
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   assertEquals(saved, output, "save includes every byte of the displayed page");
+  assertEquals(
+    await page.evaluate<string>(
+      `document.querySelector('textarea[data-bind="output"]').value`,
+    ),
+    output,
+  );
+  assertEquals(
+    await page.evaluate<string>(
+      `document.querySelector('[data-bind="status"]').value`,
+    ),
+    status,
+  );
+  await setValue(page, '[data-bind="text"]', "development sandbox");
+  await setValue(page, '[data-bind="node_id"]', node);
   await clickButton(page, "Next");
   await waitForPage(
     page,

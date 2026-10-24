@@ -16,11 +16,14 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 - `kernel-console.ts` and `kernel-logs.ts` own independent diagnostic screen
   loops using shell Back, ordinary UUI fields/lists, authorized actions, and the
   shared native catalog/log SDK. Console output is plain text and replaces the
-  previous result. The log loop retains one page and its applied query; changed
-  filters discard the old cursor before reads, copy or save. Downloads attach to
-  the next pending screen through `nextScreenChannel`. Log filters reuse
-  semantic identifiers but omit live sandbox value help, which would require a
-  separate permission to list sandboxes.
+  previous result. The log loop retains one page and its applied query. Only
+  Search, First, Recent, Next and Refresh apply draft filters and discard an old
+  cursor when filters change. Copy/save preserve displayed bytes and recheck
+  permission for the applied node even when draft filters name another node;
+  page status identifies that applied node. Downloads attach to the next pending
+  screen through `nextScreenChannel`. Log filters reuse semantic identifiers but
+  omit live sandbox value help, which would require a separate permission to
+  list sandboxes.
 - The console permission authorizes the complete administrative bus; it is not a
   substitute for package-specific mutation APIs in other screens. Secure-input
   commands remain unavailable in this one-field console.

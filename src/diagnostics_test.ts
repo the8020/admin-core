@@ -6,8 +6,10 @@ import {
   type ScreenSnapshot,
   UUI_PROTOCOL_VERSION,
   type UUIClientMessage,
+  type UUIWorkerOutbound,
 } from "/p/the8020/uui/mod.ts";
-import { bindSession } from "../../uui/session.ts";
+import { ChannelRouter } from "../../uui/channel.ts";
+import { bindSession, connectChannels } from "../../uui/session.ts";
 function decodeKernelCall(operation: string, input: Record<string, unknown>) {
   assertEquals(operation, "runtime.operation");
   return {
@@ -26,20 +28,22 @@ class Channel {
   sent: Array<Record<string, unknown>> = [];
   screens: ScreenSnapshot[] = [];
   surfaces = new Map<ScreenSnapshot, string>();
-  inputs: UUIClientMessage[] = [];
-  waiters: Array<(message: UUIClientMessage) => void> = [];
-  receive(): Promise<UUIClientMessage> {
+  inputs: Array<UUIClientMessage | Uint8Array> = [];
+  waiters: Array<(message: UUIClientMessage | Uint8Array) => void> = [];
+  onSend?: (message: UUIWorkerOutbound | Uint8Array) => void;
+  receive(): Promise<UUIClientMessage | Uint8Array> {
     const input = this.inputs.shift();
     return input
       ? Promise.resolve(input)
       : new Promise((resolve) => this.waiters.push(resolve));
   }
-  reply(message: UUIClientMessage) {
+  reply(message: UUIClientMessage | Uint8Array) {
     const waiter = this.waiters.shift();
     if (waiter) waiter(message);
     else this.inputs.push(message);
   }
-  send(raw: unknown) {
+  send(raw: UUIWorkerOutbound | Uint8Array) {
+    this.onSend?.(raw);
     if (typeof raw !== "object" || raw === null) return;
     const message = raw as Record<string, unknown>;
     this.sent.push(message);
@@ -155,6 +159,187 @@ Deno.test("console sends native line, replaces results, displays errors and copi
     fixture.close();
   }
 });
+
+Deno.test("log copy/save retain displayed bytes and node with unapplied filters", async () => {
+  const fixture = await authDatabase();
+  const { createRole } = await import("/p/the8020/auth/src/admin.ts");
+  const globals = globalThis as unknown as Record<symbol, unknown>;
+  const previous = globals[kernelInvokeSymbol] as KernelInvoke;
+  const queries: Record<string, unknown>[] = [];
+  const channel = new Channel();
+  const client = new ChannelRouter("client", (frame) => {
+    channel.reply(
+      frame instanceof Uint8Array ? frame : {
+        ...frame,
+        sessionId: channel.sessionId,
+        protocol: UUI_PROTOCOL_VERSION,
+        clientSequence: 0,
+      },
+    );
+  });
+  const lifetime = new AbortController();
+  const saved = Promise.withResolvers<ArrayBuffer>();
+  let generation = "";
+  channel.onSend = (frame) => {
+    if (!(frame instanceof Uint8Array) && frame.type === "presentation.show") {
+      const screen = frame.presentation.surfaces.at(-1)!.screen;
+      if (generation !== screen.channelGeneration) {
+        generation = screen.channelGeneration!;
+        const endpoint = client.register(
+          screen.downloadNamespace!,
+          generation,
+          () => {},
+          lifetime.signal,
+        );
+        endpoint.subscribe("*", async (_id, data) => {
+          if (data instanceof ReadableStream) {
+            saved.resolve(await new Response(data).arrayBuffer());
+          }
+        });
+      }
+    }
+    queueMicrotask(() => {
+      if (frame instanceof Uint8Array) client.bytes(frame);
+      else if (frame.type === "channel.frame") client.receive(frame);
+    });
+  };
+  const unbind = bindSession(channel);
+  connectChannels("exports");
+  client.connect("exports");
+  try {
+    await createRole({
+      name: "viewer",
+      description: "",
+      permissions: { "the8020.admin-core.logs.view": "test" },
+    });
+    fixture.asUser("viewer");
+    globals[kernelInvokeSymbol] = ((operation, input) => {
+      if (operation !== "runtime.operation") return previous(operation, input);
+      const call = decodeKernelCall(operation, input);
+      assertEquals(call.command, "logs.query");
+      queries.push(call.arguments);
+      return Promise.resolve(kernelSuccess(call, {
+        state: "ok",
+        records: [{
+          time: "2026-10-24T00:00:00Z",
+          level: "ERROR",
+          source: "kernel",
+          component: "test",
+          node_id: "test",
+          message: `page ${queries.length}\nstack řádek`,
+          segment: "segment",
+          offset: 0,
+        }],
+        cursor: `cursor-${queries.length}`,
+        more: true,
+        scanned_bytes: 100,
+      }));
+    }) satisfies KernelInvoke;
+    const run = kernelLogs();
+    void run.catch(() => {});
+    const first = await channel.screen(1);
+    const displayed = (first.model as { output: string }).output;
+    channel.act(first, "copy", [
+      { bind: "text", value: "pending" },
+      { bind: "node_id", value: "other" },
+    ]);
+    const copied = await channel.screen(2);
+    assertEquals(
+      channel.sent.find((m) => m.type === "clipboard.write")?.text,
+      displayed,
+    );
+    channel.act(copied, "save", [{ bind: "text", value: "another draft" }]);
+    const exported = await channel.screen(3);
+    assertEquals(
+      new Uint8Array(await saved.promise),
+      new TextEncoder().encode(displayed),
+    );
+    assertEquals(queries.length, 1);
+    assertEquals((exported.model as { output: string }).output, displayed);
+    assertEquals((exported.model as { node_id: string }).node_id, "other");
+    assertEquals(
+      (exported.model as { status: string }).status,
+      (first.model as { status: string }).status,
+    );
+    channel.act(exported, "next", [{ bind: "node_id", value: "test" }]);
+    const applied = await channel.screen(4);
+    assertEquals(queries[1], {
+      node_id: "test",
+      text: "another draft",
+      limit: 100,
+    });
+    channel.act(applied, "search", [{ bind: "node_id", value: "other" }]);
+    await run;
+    assertEquals(queries.length, 2);
+    assertEquals(
+      fixture.database.prepare(
+        "SELECT value FROM the8020__auth__failures",
+      ).all(),
+      [{ value: "other" }],
+    );
+  } finally {
+    lifetime.abort();
+    client.disconnect();
+    unbind();
+    globals[kernelInvokeSymbol] = previous;
+    fixture.close();
+  }
+});
+
+for (const action of ["copy", "save"]) {
+  Deno.test(`log ${action} rechecks the displayed node after permission revocation`, async () => {
+    const fixture = await authDatabase();
+    const { createRole, setPermission } = await import(
+      "/p/the8020/auth/src/admin.ts"
+    );
+    const channel = new Channel();
+    const unbind = bindSession(channel);
+    const globals = globalThis as unknown as Record<symbol, unknown>;
+    const previous = globals[kernelInvokeSymbol] as KernelInvoke;
+    let reads = 0;
+    try {
+      await createRole({
+        name: "viewer",
+        description: "",
+        permissions: { "the8020.admin-core.logs.view": "test" },
+      });
+      globals[kernelInvokeSymbol] = ((operation, input) => {
+        if (operation !== "runtime.operation") {
+          return previous(operation, input);
+        }
+        reads++;
+        return Promise.resolve(kernelSuccess(null, {
+          state: "ok",
+          records: [],
+          more: false,
+          scanned_bytes: 0,
+        }));
+      }) satisfies KernelInvoke;
+      fixture.asUser("viewer");
+      const run = kernelLogs();
+      void run.catch(() => {});
+      const displayed = await channel.screen(1);
+      fixture.asUser("system");
+      await setPermission("viewer", "the8020.admin-core.logs.view", "other");
+      fixture.asUser("viewer");
+      channel.act(displayed, action, [{ bind: "node_id", value: "other" }]);
+      await run;
+      assertEquals(reads, 1);
+      assertEquals(channel.screens.length, 1);
+      assert(!channel.sent.some((m) => m.type === "clipboard.write"));
+      assertEquals(
+        fixture.database.prepare(
+          "SELECT value FROM the8020__auth__failures",
+        ).all(),
+        [{ value: "test" }],
+      );
+    } finally {
+      unbind();
+      globals[kernelInvokeSymbol] = previous;
+      fixture.close();
+    }
+  });
+}
 
 Deno.test("log pages reset changed filters, preserve multiline copy and expose expired state", async () => {
   const fixture = await authDatabase();

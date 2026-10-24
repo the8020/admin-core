@@ -154,8 +154,9 @@ below.
   cursors; First, Recent, Next and Refresh use the same query API as history.
   Copy page and Save page export exactly the displayed page, including readable
   multiline text, through UUI clipboard/downloads. They do not export all pages.
-  The status exposes recent-window limits, more results, unreadable records,
-  expiration and unavailability. There is no additional log storage.
+  Unsubmitted filters do not change exports or the applied-node permission
+  check. The status exposes recent-window limits, more results, unreadable
+  records, expiration and unavailability. There is no additional log storage.
 
 - Sandbox and Worker screens read kernel-owned data, so admin-core declares and
   checks `the8020.admin-core.sandbox.view` and `the8020.admin-core.worker.view`
@@ -329,14 +330,15 @@ below.
   harness (`--fixture=../admin-core/diagnostics_native_fixture.ts`). It stages
   development helpers through the ordinary installer, verifies real catalog
   selection/dispatch, a harmless event mutation, native rejection, host log
-  search/continuation, byte-exact browser page copy/download, node
-  authorization, and the installed sandbox helper/discovery plus token
-  isolation. Use disposable runtime images with a current native smoke record
-  and workspace resource limits.
+  search/continuation, byte-exact browser page copy/download with pending
+  filters, node authorization, and the installed sandbox helper/discovery plus
+  token isolation. Use disposable runtime images with a current native smoke
+  record and workspace resource limits.
 - `src/diagnostics_test.ts` checks ordinary text controls, result replacement,
   errors, permission denial, filtered continuation/reset/refresh, multiline
-  copy, expiration and unavailable nodes. Native logging-owner tests cover
-  rotation, retention and limits.
+  copy/download with unapplied filters, applied-node permission revocation,
+  expiration and unavailable nodes. Native logging-owner tests cover rotation,
+  retention and limits.
 
 - Run package tasks inside an 80|20 Deno workspace; its root config supplies
   platform imports. The package config owns dependencies and tasks.
