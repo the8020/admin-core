@@ -125,6 +125,10 @@ Deno.test("console sends native line, replaces results, displays errors and copi
     }]);
     const result = await channel.screen(2);
     assertEquals(
+      result.controls.find((f) => f.bind === "output")?.length,
+      "full",
+    );
+    assertEquals(
       result.fields.find((f) => f.bind === "output")?.control,
       "textarea",
     );
@@ -238,6 +242,10 @@ Deno.test("log copy/save retain displayed bytes and node with unapplied filters"
     const run = kernelLogs();
     void run.catch(() => {});
     const first = await channel.screen(1);
+    assertEquals(
+      first.controls.find((f) => f.bind === "output")?.length,
+      "full",
+    );
     const displayed = (first.model as { output: string }).output;
     channel.act(first, "copy", [
       { bind: "text", value: "pending" },

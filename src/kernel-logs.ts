@@ -74,7 +74,7 @@ const Logs = Filters.extend({
     control: "textarea",
     readOnly: true,
     rowSpan: 8,
-    length: "long",
+    length: "full",
     style: "font-family: monospace;",
   }),
 });

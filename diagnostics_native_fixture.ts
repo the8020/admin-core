@@ -21,6 +21,29 @@ export default async function verify(c: NativeBrowserFixtureContext) {
     );
   };
   const node = (await admin(["kernel.status"])).instance_uuid as string;
+  const verifyOutputWidth = async () => {
+    for (const width of [1280, 820, 390]) {
+      await page.command("Emulation.setDeviceMetricsOverride", {
+        width,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+      });
+      await waitForPage(
+        page,
+        `(() => {
+        const field = document.querySelector('textarea[data-bind="output"]').closest('.field');
+        const bounds = field.getBoundingClientRect();
+        const grid = field.parentElement.getBoundingClientRect();
+        return field.dataset.fieldRowSpan === '8' &&
+          Math.abs(bounds.left - grid.left) < 0.5 && Math.abs(bounds.right - grid.right) < 0.5 &&
+          document.documentElement.scrollWidth <= innerWidth;
+      })()`,
+        `full-width output at ${width}px`,
+      );
+    }
+    await page.command("Emulation.clearDeviceMetricsOverride");
+  };
   await admin(["auth.roles.create", "diagnostics"]);
   await admin([
     "auth.roles.grant",
@@ -96,6 +119,7 @@ kernel-logs "$query"
   await clickButton(page, "Refresh");
   await clickRow(page, "the8020/admin-core/kernel-console");
   await waitForScreen(page, "Kernel calls", 30_000);
+  await verifyOutputWidth();
   await clickButton(page, "Calls");
   await waitForPage(
     page,
@@ -157,6 +181,7 @@ kernel-logs "$query"
   await waitForScreen(page, "Welcome to 80|20");
   await clickRow(page, "the8020/admin-core/kernel-logs");
   await waitForScreen(page, "Kernel logs", 30_000);
+  await verifyOutputWidth();
   await setValue(page, '[data-bind="text"]', "development sandbox");
   await clickButton(page, "First");
   await waitForPage(
