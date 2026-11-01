@@ -28,7 +28,11 @@
       {
         "id": "sandboxes",
         "type": "list",
-        "title": "Running capacity",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.running_capacity",
+          "fallback": "Running capacity"
+        },
         "bind": "sandboxes",
         "key": "navigation",
         "display": [
@@ -42,11 +46,19 @@
             "length": "long"
           },
           "activeRequests": {
-            "shortHeading": "Requests",
+            "shortHeading": {
+              "package": "the8020/admin-core",
+              "key": "layout.requests",
+              "fallback": "Requests"
+            },
             "length": "short"
           },
           "activeExecutions": {
-            "shortHeading": "Executions",
+            "shortHeading": {
+              "package": "the8020/admin-core",
+              "key": "layout.executions",
+              "fallback": "Executions"
+            },
             "length": "short"
           },
           "workers": {

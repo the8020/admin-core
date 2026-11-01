@@ -17,7 +17,11 @@
       {
         "id": "versions-list",
         "type": "list",
-        "title": "Recent versions",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.recent_versions",
+          "fallback": "Recent versions"
+        },
         "bind": "versions",
         "key": "commit",
         "display": [
@@ -43,11 +47,19 @@
         "toolbar": [
           {
             "id": "refresh",
-            "label": "[[icon=refresh]] Refresh"
+            "label": {
+              "package": "the8020/admin-core",
+              "key": "layout.icon_refresh_refresh",
+              "fallback": "[[icon=refresh]] Refresh"
+            }
           },
           {
             "id": "save",
-            "label": "Apply version",
+            "label": {
+              "package": "the8020/admin-core",
+              "key": "layout.apply_version",
+              "fallback": "Apply version"
+            },
             "kind": "primary"
           }
         ]

@@ -16,11 +16,19 @@
     ],
     "columnOptions": {
       "canonicalName": {
-        "shortHeading": "Package"
+        "shortHeading": {
+          "package": "the8020/admin-core",
+          "key": "layout.package",
+          "fallback": "Package"
+        }
       },
       "services": {
         "length": "compact",
-        "shortHeading": "S"
+        "shortHeading": {
+          "package": "the8020/admin-core",
+          "key": "layout.s",
+          "fallback": "S"
+        }
       },
       "description": {
         "length": "long"
@@ -29,24 +37,44 @@
     "toolbar": [
       {
         "id": "install",
-        "label": "Install package",
+        "label": {
+          "package": "the8020/admin-core",
+          "key": "layout.install_package",
+          "fallback": "Install package"
+        },
         "kind": "primary"
       },
       {
         "id": "local",
-        "label": "Create local package"
+        "label": {
+          "package": "the8020/admin-core",
+          "key": "layout.create_local_package",
+          "fallback": "Create local package"
+        }
       },
       {
         "id": "fetch",
-        "label": "Fetch"
+        "label": {
+          "package": "the8020/admin-core",
+          "key": "layout.fetch",
+          "fallback": "Fetch"
+        }
       },
       {
         "id": "update",
-        "label": "Update"
+        "label": {
+          "package": "the8020/admin-core",
+          "key": "layout.update",
+          "fallback": "Update"
+        }
       },
       {
         "id": "refresh",
-        "label": "[[icon=refresh]] Refresh"
+        "label": {
+          "package": "the8020/admin-core",
+          "key": "layout.icon_refresh_refresh",
+          "fallback": "[[icon=refresh]] Refresh"
+        }
       }
     ]
   }

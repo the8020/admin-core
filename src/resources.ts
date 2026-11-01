@@ -1,3 +1,5 @@
+import { text as localizedText } from "/p/the8020/i18n/mod.ts";
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import type { WorkerResources } from "@the8020/kernel";
 import type { WorkerStatus } from "./contracts.ts";
 
@@ -9,8 +11,10 @@ export function resourceModel(resources?: WorkerResources) {
   return {
     heap: resources
       ? `${(resources.heap_used_bytes / 1024 / 1024).toFixed(1)} MiB`
-      : "Not measured",
-    cpu: resources ? cpuTime(resources.cpu_usage_micros) : "Not measured",
+      : localizedText(msg("view.not_measured")),
+    cpu: resources
+      ? cpuTime(resources.cpu_usage_micros)
+      : localizedText(msg("view.not_measured")),
     resourceSampledAt: resources?.sampled_at ?? "",
   };
 }

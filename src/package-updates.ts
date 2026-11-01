@@ -1,22 +1,22 @@
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import type { PackageRepository, PackageVersions } from "@the8020/kernel";
 import { packages } from "/p/the8020/packages/src/admin.ts";
 import { choiceHelp, field } from "/p/the8020/db/fields.ts";
 import { sourceInfo } from "/p/the8020/packages/types/source.ts";
 
 export const updateLabels = {
-  unchecked: "[[icon=help color=muted]] Not checked",
-  unavailable: "[[icon=cloud_off color=muted]] No remote",
-  current: "[[icon=check_circle color=success]] Up to date",
-  available: "[[icon=upgrade color=info]] Update available",
-  modified: "[[icon=edit color=warning]] Local changes",
-  blocked: "[[icon=warning color=warning]] Needs review",
-  failed: "[[icon=error color=danger]] Check failed",
+  unchecked: msg("package_updates.unchecked"),
+  unavailable: msg("package_updates.unavailable"),
+  current: msg("package_updates.current"),
+  available: msg("package_updates.available"),
+  modified: msg("package_updates.modified"),
+  blocked: msg("package_updates.blocked"),
+  failed: msg("package_updates.failed"),
 } as const;
 
 export const packageUpdateField = field(sourceInfo.shape.repositoryStatus, {
-  label: "Updates",
-  description:
-    "Availability from the last Fetch in this list. Update applies the newest fetched release tag, or the current remote branch when there are no release tags. Local changes and histories that cannot be safely advanced are skipped.",
+  label: msg("package_updates.updates"),
+  description: msg("package_updates.availability_from_the_last_fetch_in_this"),
   valueHelp: choiceHelp(
     sourceInfo.shape.repositoryStatus,
     Object.values(updateLabels),

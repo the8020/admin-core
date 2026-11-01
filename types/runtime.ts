@@ -1,10 +1,10 @@
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { sourceInfo } from "/p/the8020/packages/types/source.ts";
 import { choiceHelp, field, z } from "/p/the8020/db/fields.ts";
 
 export const sandboxId: z.ZodString = field(z.string(), {
-  label: "Sandbox",
-  description:
-    "A running environment for services and background work. Open it to see activity, resource use, and Workers.",
+  label: msg("runtime.sandbox"),
+  description: msg("runtime.a_running_environment_for_services_and_background"),
   valueHelp: async (request) => {
     const { kernel } = await import("@the8020/kernel");
     const { queryValueHelp } = await import("/p/the8020/uui/lists.ts");
@@ -37,9 +37,8 @@ export const sandboxId: z.ZodString = field(z.string(), {
 });
 
 export const workerId: z.ZodString = field(z.string(), {
-  label: "Worker",
-  description:
-    "A Worker runs a service or background program inside a sandbox. Open it to see its activity and owning workload.",
+  label: msg("runtime.worker"),
+  description: msg("runtime.a_worker_runs_a_service_or_background"),
   open: async (value) => {
     const { default: workers } = await import("../programs/workers/program.ts");
     await workers(value);
@@ -47,22 +46,20 @@ export const workerId: z.ZodString = field(z.string(), {
 });
 
 export const archivedSandboxId = field(sandboxId, {
-  label: "Sandbox ID",
-  description:
-    "The sandbox that produced this archive. Its live environment is no longer available.",
+  label: msg("sandboxes.sandbox_id"),
+  description: msg("runtime.the_sandbox_that_produced_this_archive_its"),
   valueHelp: undefined,
   open: undefined,
 });
 
 export const runtimeInfo = z.object({
   sandboxGroup: field(z.string(), {
-    label: "Sandbox group",
-    description:
-      "Compatible workloads in the same group may share a sandbox. Leave empty to use the default placement.",
+    label: msg("runtime.sandbox_group"),
+    description: msg("runtime.compatible_workloads_in_the_same_group_may"),
   }),
   state: field(z.string(), {
-    label: "Status",
-    description: "The observed lifecycle state of this runtime environment.",
+    label: msg("runtime.status"),
+    description: msg("runtime.the_observed_lifecycle_state_of_this_runtime"),
     valueHelp: choiceHelp(z.string(), [
       "CREATING",
       "STARTING",
@@ -76,8 +73,8 @@ export const runtimeInfo = z.object({
     ]),
   }),
   workerState: field(z.string(), {
-    label: "Status",
-    description: "The observed lifecycle state of this Worker.",
+    label: msg("runtime.status"),
+    description: msg("runtime.the_observed_lifecycle_state_of_this_worker"),
     valueHelp: choiceHelp(z.string(), [
       "starting",
       "ready",
@@ -87,133 +84,125 @@ export const runtimeInfo = z.object({
     ]),
   }),
   type: field(z.string(), {
-    label: "Type",
-    description: "The kind of work for which this sandbox was created.",
+    label: msg("runtime.type"),
+    description: msg("runtime.the_kind_of_work_for_which_this"),
     valueHelp: choiceHelp(z.string(), ["service", "job"]),
   }),
   reason: field(z.string(), {
-    label: "Reason",
-    description: "Why this sandbox was created or changed state.",
+    label: msg("runtime.reason"),
+    description: msg("runtime.why_this_sandbox_was_created_or_changed"),
   }),
   groupKey: field(z.string(), {
-    label: "Group key",
-    description:
-      "The compatibility group used to place work together in this sandbox.",
+    label: msg("runtime.group_key"),
+    description: msg("runtime.the_compatibility_group_used_to_place_work"),
   }),
   workerCount: field(z.number().int(), {
-    label: "Workers",
-    description:
-      "Number of Workers currently assigned to this environment or workload.",
+    label: msg("sandboxes.workers"),
+    description: msg("runtime.number_of_workers_currently_assigned_to_this"),
   }),
   sandboxCount: field(z.number().int(), {
-    label: "Sandboxes",
-    description: "Number of environments currently hosting this workload.",
+    label: msg("sandboxes.sandboxes"),
+    description: msg(
+      "runtime.number_of_environments_currently_hosting_this_workload",
+    ),
   }),
   activeRequests: field(z.number().int().nonnegative(), {
-    label: "Active requests",
-    description:
-      "Requests currently being handled. These may continue while an older version drains.",
+    label: msg("runtime.active_requests"),
+    description: msg(
+      "runtime.requests_currently_being_handled_these_may_continue",
+    ),
   }),
   activeExecutions: field(z.number().int().nonnegative(), {
-    label: "Active executions",
-    description:
-      "Persistent executions still running in this environment, including sessions.",
+    label: msg("runtime.active_executions"),
+    description: msg(
+      "runtime.persistent_executions_still_running_in_this_environment",
+    ),
   }),
   snapshotRevision: field(z.number().int().nonnegative(), {
-    label: "Snapshot revision",
-    description:
-      "Revision of this observed runtime state. Refresh the detail to request a new observation.",
+    label: msg("runtime.snapshot_revision"),
+    description: msg("runtime.revision_of_this_observed_runtime_state_refresh"),
   }),
   snapshotObservedAt: field(z.string(), {
-    label: "Snapshot observed",
-    description:
-      "When this runtime state was last observed. Refresh the detail for a current observation.",
+    label: msg("runtime.snapshot_observed"),
+    description: msg("runtime.when_this_runtime_state_was_last_observed"),
   }),
   failure: field(z.string(), {
-    label: "Attention",
-    description:
-      "The latest reported problem affecting this environment or workload.",
+    label: msg("runtime.attention"),
+    description: msg(
+      "runtime.the_latest_reported_problem_affecting_this_environment",
+    ),
   }),
   memoryBytes: field(z.number().nonnegative(), {
-    label: "Memory bytes",
-    description: "Current memory use in bytes.",
+    label: msg("runtime.memory_bytes"),
+    description: msg("runtime.current_memory_use_in_bytes"),
   }),
   memory: field(z.string(), {
-    label: "RAM in use",
-    description: "Total sandbox memory use, displayed in readable units.",
+    label: msg("runtime.ram_in_use"),
+    description: msg("runtime.total_sandbox_memory_use_displayed_in_readable"),
   }),
   heap: field(z.string(), {
-    label: "Heap used",
-    description:
-      "JavaScript heap in use by the live Workers. External allocations and shared runtime overhead are excluded.",
+    label: msg("runtime.heap_used"),
+    description: msg("runtime.javascript_heap_in_use_by_the_live"),
   }),
   cpu: field(z.string(), {
-    label: "CPU time",
-    description:
-      "Accumulated CPU time. Sandbox totals include the runtime; Worker and workload totals count their currently live Worker threads.",
+    label: msg("runtime.cpu_time"),
+    description: msg("runtime.accumulated_cpu_time_sandbox_totals_include_the"),
   }),
   resourceSampledAt: field(z.string(), {
-    label: "Resources measured",
-    description:
-      "Time of the oldest resource sample shown. A busy Worker can retain an earlier sample until it can respond.",
+    label: msg("runtime.resources_measured"),
+    description: msg("runtime.time_of_the_oldest_resource_sample_shown"),
   }),
   nodeId: field(z.string(), {
-    label: "Node",
-    description:
-      "The node that hosts, or last hosted, this execution environment.",
+    label: msg("kernel_logs.node"),
+    description: msg("runtime.the_node_that_hosts_or_last_hosted"),
   }),
   createdAt: field(z.string(), {
-    label: "Started",
-    description: "When this execution environment started.",
+    label: msg("runtime.started"),
+    description: msg("runtime.when_this_execution_environment_started"),
   }),
   cpuMicros: field(z.number().nonnegative(), {
-    label: "CPU microseconds",
-    description: "Accumulated CPU time used by this sandbox, in microseconds.",
+    label: msg("runtime.cpu_microseconds"),
+    description: msg("runtime.accumulated_cpu_time_used_by_this_sandbox"),
   }),
   pids: field(z.number().nonnegative(), {
-    label: "Processes",
-    description: "Number of operating-system processes in this sandbox.",
+    label: msg("runtime.processes"),
+    description: msg("runtime.number_of_operating_system_processes_in_this"),
   }),
   owner: field(z.string(), {
-    label: "Workload owner",
-    description:
-      "The program or service that owns this work. This is separate from its execution user.",
+    label: msg("runtime.workload_owner"),
+    description: msg("runtime.the_program_or_service_that_owns_this"),
   }),
   workload: field(z.string(), {
-    label: "Workload ID",
-    description:
-      "The workload assigned to this Worker; use it to correlate runtime diagnostics.",
+    label: msg("runtime.workload_id"),
+    description: msg("runtime.the_workload_assigned_to_this_worker_use"),
   }),
   entrypoint: sourceInfo.shape.entrypoint,
   release: field(z.string(), {
-    label: "Release",
-    description: "The runtime release used to start this Worker.",
+    label: msg("runtime.release"),
+    description: msg("runtime.the_runtime_release_used_to_start_this"),
   }),
   debugger: field(z.string(), {
-    label: "Debugger name",
-    description:
-      "The target name used when attaching a debugger to this Worker.",
+    label: msg("runtime.debugger_name"),
+    description: msg("runtime.the_target_name_used_when_attaching_a"),
   }),
   historyId: field(z.string(), {
-    label: "History ID",
-    description: "Identifier of this archived sandbox record.",
+    label: msg("runtime.history_id"),
+    description: msg("runtime.identifier_of_this_archived_sandbox_record"),
   }),
   archivedAt: field(z.string(), {
-    label: "Archived",
-    description: "When this sandbox stopped and its history was saved.",
+    label: msg("runtime.archived"),
+    description: msg("runtime.when_this_sandbox_stopped_and_its_history"),
   }),
   expiresAt: field(z.string(), {
-    label: "History expires",
-    description: "When this archived sandbox record is due to expire.",
+    label: msg("runtime.history_expires"),
+    description: msg("runtime.when_this_archived_sandbox_record_is_due"),
   }),
   logStatus: field(z.string(), {
-    label: "Log status",
-    description:
-      "Whether the requested log page is available, partial, expired, or unavailable.",
+    label: msg("runtime.log_status"),
+    description: msg("runtime.whether_the_requested_log_page_is_available"),
   }),
   logs: field(z.string(), {
-    label: "Logs",
-    description:
-      "Messages from the selected execution period. Use First, Recent, or Next logs to change the displayed page.",
+    label: msg("runtime.logs"),
+    description: msg("runtime.messages_from_the_selected_execution_period_use"),
   }),
 });

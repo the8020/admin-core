@@ -1,3 +1,5 @@
+import { text as localizedText } from "/p/the8020/i18n/mod.ts";
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { packages } from "/p/the8020/packages/src/admin.ts";
 import { packageInfo } from "/p/the8020/packages/types/package.ts";
 import {
@@ -55,7 +57,9 @@ export function installSchema(inspection?: PackageSourceInspection) {
   return z.object({
     source: field(sourceInfo.shape.source, {
       length: "long",
-      placeholder: "https://github.com/author/repository.git",
+      placeholder: msg(
+        "package_management.https_github_com_author_repository_git",
+      ),
     }),
     secretName: field(sourceInfo.shape.secretName, { length: "long" }),
     author: field(packageInfo.shape.author, {
@@ -69,7 +73,7 @@ export function installSchema(inspection?: PackageSourceInspection) {
       hidden: inspection === undefined,
     }),
     defaultBranch: field(sourceInfo.shape.branch, {
-      label: "Default branch",
+      label: msg("package_management.default_branch"),
       length: "medium",
       readOnly: true,
       hidden: inspection === undefined,
@@ -97,17 +101,17 @@ function versionsSchema(versions: PackageVersions) {
   });
   return z.object({
     source: field(sourceInfo.shape.source, {
-      label: "Git source",
+      label: msg("package_management.git_source"),
       length: "long",
       readOnly: true,
     }),
     currentCommit: field(sourceInfo.shape.commit, {
-      label: "Installed commit",
+      label: msg("package_management.installed_commit"),
       length: "long",
       readOnly: true,
     }),
     selection: field(installedVersion(versions), {
-      label: "Version to install",
+      label: msg("package_management.version_to_install"),
       length: "long",
     }),
     versions: z.array(Version),
@@ -130,18 +134,20 @@ export async function packageInstall(
   while (true) {
     const event = await callScreen({
       id: "core-admin-package-install",
-      title: "Install package",
-      description: "Enter a repository URL and choose the version to install.",
+      title: msg("package_management.install_package"),
+      description: msg(
+        "package_management.enter_a_repository_url_and_choose_the",
+      ),
       schema: installSchema(inspection),
       model: frame.model(model),
       layout: packageInstallLayout,
       header: {
         actions: [
-          { id: "detect", label: "Check repository" },
-          { id: "save", label: "Save for later" },
+          { id: "detect", label: msg("package_management.check_repository") },
+          { id: "save", label: msg("package_management.save_for_later") },
           {
             id: "save-sync",
-            label: "Install",
+            label: msg("package_management.install"),
             kind: "primary",
           },
         ],
@@ -153,7 +159,14 @@ export async function packageInstall(
         model.source = requiredText(model.source, "Git URL");
         inspection = await inspectSource(model);
         applyInspection(model, inspection);
-        sendMessage(`Detected ${inspection.package_id}`, "success");
+        sendMessage(
+          localizedText(
+            msg("package_management.detected_value1", {
+              value1: inspection.package_id,
+            }),
+          ),
+          "success",
+        );
         continue;
       }
       if (event.action === "save" || event.action === "save-sync") {
@@ -175,19 +188,36 @@ export async function packageInstall(
           ...(secret === "" ? {} : { secret }),
         });
         if (event.action === "save") {
-          sendMessage(`Saved ${inspection.package_id}`, "success");
+          sendMessage(
+            localizedText(
+              msg("package_management.saved_value1", {
+                value1: inspection.package_id,
+              }),
+            ),
+            "success",
+          );
           continue;
         }
         const synchronized = await packages.synchronize([
           inspection.package_id,
         ]);
         requireSuccessfulSynchronization(synchronized);
-        sendMessage(`Installed ${inspection.package_id}`, "success");
+        sendMessage(
+          localizedText(
+            msg("package_management.installed_value1", {
+              value1: inspection.package_id,
+            }),
+          ),
+          "success",
+        );
         return { view: "back" };
       }
     } catch (error) {
       sendMessage(
-        errorMessage(error, "Package operation failed"),
+        errorMessage(
+          error,
+          localizedText(msg("package_management.package_operation_failed")),
+        ),
         "error",
       );
     }
@@ -208,12 +238,20 @@ export async function packageVersions(
         packages.versions.list(packageId, 100),
       ]);
     } catch (error) {
-      sendMessage(errorMessage(error, "Version lookup failed"), "error");
+      sendMessage(
+        errorMessage(
+          error,
+          localizedText(msg("package_management.version_lookup_failed")),
+        ),
+        "error",
+      );
       return { view: "back" };
     }
     if (index.local) {
       sendMessage(
-        "Local packages do not have a remote version selector",
+        localizedText(
+          msg("package_management.local_packages_do_not_have_a_remote"),
+        ),
         "error",
       );
       return { view: "back" };
@@ -234,9 +272,12 @@ export async function packageVersions(
     };
     const event = await callScreen({
       id: "core-admin-package-versions",
-      title: `Versions for ${packageId}`,
-      description:
-        "Choose a version from field help or select a row below, then apply it to the package.",
+      title: msg("package_management.versions_for_packageid", {
+        packageId: packageId,
+      }),
+      description: msg(
+        "package_management.choose_a_version_from_field_help_or",
+      ),
       schema: versionsSchema(versions),
       model: frame.model(model),
       layout: packageVersionsLayout,
@@ -263,10 +304,23 @@ export async function packageVersions(
       });
       const synchronized = await packages.synchronize([packageId]);
       requireSuccessfulSynchronization(synchronized);
-      sendMessage(`Synchronized ${packageId}`, "success");
+      sendMessage(
+        localizedText(
+          msg("package_management.synchronized_packageid", {
+            packageId: packageId,
+          }),
+        ),
+        "success",
+      );
       draft = undefined;
     } catch (error) {
-      sendMessage(errorMessage(error, "Version update failed"), "error");
+      sendMessage(
+        errorMessage(
+          error,
+          localizedText(msg("package_management.version_update_failed")),
+        ),
+        "error",
+      );
     }
   }
 }
@@ -278,13 +332,19 @@ export async function packageLocal(
   while (true) {
     const event = await callScreen({
       id: "core-admin-package-local",
-      title: "Create local package",
-      description: "Create a package for your own programs and services.",
+      title: msg("package_management.create_local_package"),
+      description: msg(
+        "package_management.create_a_package_for_your_own_programs",
+      ),
       schema: LocalPackage,
       model: frame.model(model),
       layout: packageLocalLayout,
       header: {
-        actions: [{ id: "create", label: "Create", kind: "primary" }],
+        actions: [{
+          id: "create",
+          label: msg("package_management.create"),
+          kind: "primary",
+        }],
       },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
@@ -295,10 +355,23 @@ export async function packageLocal(
         repository: requiredText(model.repository, "Repository"),
         description: model.description,
       });
-      sendMessage(`Created ${created.index.package_id}`, "success");
+      sendMessage(
+        localizedText(
+          msg("package_management.created_value1", {
+            value1: created.index.package_id,
+          }),
+        ),
+        "success",
+      );
       return { view: "back" };
     } catch (error) {
-      sendMessage(errorMessage(error, "Package creation failed"), "error");
+      sendMessage(
+        errorMessage(
+          error,
+          localizedText(msg("package_management.package_creation_failed")),
+        ),
+        "error",
+      );
     }
   }
 }
@@ -313,12 +386,18 @@ export function desiredVersion(
   if (selection.startsWith("commit:") && selection.length > 7) {
     return { commit: selection.slice(7) };
   }
-  throw new TypeError("Select latest, a tag, or an exact commit");
+  throw new TypeError(
+    localizedText(msg("ui.select_latest_a_tag_or_an_exact_commit")),
+  );
 }
 
 export function requiredText(value: string, label: string): string {
   const normalized = value.trim();
-  if (normalized === "") throw new TypeError(`${label} is required`);
+  if (normalized === "") {
+    throw new TypeError(
+      localizedText(msg("ui.value1_is_required", { value1: label })),
+    );
+  }
   return normalized;
 }
 
@@ -355,7 +434,10 @@ async function inspectSource(
     if (secret !== "") throw error;
     throw new Error(
       `${
-        errorMessage(error, "Repository check failed")
+        errorMessage(
+          error,
+          localizedText(msg("package_management.repository_check_failed")),
+        )
       }. For a private repository, choose an authentication secret.`,
     );
   }
@@ -371,7 +453,11 @@ function requireSuccessfulSynchronization(
 ): void {
   const failed = results.find((result) => !result.success);
   if (failed !== undefined) {
-    throw new Error(`Could not synchronize ${failed.package_id}`);
+    throw new Error(
+      localizedText(
+        msg("ui.could_not_synchronize_value1", { value1: failed.package_id }),
+      ),
+    );
   }
 }
 

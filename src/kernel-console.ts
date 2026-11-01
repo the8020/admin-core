@@ -1,3 +1,5 @@
+import { text as localizedText } from "/p/the8020/i18n/mod.ts";
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { type AdminCatalog, kernel } from "@the8020/kernel";
 import { context } from "@the8020/context";
 import {
@@ -14,15 +16,15 @@ import { allowed } from "./authorized.ts";
 const EXECUTE = "the8020.admin-core.kernel.execute";
 const Console = z.object({
   line: field(z.string().max(16384), {
-    label: "Kernel call",
+    label: msg("kernel_console.kernel_call"),
     length: "long",
-    description:
-      "Native command syntax, including quoted arguments. Choose Calls for names, parameters and secure-input limitations.",
+    description: msg(
+      "kernel_console.native_command_syntax_including_quoted_arguments_choose",
+    ),
   }),
   output: field(z.string(), {
-    label: "Result",
-    description:
-      "Latest result only, at most 64 KiB. Native errors retain their code. Select text or use Copy result.",
+    label: msg("kernel_console.result"),
+    description: msg("kernel_console.latest_result_only_at_most_64_kib"),
     control: "textarea",
     readOnly: true,
     rowSpan: 8,
@@ -52,10 +54,12 @@ export function commandRows(catalog: AdminCatalog) {
       access: command.secrets?.length || command.parameters?.some((p) =>
           p.secret
         )
-        ? "Secure input: use native admin or dedicated screen"
+        ? localizedText(
+          msg("kernel_console.secure_input_use_native_admin_or_dedicated"),
+        )
         : command.mutates_state
-        ? "Changes state"
-        : "Read",
+        ? localizedText(msg("kernel_console.changes_state"))
+        : localizedText(msg("kernel_console.read")),
     };
   });
 }
@@ -67,17 +71,17 @@ export async function kernelConsole(): Promise<void> {
   while (true) {
     const event = await callScreen({
       id: "kernel-console",
-      title: "Kernel calls",
+      title: msg("kernel_console.kernel_calls"),
       description: status,
       schema: Console,
       model,
       controls: [{ bind: "line", enterEvent: "run" }, { bind: "output" }],
       header: {
         actions: [
-          { id: "run", label: "Run", kind: "primary" },
-          { id: "calls", label: "Calls" },
-          { id: "copy", label: "Copy result" },
-          { id: "clear", label: "Clear" },
+          { id: "run", label: msg("kernel_console.run"), kind: "primary" },
+          { id: "calls", label: msg("kernel_console.calls") },
+          { id: "copy", label: msg("kernel_console.copy_result") },
+          { id: "clear", label: msg("kernel_console.clear") },
         ],
       },
     });
@@ -91,31 +95,34 @@ export async function kernelConsole(): Promise<void> {
         const selected = await presentModal(() =>
           callScreen({
             id: "kernel-call-picker",
-            title: "Kernel calls",
+            title: msg("kernel_console.kernel_calls"),
             schema: z.object({
               calls: z.array(z.object({
                 name: field(z.string(), {
-                  label: "Call",
-                  description:
-                    "Canonical command name from the running kernel.",
+                  label: msg("kernel_console.call"),
+                  description: msg(
+                    "kernel_console.canonical_command_name_from_the_running_kernel",
+                  ),
                 }),
                 summary: field(z.string(), {
-                  label: "Description",
-                  description: "Command catalog summary.",
+                  label: msg("kernel_console.description"),
+                  description: msg("kernel_console.command_catalog_summary"),
                 }),
                 syntax: field(z.string(), {
-                  label: "Syntax",
-                  description:
-                    "Required arguments and optional flags from the catalog.",
+                  label: msg("kernel_console.syntax"),
+                  description: msg(
+                    "kernel_console.required_arguments_and_optional_flags_from_the",
+                  ),
                 }),
                 parameters: field(z.string(), {
-                  label: "Parameters",
-                  description: "Native parameter meanings.",
+                  label: msg("kernel_console.parameters"),
+                  description: msg("kernel_console.native_parameter_meanings"),
                 }),
                 access: field(z.string(), {
-                  label: "Access",
-                  description:
-                    "Whether the call changes state or needs a dedicated secure-input client.",
+                  label: msg("kernel_console.access"),
+                  description: msg(
+                    "kernel_console.whether_the_call_changes_state_or_needs",
+                  ),
                 }),
               })),
             }),
@@ -144,7 +151,9 @@ export async function kernelConsole(): Promise<void> {
         const result = await kernel.admin.runLine(model.data.line);
         model.data.output = result.output;
         status = `Node ${context.nodeId} · ${
-          result.exit_code === 0 ? "Succeeded" : "Failed"
+          result.exit_code === 0
+            ? localizedText(msg("kernel_console.succeeded"))
+            : localizedText(msg("kernel_console.failed"))
         }${result.truncated ? " · Truncated" : ""}`;
       }
     } catch (error) {

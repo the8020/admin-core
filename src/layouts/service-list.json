@@ -30,7 +30,11 @@
     "toolbar": [
       {
         "id": "refresh",
-        "label": "[[icon=refresh]] Refresh"
+        "label": {
+          "package": "the8020/admin-core",
+          "key": "layout.icon_refresh_refresh",
+          "fallback": "[[icon=refresh]] Refresh"
+        }
       }
     ]
   }

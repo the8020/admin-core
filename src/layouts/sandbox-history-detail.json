@@ -8,7 +8,11 @@
       {
         "id": "archive-section",
         "type": "section",
-        "title": "Archived sandbox",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.archived_sandbox",
+          "fallback": "Archived sandbox"
+        },
         "children": [
           {
             "id": "identity",
@@ -26,7 +30,11 @@
       {
         "id": "logs-section",
         "type": "section",
-        "title": "Logs",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.logs",
+          "fallback": "Logs"
+        },
         "children": [
           {
             "id": "logs",

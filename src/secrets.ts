@@ -1,3 +1,5 @@
+import { text as localizedText } from "/p/the8020/i18n/mod.ts";
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { secrets as secretStore } from "/p/the8020/secrets/src/admin.ts";
 import { secretInfo } from "/p/the8020/secrets/types/secret.ts";
 import { ScreenFrame } from "./screen_frame.ts";
@@ -26,16 +28,20 @@ const SecretList = z.object({ secrets: z.array(SecretRow) });
 function secretEditSchema(existing: boolean) {
   return z.object({
     name: field(secretName, {
-      label: "Name",
+      label: msg("secrets.name"),
       length: "medium",
       readOnly: existing,
-      placeholder: "github",
+      placeholder: msg("secrets.github"),
     }),
     value: field(secretInfo.shape.value, {
-      label: existing ? "Replacement value" : "Value",
+      label: existing
+        ? localizedText(msg("secrets.replacement_value"))
+        : localizedText(msg("secrets.value")),
       description: existing
-        ? "Paste the new credential. Saving **replaces** the current value."
-        : "Paste the credential you want to save.",
+        ? localizedText(
+          msg("secrets.paste_the_new_credential_saving_replaces_the"),
+        )
+        : localizedText(msg("secrets.paste_the_credential_you_want_to_save")),
       length: "long",
       control: "password",
     }),
@@ -49,8 +55,8 @@ export async function secretList(
     const secrets = await secretStore.list();
     const event = await callScreen({
       id: "core-admin-secrets",
-      title: "Secrets",
-      description: "Manage credentials used by your packages and services.",
+      title: msg("secrets.secrets"),
+      description: msg("secrets.manage_credentials_used_by_your_packages_and"),
       schema: SecretList,
       model: frame.model({
         secrets: secrets.map((secret) => ({
@@ -78,12 +84,18 @@ export async function secretEdit(
   while (true) {
     const event = await callScreen({
       id: "core-admin-secret-edit",
-      title: existing ? `Secret ${name}` : "Add secret",
+      title: existing
+        ? localizedText(msg("ui.secret_name", { name: name! }))
+        : localizedText(msg("secrets.add_secret")),
       schema: secretEditSchema(existing),
       model: frame.model(model),
       layout: secretEditLayout,
       header: {
-        actions: [{ id: "save", label: "Save secret", kind: "primary" }],
+        actions: [{
+          id: "save",
+          label: msg("packages.save_secret"),
+          kind: "primary",
+        }],
       },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
@@ -96,14 +108,20 @@ export async function secretEdit(
       });
       model.value = "";
       sendMessage(
-        existing ? `Updated ${secretName}` : `Created ${secretName}`,
+        localizedText(
+          msg(existing ? "secrets.updated_name" : "secrets.created_name", {
+            name: secretName,
+          }),
+        ),
         "success",
       );
       return { view: "back" };
     } catch (error) {
       model.value = "";
       sendMessage(
-        error instanceof Error ? error.message : "Secret update failed",
+        error instanceof Error
+          ? error.message
+          : localizedText(msg("secrets.secret_update_failed")),
         "error",
       );
     }
@@ -112,11 +130,15 @@ export async function secretEdit(
 
 function requiredName(value: string): string {
   const normalized = value.trim();
-  if (normalized === "") throw new TypeError("Name is required");
+  if (normalized === "") {
+    throw new TypeError(localizedText(msg("ui.name_is_required")));
+  }
   return normalized;
 }
 
 function requiredValue(value: string): string {
-  if (value === "") throw new TypeError("Value is required");
+  if (value === "") {
+    throw new TypeError(localizedText(msg("ui.value_is_required")));
+  }
   return value;
 }

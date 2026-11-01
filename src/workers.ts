@@ -1,3 +1,4 @@
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { allowed } from "./authorized.ts";
 import { runtimeInfo } from "../types/runtime.ts";
 import { kernel } from "@the8020/kernel";
@@ -27,7 +28,7 @@ const Worker = z.object({
   state: field(runtimeInfo.shape.workerState, { readOnly: true }),
   requests: field(runtimeInfo.shape.activeRequests, { readOnly: true }),
   executions: field(runtimeInfo.shape.activeExecutions, {
-    label: "Persistent executions",
+    label: msg("workers.persistent_executions"),
     readOnly: true,
   }),
   failure: field(runtimeInfo.shape.failure, { readOnly: true }),
@@ -63,7 +64,7 @@ export async function workerList(
     const result = await kernel.admin.execute<WorkerListResult>("worker.list");
     const event = await callScreen({
       id: "core-admin-workers",
-      title: "Workers",
+      title: msg("sandboxes.workers"),
       schema: WorkerList,
       model: frame.model({
         workers: (result.workers ?? []).map((worker) => ({
@@ -79,7 +80,7 @@ export async function workerList(
         schema: 1,
         id: "worker-list",
         root: {
-          toolbar: [{ id: "refresh", label: "[[icon=refresh]] Refresh" }],
+          toolbar: [{ id: "refresh", label: msg("programs.refresh") }],
           id: "workers",
           type: "list",
           bind: "workers",
@@ -149,18 +150,20 @@ export async function workerDetail(
     ];
     const event = await callScreen({
       id: "core-admin-worker",
-      title: `Worker ${id}`,
+      title: msg("workers.worker_id", { id: id }),
       schema: Worker,
       model: frame.model(data),
       controls: controls.map((bind) => ({ bind })),
       actions: [
-        { id: "sandbox", label: "Open sandbox" },
-        ...(service ? [{ id: "service", label: "Open service" }] : []),
+        { id: "sandbox", label: msg("workers.open_sandbox") },
+        ...(service
+          ? [{ id: "service", label: msg("workers.open_service") }]
+          : []),
       ],
       header: {
-        actions: [{ id: "advanced", label: "Advanced" }, {
+        actions: [{ id: "advanced", label: msg("packages.advanced") }, {
           id: "refresh",
-          label: "[[icon=refresh]] Refresh",
+          label: msg("programs.refresh"),
         }],
       },
     });
@@ -175,7 +178,7 @@ export async function workerDetail(
       await presentPage(() =>
         callScreen({
           id: "core-admin-worker-advanced",
-          title: `Advanced · ${id}`,
+          title: msg("workers.advanced_id", { id: id }),
           schema: Worker,
           model: new Model(data),
           controls: [

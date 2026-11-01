@@ -8,7 +8,11 @@
       {
         "id": "service-state",
         "type": "field-group",
-        "title": "Service",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.service",
+          "fallback": "Service"
+        },
         "controls": [
           "enabled",
           "accessMode",
@@ -19,7 +23,11 @@
       {
         "id": "scaling-section",
         "type": "section",
-        "title": "Scaling",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.scaling",
+          "fallback": "Scaling"
+        },
         "children": [
           {
             "id": "scaling",
@@ -30,7 +38,11 @@
               {
                 "id": "worker-threads",
                 "type": "field-group",
-                "title": "Worker threads",
+                "title": {
+                  "package": "the8020/admin-core",
+                  "key": "layout.worker_threads",
+                  "fallback": "Worker threads"
+                },
                 "controls": [
                   "minimumWorkers",
                   "maximumWorkers"
@@ -39,7 +51,11 @@
               {
                 "id": "single-worker",
                 "type": "field-group",
-                "title": "Single worker",
+                "title": {
+                  "package": "the8020/admin-core",
+                  "key": "layout.single_worker",
+                  "fallback": "Single worker"
+                },
                 "controls": [
                   "concurrencyPerWorker",
                   "targetUtilization",
@@ -49,7 +65,11 @@
               {
                 "id": "replication",
                 "type": "field-group",
-                "title": "Replication",
+                "title": {
+                  "package": "the8020/admin-core",
+                  "key": "layout.replication",
+                  "fallback": "Replication"
+                },
                 "controls": [
                   "sandboxGroup",
                   "minimumSandboxes",
@@ -63,12 +83,20 @@
       {
         "id": "lifecycle-section",
         "type": "section",
-        "title": "Lifecycle",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.lifecycle",
+          "fallback": "Lifecycle"
+        },
         "children": [
           {
             "id": "service-lifecycle",
             "type": "field-group",
-            "title": "Service lifecycle",
+            "title": {
+              "package": "the8020/admin-core",
+              "key": "layout.service_lifecycle",
+              "fallback": "Service lifecycle"
+            },
             "controls": [
               "sessionKeepAlive"
             ]

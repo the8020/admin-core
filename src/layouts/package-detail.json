@@ -19,7 +19,11 @@
       {
         "id": "services",
         "type": "list",
-        "title": "Services",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.services",
+          "fallback": "Services"
+        },
         "bind": "services",
         "key": "id",
         "display": [
@@ -39,7 +43,11 @@
       {
         "id": "programs",
         "type": "list",
-        "title": "Programs",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.programs",
+          "fallback": "Programs"
+        },
         "bind": "programs",
         "key": "id",
         "display": [

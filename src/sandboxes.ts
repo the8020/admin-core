@@ -1,3 +1,4 @@
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { allowed } from "./authorized.ts";
 import { archivedSandboxId, runtimeInfo } from "../types/runtime.ts";
 import { serviceInfo } from "/p/the8020/services/types/service.ts";
@@ -78,7 +79,7 @@ const SandboxDetail = z.object({
   }),
   type: field(runtimeInfo.shape.type, { length: "short", readOnly: true }),
   state: field(runtimeInfo.shape.state, {
-    label: "State",
+    label: msg("sandboxes.state"),
     length: "short",
     readOnly: true,
   }),
@@ -105,7 +106,7 @@ const SandboxDetail = z.object({
     readOnly: true,
   }),
   failure: field(runtimeInfo.shape.failure, {
-    label: "Failure",
+    label: msg("sandboxes.failure"),
     length: "long",
     readOnly: true,
   }),
@@ -130,16 +131,19 @@ const SandboxDetail = z.object({
     readOnly: true,
   }),
   pids: field(runtimeInfo.shape.pids, {
-    label: "PIDs",
+    label: msg("sandboxes.pids"),
     length: "short",
     readOnly: true,
   }),
   services: z.array(ServiceRow),
 });
 const SandboxHistoryDetail = z.object({
-  nodeId: field(runtimeInfo.shape.nodeId, { label: "Node ID", readOnly: true }),
+  nodeId: field(runtimeInfo.shape.nodeId, {
+    label: msg("sandboxes.node_id"),
+    readOnly: true,
+  }),
   createdAt: field(runtimeInfo.shape.createdAt, {
-    label: "Created",
+    label: msg("sandboxes.created"),
     readOnly: true,
   }),
   historyId: field(runtimeInfo.shape.historyId, {
@@ -147,23 +151,23 @@ const SandboxHistoryDetail = z.object({
     readOnly: true,
   }),
   sandboxId: field(archivedSandboxId, {
-    label: "Sandbox ID",
+    label: msg("sandboxes.sandbox_id"),
     length: "long",
     readOnly: true,
   }),
   type: field(runtimeInfo.shape.type, { length: "short", readOnly: true }),
   state: field(runtimeInfo.shape.state, {
-    label: "Final state",
+    label: msg("sandboxes.final_state"),
     length: "short",
     readOnly: true,
   }),
   reason: field(runtimeInfo.shape.reason, {
-    label: "Cleanup reason",
+    label: msg("sandboxes.cleanup_reason"),
     length: "long",
     readOnly: true,
   }),
   failure: field(runtimeInfo.shape.failure, {
-    label: "Failure",
+    label: msg("sandboxes.failure"),
     length: "long",
     readOnly: true,
   }),
@@ -192,14 +196,14 @@ export async function sandboxList(
     const model = { sandboxes: sandboxRows(result) };
     const event = await callScreen({
       id: "core-admin-sandboxes",
-      title: "Sandboxes",
+      title: msg("sandboxes.sandboxes"),
       schema: SandboxList,
       model: frame.model(model),
       layout: sandboxListLayout,
       header: {
-        actions: [{ id: "workers", label: "Workers" }, {
+        actions: [{ id: "workers", label: msg("sandboxes.workers") }, {
           id: "history",
-          label: "History",
+          label: msg("sandboxes.history"),
         }],
       },
     });
@@ -225,7 +229,7 @@ export async function sandboxHistoryList(
     );
     const event = await callScreen({
       id: "core-admin-sandbox-history",
-      title: "Sandbox history",
+      title: msg("sandboxes.sandbox_history"),
       schema: SandboxHistoryList,
       model: frame.model({ sandboxes: sandboxHistoryRows(result) }),
       layout: {
@@ -233,7 +237,7 @@ export async function sandboxHistoryList(
         root: {
           ...sandboxHistoryListLayout.root,
           toolbar: result.next_cursor
-            ? [{ id: "older", label: "Older" } as const]
+            ? [{ id: "older", label: msg("sandboxes.older") } as const]
             : [],
         },
       },
@@ -288,19 +292,20 @@ export async function sandboxHistoryDetail(
     }
     const event = await callScreen({
       id: "core-admin-sandbox-history-detail",
-      title:
-        `Archived sandbox ${result.sandbox_history.record.spec.sandbox_id}`,
+      title: msg("sandboxes.archived_sandbox_value1", {
+        value1: result.sandbox_history.record.spec.sandbox_id,
+      }),
       schema: SandboxHistoryDetail,
       model: frame.model(sandboxHistoryDetailModel(result, page)),
       layout: sandboxHistoryDetailLayout,
       header: {
         actions: [
-          { id: "refresh", label: "Refresh", kind: "primary" },
-          { id: "advanced", label: "Advanced" },
-          { id: "first", label: "First logs" },
-          { id: "recent", label: "Recent logs" },
+          { id: "refresh", label: msg("kernel_logs.refresh"), kind: "primary" },
+          { id: "advanced", label: msg("packages.advanced") },
+          { id: "first", label: msg("sandboxes.first_logs") },
+          { id: "recent", label: msg("sandboxes.recent_logs") },
           ...(page.state === "ok" && page.more && page.cursor
-            ? [{ id: "next", label: "Next logs" }]
+            ? [{ id: "next", label: msg("sandboxes.next_logs") }]
             : []),
         ],
       },
@@ -310,7 +315,7 @@ export async function sandboxHistoryDetail(
       await presentPage(() =>
         callScreen({
           id: "core-admin-sandbox-history-advanced",
-          title: "Archive details",
+          title: msg("sandboxes.archive_details"),
           schema: SandboxHistoryDetail,
           model: new Model(sandboxHistoryDetailModel(result, page)),
           controls: ["historyId", "sandboxId", "nodeId", "createdAt", "type"]
@@ -343,7 +348,7 @@ export async function sandboxDetail(
     const model = sandboxDetailModel(result);
     const event = await callScreen({
       id: "core-admin-sandbox-detail",
-      title: `Sandbox ${sandboxId}`,
+      title: msg("sandboxes.sandbox_sandboxid", { sandboxId: sandboxId }),
       schema: SandboxDetail,
       model: frame.model(model),
       controls: [
@@ -369,9 +374,9 @@ export async function sandboxDetail(
       header: {
         actions: [{
           id: "refresh",
-          label: "[[icon=refresh]] Refresh",
+          label: msg("programs.refresh"),
           kind: "primary",
-        }, { id: "advanced", label: "Advanced" }],
+        }, { id: "advanced", label: msg("packages.advanced") }],
       },
     });
     if (
@@ -389,7 +394,7 @@ export async function sandboxDetail(
       await presentPage(() =>
         callScreen({
           id: "core-admin-sandbox-advanced",
-          title: `Advanced · ${sandboxId}`,
+          title: msg("sandboxes.advanced_sandboxid", { sandboxId: sandboxId }),
           schema: SandboxDetail,
           model: new Model(model),
           controls: [

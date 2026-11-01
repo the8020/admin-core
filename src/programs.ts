@@ -1,3 +1,5 @@
+import { text as localizedText } from "/p/the8020/i18n/mod.ts";
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { programInfo } from "/p/the8020/packages/types/program.ts";
 import { sourceInfo } from "/p/the8020/packages/types/source.ts";
 import {
@@ -26,12 +28,12 @@ import { resourceModel, sumWorkerResources } from "./resources.ts";
 
 const Program = z.object({
   id: field(programField, {
-    label: "Program ID",
+    label: msg("programs.program_id"),
     length: "long",
     readOnly: true,
   }),
   packageId: field(packageField, {
-    label: "Package",
+    label: msg("programs.package"),
     length: "long",
     readOnly: true,
   }),
@@ -52,7 +54,7 @@ const Program = z.object({
     length: "long",
   }),
   commit: field(sourceInfo.shape.commit, {
-    label: "Package commit",
+    label: msg("programs.package_commit"),
     length: "long",
     readOnly: true,
   }),
@@ -80,10 +82,10 @@ function programModel(program: ProgramSummary): z.infer<typeof Program> {
     packageId: program.package_id,
     name: program.name,
     kind: program.metadata_error
-      ? "Unavailable"
+      ? localizedText(msg("packages.unavailable"))
       : program.uui
-      ? "Interactive"
-      : "Background job",
+      ? localizedText(msg("packages.interactive"))
+      : localizedText(msg("packages.background_job")),
     description: program.description || program.name,
     uui: program.uui,
     discoverable: program.discoverable,
@@ -100,7 +102,7 @@ export async function programList(
     const programs = await listPrograms();
     const event = await callScreen({
       id: "core-admin-programs",
-      title: "Programs",
+      title: msg("programs.programs"),
       schema: ProgramList,
       model: frame.model({ programs: programs.map(programModel) }),
       layout: listLayout,
@@ -124,7 +126,10 @@ export async function programDetail(
       item.program_id === programId
     );
     if (!program) {
-      sendMessage("This program is no longer available.", "error");
+      sendMessage(
+        localizedText(msg("programs.this_program_is_no_longer_available")),
+        "error",
+      );
       return { view: "back" };
     }
     const listed = await kernel.admin.execute<WorkerListResult>("worker.list");
@@ -158,7 +163,7 @@ export async function programDetail(
     };
     const event = await callScreen({
       id: "core-admin-program",
-      title: `Program ${program.name}`,
+      title: msg("programs.program_value1", { value1: program.name }),
       schema: ProgramDetail,
       model: frame.model(model),
       layout: detailLayout,
@@ -170,12 +175,12 @@ export async function programDetail(
         "heap",
         "cpu",
       ].map((bind) => ({ bind })),
-      actions: [{ id: "package", label: "Open package" }],
+      actions: [{ id: "package", label: msg("programs.open_package") }],
       header: {
         actions: [
-          { id: "execute", label: "Execute", kind: "primary" },
-          { id: "advanced", label: "Advanced" },
-          { id: "refresh", label: "[[icon=refresh]] Refresh" },
+          { id: "execute", label: msg("programs.execute"), kind: "primary" },
+          { id: "advanced", label: msg("packages.advanced") },
+          { id: "refresh", label: msg("programs.refresh") },
         ],
       },
     });
@@ -190,7 +195,7 @@ export async function programDetail(
       await presentPage(() =>
         callScreen({
           id: "core-admin-program-advanced",
-          title: `Advanced · ${program.name}`,
+          title: msg("programs.advanced_value1", { value1: program.name }),
           schema: Program,
           model: new Model(programModel(program)),
           controls: [

@@ -1,3 +1,5 @@
+import { text as localizedText } from "/p/the8020/i18n/mod.ts";
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { context } from "@the8020/context";
 import {
   formatLogRecord,
@@ -20,57 +22,59 @@ import { allowed } from "./authorized.ts";
 
 const VIEW = "the8020.admin-core.logs.view";
 const Filters = z.object({
-  node_id: field(runtimeInfo.shape.nodeId, { label: "Node" }),
+  node_id: field(runtimeInfo.shape.nodeId, { label: msg("kernel_logs.node") }),
   text: field(z.string().max(1024), {
-    label: "Search text",
+    label: msg("kernel_logs.search_text"),
     length: "long",
-    description:
-      "Case-sensitive literal text in messages and attributes, at most 1024 UTF-8 bytes.",
+    description: msg("kernel_logs.case_sensitive_literal_text_in_messages_and"),
   }),
   level: field(z.enum(["", "debug", "info", "warn", "error"]), {
-    label: "Minimum level",
-    description:
-      "Includes this severity and higher; blank includes every level.",
+    label: msg("kernel_logs.minimum_level"),
+    description: msg(
+      "kernel_logs.includes_this_severity_and_higher_blank_includes",
+    ),
   }),
   source: field(z.enum(["", "kernel", "deno", "logd"]), {
-    label: "Source",
-    description: "Kernel, Deno or the log writer; blank includes every source.",
+    label: msg("kernel_logs.source"),
+    description: msg("kernel_logs.kernel_deno_or_the_log_writer_blank"),
   }),
   from: field(z.string(), {
-    label: "From (RFC3339)",
-    description: "Inclusive capture time, for example 2026-10-24T08:00:00Z.",
+    label: msg("kernel_logs.from_rfc3339"),
+    description: msg("kernel_logs.inclusive_capture_time_for_example_2026_10"),
   }),
   until: field(z.string(), {
-    label: "Until (RFC3339)",
-    description: "Exclusive capture time in RFC3339 format.",
+    label: msg("kernel_logs.until_rfc3339"),
+    description: msg("kernel_logs.exclusive_capture_time_in_rfc3339_format"),
   }),
   sandbox_id: field(sandboxId, { valueHelp: undefined }),
   worker_id: workerId,
   context_id: field(z.string(), {
-    label: "Context ID",
-    description: "Exact execution context, ctx-*.",
+    label: msg("kernel_logs.context_id"),
+    description: msg("kernel_logs.exact_execution_context_ctx"),
   }),
   object: field(z.string(), {
-    label: "Declared object",
-    description: "Exact object, for example service:the8020/uui/session.",
+    label: msg("kernel_logs.declared_object"),
+    description: msg(
+      "kernel_logs.exact_object_for_example_service_the8020_uui",
+    ),
   }),
   username: field(z.string(), {
-    label: "Execution user",
-    description: "Exact username attached to the execution.",
+    label: msg("kernel_logs.execution_user"),
+    description: msg("kernel_logs.exact_username_attached_to_the_execution"),
   }),
 });
 const Logs = Filters.extend({
   status: field(z.string(), {
-    label: "Page status",
-    description:
-      "Owning node, page size, continuation, retention and availability.",
+    label: msg("kernel_logs.page_status"),
+    description: msg(
+      "kernel_logs.owning_node_page_size_continuation_retention_and",
+    ),
     readOnly: true,
     length: "long",
   }),
   output: field(z.string(), {
-    label: "Displayed page",
-    description:
-      "Only this bounded page is copied or saved. First searches retained history; Recent searches a bounded recent window.",
+    label: msg("kernel_logs.displayed_page"),
+    description: msg("kernel_logs.only_this_bounded_page_is_copied_or"),
     control: "textarea",
     readOnly: true,
     rowSpan: 8,
@@ -85,14 +89,22 @@ export function pageText(page: LogPage): string {
 
 export function pageStatus(page: LogPage): string {
   if (page.state !== "ok") {
-    return `${page.state}: ${
-      page.reason ?? "Logs cannot be read; try First or Recent."
-    }`;
+    return localizedText(
+      msg("kernel_logs.value1_value2", {
+        value1: page.state,
+        value2: page.reason ??
+          localizedText(msg("kernel_logs.logs_cannot_be_read_try_first_or")),
+      }),
+    );
   }
   return [
     `${page.records.length} records`,
-    page.more ? "More available" : "End of current results",
-    page.tail_limited ? "Recent window only; use First for older logs" : "",
+    page.more
+      ? localizedText(msg("kernel_logs.more_available"))
+      : localizedText(msg("kernel_logs.end_of_current_results")),
+    page.tail_limited
+      ? localizedText(msg("kernel_logs.recent_window_only_use_first_for_older"))
+      : "",
     page.corrupt_records
       ? `${page.corrupt_records} unreadable records skipped`
       : "",
@@ -161,7 +173,7 @@ export async function kernelLogs(): Promise<void> {
     const channel = nextScreenChannel();
     const pending = callScreen({
       id: "kernel-logs",
-      title: "Kernel logs",
+      title: msg("kernel_logs.kernel_logs"),
       schema: Logs,
       model,
       layout: {
@@ -174,7 +186,7 @@ export async function kernelLogs(): Promise<void> {
             {
               id: "filters",
               type: "field-group",
-              title: "Filters",
+              title: msg("kernel_logs.filters"),
               controls: Object.keys(Filters.shape),
             },
             { id: "page", type: "detail", controls: ["status", "output"] },
@@ -183,15 +195,15 @@ export async function kernelLogs(): Promise<void> {
       },
       header: {
         actions: [
-          { id: "search", label: "Search", kind: "primary" },
-          { id: "first", label: "First" },
-          { id: "recent", label: "Recent" },
+          { id: "search", label: msg("kernel_logs.search"), kind: "primary" },
+          { id: "first", label: msg("kernel_logs.first") },
+          { id: "recent", label: msg("kernel_logs.recent") },
           ...(page?.cursor && page.state === "ok"
-            ? [{ id: "next", label: "Next" }]
+            ? [{ id: "next", label: msg("kernel_logs.next") }]
             : []),
-          { id: "refresh", label: "Refresh" },
-          { id: "copy", label: "Copy page" },
-          { id: "save", label: "Save page" },
+          { id: "refresh", label: msg("kernel_logs.refresh") },
+          { id: "copy", label: msg("kernel_logs.copy_page") },
+          { id: "save", label: msg("kernel_logs.save_page") },
         ],
       },
     });

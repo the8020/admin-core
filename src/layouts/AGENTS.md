@@ -15,6 +15,8 @@ Parent DOX: [admin-core/src DOX](../AGENTS.md).
   backend paging belong in the owning list toolbar. Keep related-page navigation
   and entity/form actions in screen headers.
 
+- Authored headings and action labels use serializable package/key message
+  references with English fallback. UUI resolves them per session.
 - Layouts stay serializable and contain no executable code or backend-provided
   CSS.
 - Keep bindings aligned with the owning screen schema, retain declarative column

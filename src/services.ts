@@ -1,3 +1,5 @@
+import { text as localizedText } from "/p/the8020/i18n/mod.ts";
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { inspectService, listServices } from "/p/the8020/services/src/admin.ts";
 import {
   serviceInfo,
@@ -66,7 +68,7 @@ function serviceDetailSchema(serviceType: string, editing = false) {
     path: field(serviceInfo.shape.path, { readOnly: true }),
     state: field(serviceInfo.shape.state, { readOnly: true }),
     workerCount: field(runtimeInfo.shape.workerCount, {
-      label: "Running Workers",
+      label: msg("services.running_workers"),
       readOnly: true,
     }),
     sandboxCount: field(runtimeInfo.shape.sandboxCount, { readOnly: true }),
@@ -80,8 +82,8 @@ function serviceDetailSchema(serviceType: string, editing = false) {
     accessMode: editing
       ? field(servicePolicy.shape.accessMode, {
         options: [
-          { value: "public", label: "Public" },
-          { value: "authenticated", label: "Private" },
+          { value: "public", label: msg("services.public") },
+          { value: "authenticated", label: msg("services.private") },
         ],
       })
       : field(serviceInfo.shape.accessMode, { readOnly: true }),
@@ -121,7 +123,7 @@ export async function serviceList(
     const model = { services: serviceRows(result) };
     const event = await callScreen({
       id: "core-admin-services",
-      title: "Services",
+      title: msg("services.services"),
       schema: ServiceList,
       model: frame.model(model),
       layout: serviceListLayout,
@@ -156,7 +158,9 @@ export async function serviceDetail(
     ];
     const event = await callScreen({
       id: "core-admin-service-detail",
-      title: `Service ${serviceId.split("/").at(-1)}`,
+      title: msg("services.service_value1", {
+        value1: serviceId.split("/").at(-1)!,
+      }),
       schema: serviceDetailSchema(model.serviceType),
       model: frame.model(model),
       controls: controls.map((bind) => ({
@@ -172,17 +176,25 @@ export async function serviceDetail(
           ),
         },
       },
-      actions: [{ id: "package", label: "Open package" }],
+      actions: [{ id: "package", label: msg("programs.open_package") }],
       header: {
         actions: [
-          { id: "configure", label: "Configure", kind: "primary" },
+          {
+            id: "configure",
+            label: msg("services.configure"),
+            kind: "primary",
+          },
           {
             id: model.enabled ? "disable" : "enable",
-            label: model.enabled ? "Disable" : "Enable",
+            label: model.enabled
+              ? localizedText(msg("services.disable"))
+              : localizedText(msg("services.enable")),
           },
-          ...(model.enabled ? [{ id: "restart", label: "Restart" }] : []),
-          { id: "advanced", label: "Advanced" },
-          { id: "refresh", label: "[[icon=refresh]] Refresh" },
+          ...(model.enabled
+            ? [{ id: "restart", label: msg("services.restart") }]
+            : []),
+          { id: "advanced", label: msg("packages.advanced") },
+          { id: "refresh", label: msg("programs.refresh") },
         ],
       },
     });
@@ -203,7 +215,9 @@ export async function serviceDetail(
       await presentPage(() =>
         callScreen({
           id: "core-admin-service-advanced",
-          title: `Advanced · ${serviceId.split("/").at(-1)}`,
+          title: msg("programs.advanced_value1", {
+            value1: serviceId.split("/").at(-1)!,
+          }),
           schema: serviceDetailSchema(model.serviceType),
           model: new Model(model),
           controls: [
@@ -233,7 +247,7 @@ export async function serviceDetail(
                 {
                   id: "sandboxes",
                   type: "list",
-                  title: "Capacity by version",
+                  title: msg("services.capacity_by_version"),
                   bind: "sandboxes",
                   display: [
                     "sandboxId",
@@ -263,10 +277,10 @@ export async function serviceDetail(
           }, false);}
         sendMessage(
           event.action === "disable"
-            ? "Disabled"
+            ? localizedText(msg("services.disabled"))
             : event.action === "restart"
-            ? "Restarted"
-            : "Enabled",
+            ? localizedText(msg("services.restarted"))
+            : localizedText(msg("services.enabled")),
           "success",
         );
       }
@@ -277,7 +291,7 @@ export async function serviceDetail(
       sendMessage(
         error instanceof Error
           ? error.message
-          : "Could not update the service.",
+          : localizedText(msg("services.could_not_update_the_service")),
         "error",
       );
     }
@@ -295,7 +309,9 @@ export async function serviceSettings(
   while (true) {
     const event = await callScreen({
       id: "core-admin-service-settings",
-      title: `Configure ${serviceId.split("/").at(-1)}`,
+      title: msg("services.configure_value1", {
+        value1: serviceId.split("/").at(-1)!,
+      }),
       schema: serviceDetailSchema(model.serviceType, true),
       model: settings,
       controls: [
@@ -315,7 +331,11 @@ export async function serviceSettings(
       ].map((bind) => ({ bind })),
       layout: serviceSettingsLayout,
       header: {
-        actions: [{ id: "save", label: "Save settings", kind: "primary" }],
+        actions: [{
+          id: "save",
+          label: msg("services.save_settings"),
+          kind: "primary",
+        }],
       },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
@@ -326,7 +346,9 @@ export async function serviceSettings(
         model.maximumWorkers < model.minimumWorkers
       ) {
         throw new Error(
-          "Maximum Workers must be zero or at least Minimum Workers.",
+          localizedText(
+            msg("ui.maximum_workers_must_be_zero_or_at_least_minimum_workers"),
+          ),
         );
       }
       const { applyDesired } = await import("/p/the8020/services/src/admin.ts");
@@ -342,22 +364,32 @@ export async function serviceSettings(
           maximumWorkers: model.maximumWorkers,
           concurrencyPerWorker: model.concurrencyPerWorker,
           targetUtilization: model.targetUtilization / 100,
-          workerKeepAliveMs:
-            duration(model.workerKeepAlive, "Idle Worker timeout") / 1_000_000,
+          workerKeepAliveMs: duration(
+            model.workerKeepAlive,
+            localizedText(msg("services.idle_worker_timeout")),
+          ) / 1_000_000,
           workersPerSandbox: model.workersPerSandbox,
           sandboxGroup: model.sandboxGroup,
           minimumSandboxes: model.minimumSandboxes,
           serviceType: model.serviceType,
-          sessionKeepAliveMs:
-            duration(model.sessionKeepAlive, "Idle session timeout", true) /
+          sessionKeepAliveMs: duration(
+            model.sessionKeepAlive,
+            localizedText(msg("services.idle_session_timeout")),
+            true,
+          ) /
             1_000_000,
         },
       }, false);
-      sendMessage("Service settings saved.", "success");
+      sendMessage(
+        localizedText(msg("services.service_settings_saved")),
+        "success",
+      );
       return { view: "back" };
     } catch (error) {
       sendMessage(
-        error instanceof Error ? error.message : "Could not save settings.",
+        error instanceof Error
+          ? error.message
+          : localizedText(msg("services.could_not_save_settings")),
         "error",
       );
     }

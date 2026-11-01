@@ -8,7 +8,11 @@
       {
         "id": "overview-section",
         "type": "section",
-        "title": "Overview",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.overview",
+          "fallback": "Overview"
+        },
         "children": [
           {
             "id": "overview",
@@ -19,7 +23,11 @@
               {
                 "id": "manifest",
                 "type": "field-group",
-                "title": "Package",
+                "title": {
+                  "package": "the8020/admin-core",
+                  "key": "layout.package",
+                  "fallback": "Package"
+                },
                 "controls": [
                   "packageId",
                   "path",
@@ -37,7 +45,11 @@
               {
                 "id": "repository",
                 "type": "field-group",
-                "title": "Git repository",
+                "title": {
+                  "package": "the8020/admin-core",
+                  "key": "layout.git_repository",
+                  "fallback": "Git repository"
+                },
                 "controls": [
                   "repositoryStatus",
                   "activationReady",
@@ -56,7 +68,11 @@
       {
         "id": "contents-section",
         "type": "section",
-        "title": "Contents",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.contents",
+          "fallback": "Contents"
+        },
         "children": [
           {
             "id": "contents",
@@ -65,7 +81,11 @@
               {
                 "id": "services",
                 "type": "list",
-                "title": "Services",
+                "title": {
+                  "package": "the8020/admin-core",
+                  "key": "layout.services",
+                  "fallback": "Services"
+                },
                 "bind": "services",
                 "key": "navigation",
                 "display": [
@@ -78,10 +98,18 @@
                 ],
                 "columnOptions": {
                   "serviceId": {
-                    "shortHeading": "Service"
+                    "shortHeading": {
+                      "package": "the8020/admin-core",
+                      "key": "layout.service",
+                      "fallback": "Service"
+                    }
                   },
                   "serviceType": {
-                    "shortHeading": "Type"
+                    "shortHeading": {
+                      "package": "the8020/admin-core",
+                      "key": "layout.type",
+                      "fallback": "Type"
+                    }
                   },
                   "entrypoint": {
                     "length": "long"
@@ -94,7 +122,11 @@
               {
                 "id": "programs",
                 "type": "list",
-                "title": "Programs",
+                "title": {
+                  "package": "the8020/admin-core",
+                  "key": "layout.programs",
+                  "fallback": "Programs"
+                },
                 "bind": "programs",
                 "key": "programId",
                 "display": [
@@ -108,7 +140,11 @@
                 ],
                 "columnOptions": {
                   "programId": {
-                    "shortHeading": "Program"
+                    "shortHeading": {
+                      "package": "the8020/admin-core",
+                      "key": "layout.program",
+                      "fallback": "Program"
+                    }
                   },
                   "entrypoint": {
                     "length": "long"
@@ -121,7 +157,11 @@
               {
                 "id": "files",
                 "type": "list",
-                "title": "Files",
+                "title": {
+                  "package": "the8020/admin-core",
+                  "key": "layout.files",
+                  "fallback": "Files"
+                },
                 "bind": "files",
                 "key": "path",
                 "display": [

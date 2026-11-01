@@ -1,3 +1,5 @@
+import { text as localizedText } from "/p/the8020/i18n/mod.ts";
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { listServices } from "/p/the8020/services/src/admin.ts";
 import { packages as packageAdmin } from "/p/the8020/packages/src/admin.ts";
 import { packageInfo } from "/p/the8020/packages/types/package.ts";
@@ -143,8 +145,14 @@ export function packageDetailSchema(
       readOnly: true,
     }),
     clean: field(sourceInfo.shape.clean, { length: "short", readOnly: true }),
-    branch: field(git.branch, { label: "Current branch", length: "long" }),
-    head: field(git.commit, { label: "Current commit", length: "long" }),
+    branch: field(git.branch, {
+      label: msg("packages.current_branch"),
+      length: "long",
+    }),
+    head: field(git.commit, {
+      label: msg("packages.current_commit"),
+      length: "long",
+    }),
     remoteName: field(sourceInfo.shape.remoteName, {
       length: "short",
       readOnly: !repository.activation_ready,
@@ -189,15 +197,17 @@ export async function packageList(
       }
       rows.push({
         ...item,
-        status: item.valid ? "Ready" : "Needs attention",
-        updates: updateLabels[status.state],
+        status: item.valid
+          ? localizedText(msg("packages.ready"))
+          : localizedText(msg("packages.needs_attention")),
+        updates: localizedText(updateLabels[status.state]),
         selected: state.selected.has(item.canonicalName),
       });
     }
     const model = frame.model({ packages: rows });
     const event = await callScreen({
       id: "core-admin-packages",
-      title: "Packages",
+      title: msg("packages.packages"),
       schema: PackageList,
       model,
       layout: packageListLayout,
@@ -212,7 +222,10 @@ export async function packageList(
     if (event.action === "local") return { view: "packageLocal" };
     if (event.action === "fetch" || event.action === "update") {
       if (!state.selected.size) {
-        sendMessage("Select packages first", "info");
+        sendMessage(
+          localizedText(msg("packages.select_packages_first")),
+          "info",
+        );
         continue;
       }
       let completed = 0, current = 0, skipped = 0, failed = 0;
@@ -250,7 +263,9 @@ export async function packageList(
       }
       sendMessage(
         `${
-          event.action === "fetch" ? "Fetched" : "Updated"
+          event.action === "fetch"
+            ? localizedText(msg("packages.fetched"))
+            : localizedText(msg("packages.updated"))
         } ${completed}; ${current} up to date; ${skipped} skipped; ${failed} failed` +
           (errors.length ? `\n${errors.join("\n")}` : ""),
         failed ? "warning" : completed ? "success" : "info",
@@ -292,13 +307,17 @@ export async function packageDetail(
     }),
     services: z.array(z.object({
       id: serviceField,
-      description: field(serviceInfo.shape.description, { label: "Service" }),
+      description: field(serviceInfo.shape.description, {
+        label: msg("packages.service"),
+      }),
       state: serviceInfo.shape.state,
       workers: runtimeInfo.shape.workerCount,
     })),
     programs: z.array(z.object({
       id: programField,
-      description: field(programInfo.shape.description, { label: "Program" }),
+      description: field(programInfo.shape.description, {
+        label: msg("packages.program"),
+      }),
       kind: programInfo.shape.kind,
     })),
   });
@@ -314,7 +333,9 @@ export async function packageDetail(
     ].join("\n");
     const model = {
       description: inspection.description ?? "",
-      status: inspection.valid ? "Ready" : "Needs attention",
+      status: inspection.valid
+        ? localizedText(msg("packages.ready"))
+        : localizedText(msg("packages.needs_attention")),
       license: inspection.license ?? "",
       documentation: inspection.documentation_url ?? "",
       issue,
@@ -329,15 +350,15 @@ export async function packageDetail(
         id: program.program_id,
         description: program.description || program.program_id,
         kind: !program.valid || program.metadata_error
-          ? "Unavailable"
+          ? localizedText(msg("packages.unavailable"))
           : program.uui
-          ? "Interactive"
-          : "Background job",
+          ? localizedText(msg("packages.interactive"))
+          : localizedText(msg("packages.background_job")),
       })),
     };
     const event = await callScreen({
       id: "core-admin-package-detail",
-      title: `Package ${packageId}`,
+      title: msg("packages.package_packageid", { packageId: packageId }),
       schema: Screen,
       model: frame.model(model),
       layout: {
@@ -361,13 +382,25 @@ export async function packageDetail(
       ],
       header: {
         actions: [
-          { id: "deploy", label: "Deploy version", kind: "primary" },
+          {
+            id: "deploy",
+            label: msg("packages.deploy_version"),
+            kind: "primary",
+          },
           ...(index !== undefined && !index.local
-            ? [{ id: "versions", label: "Versions", kind: "primary" as const }]
+            ? [{
+              id: "versions",
+              label: msg("packages.versions"),
+              kind: "primary" as const,
+            }]
             : []),
-          { id: "refresh", label: "Refresh" },
-          { id: "advanced", label: "Advanced" },
-          { id: "delete", label: "Delete package", kind: "danger" },
+          { id: "refresh", label: msg("kernel_logs.refresh") },
+          { id: "advanced", label: msg("packages.advanced") },
+          {
+            id: "delete",
+            label: msg("packages.delete_package"),
+            kind: "danger",
+          },
         ],
       },
     });
@@ -379,20 +412,28 @@ export async function packageDetail(
     if (event.action === "delete") {
       const confirmed = await confirmAction({
         id: "core-admin-package-delete",
-        title: `Delete ${packageId}?`,
-        message:
-          "The package and its installed source will be removed. Database data will be retained.",
-        confirm: "Delete package",
-        cancel: "Cancel",
+        title: msg("packages.delete_packageid", { packageId: packageId }),
+        message: localizedText(
+          msg("packages.the_package_and_its_installed_source_will"),
+        ),
+        confirm: msg("packages.delete_package"),
+        cancel: msg("packages.cancel"),
       });
       if (!confirmed) continue;
       try {
         await packageAdmin.delete(packageId, true);
-        sendMessage(`Deleted ${packageId}`, "success");
+        sendMessage(
+          localizedText(
+            msg("packages.deleted_packageid", { packageId: packageId }),
+          ),
+          "success",
+        );
         return { view: "back" };
       } catch (error) {
         sendMessage(
-          error instanceof Error ? error.message : "Package deletion failed",
+          error instanceof Error
+            ? error.message
+            : localizedText(msg("packages.package_deletion_failed")),
           "error",
         );
       }
@@ -434,7 +475,7 @@ export async function packageAdvanced(
     );
     const event = await callScreen({
       id: "core-admin-package-advanced",
-      title: `Advanced · ${packageId}`,
+      title: msg("packages.advanced_packageid", { packageId: packageId }),
       schema: packageDetailSchema(
         repository,
         index !== undefined,
@@ -443,21 +484,21 @@ export async function packageAdvanced(
       layout: packageAdvancedLayout,
       header: {
         actions: [
-          { id: "fetch", label: "Fetch", kind: "primary" },
-          { id: "push", label: "Push" },
-          { id: "checkout-branch", label: "Checkout branch" },
-          { id: "checkout-commit", label: "Checkout commit" },
+          { id: "fetch", label: msg("packages.fetch"), kind: "primary" },
+          { id: "push", label: msg("packages.push") },
+          { id: "checkout-branch", label: msg("packages.checkout_branch") },
+          { id: "checkout-commit", label: msg("packages.checkout_commit") },
           ...(index === undefined
             ? []
-            : [{ id: "save-secret", label: "Save secret" }]),
+            : [{ id: "save-secret", label: msg("packages.save_secret") }]),
           ...(repository.activation_ready
-            ? [{ id: "save-remote", label: "Save remote" }]
+            ? [{ id: "save-remote", label: msg("packages.save_remote") }]
             : []),
-          { id: "versions", label: "Versions" },
-          { id: "synchronize", label: "Synchronize" },
+          { id: "versions", label: msg("packages.versions") },
+          { id: "synchronize", label: msg("packages.synchronize") },
           {
             id: "refresh",
-            label: "[[icon=refresh color=warning]] Refresh",
+            label: msg("packages.refresh"),
           },
         ],
       },
@@ -481,25 +522,49 @@ export async function packageAdvanced(
       switch (event.action) {
         case "fetch":
           await packageAdmin.repository.fetch(packageId);
-          sendMessage(`Fetched ${packageId}`, "success");
+          sendMessage(
+            localizedText(
+              msg("packages.fetched_packageid", { packageId: packageId }),
+            ),
+            "success",
+          );
           break;
         case "push":
           await packageAdmin.repository.push(packageId);
-          sendMessage(`Pushed ${packageId}`, "success");
+          sendMessage(
+            localizedText(
+              msg("packages.pushed_packageid", { packageId: packageId }),
+            ),
+            "success",
+          );
           break;
         case "checkout-branch":
           await packageAdmin.repository.checkout({
             packageId,
             branch: requiredSelection(model.branch, "branch"),
           });
-          sendMessage(`Checked out branch ${model.branch}`, "success");
+          sendMessage(
+            localizedText(
+              msg("packages.checked_out_branch_value1", {
+                value1: model.branch,
+              }),
+            ),
+            "success",
+          );
           break;
         case "checkout-commit":
           await packageAdmin.repository.checkout({
             packageId,
             commit: requiredSelection(model.head, "commit"),
           });
-          sendMessage(`Checked out ${model.head.slice(0, 12)}`, "success");
+          sendMessage(
+            localizedText(
+              msg("packages.checked_out_value1", {
+                value1: model.head.slice(0, 12),
+              }),
+            ),
+            "success",
+          );
           break;
         case "save-secret":
           if (index === undefined) {
@@ -507,7 +572,11 @@ export async function packageAdvanced(
           }
           await savePackageSecret(index, model.secretName);
           sendMessage(
-            `Saved Git authentication for ${packageId}`,
+            localizedText(
+              msg("packages.saved_git_authentication_for_packageid", {
+                packageId: packageId,
+              }),
+            ),
             "success",
           );
           break;
@@ -518,22 +587,45 @@ export async function packageAdvanced(
             name,
             url: requiredSelection(model.remoteUrl.trim(), "remote URL"),
           });
-          sendMessage(`Saved remote ${name} for ${packageId}`, "success");
+          sendMessage(
+            localizedText(
+              msg("packages.saved_remote_name_for_packageid", {
+                name: name,
+                packageId: packageId,
+              }),
+            ),
+            "success",
+          );
           break;
         }
         case "synchronize": {
           const results = await packageAdmin.synchronize([packageId]);
           const failure = results.find((result) => !result.success);
           if (failure !== undefined) {
-            throw new Error(`Could not synchronize ${failure.package_id}`);
+            throw new Error(
+              localizedText(
+                msg("ui.could_not_synchronize_value1", {
+                  value1: failure.package_id,
+                }),
+              ),
+            );
           }
-          sendMessage(`Synchronized ${packageId}`, "success");
+          sendMessage(
+            localizedText(
+              msg("package_management.synchronized_packageid", {
+                packageId: packageId,
+              }),
+            ),
+            "success",
+          );
           break;
         }
       }
     } catch (error) {
       sendMessage(
-        error instanceof Error ? error.message : "Package operation failed",
+        error instanceof Error
+          ? error.message
+          : localizedText(msg("package_management.package_operation_failed")),
         "error",
       );
     }
@@ -554,7 +646,11 @@ async function optionalPackageIndex(
 }
 
 function requiredSelection(value: string, label: string): string {
-  if (value.trim() === "") throw new TypeError(`Select a ${label}`);
+  if (value.trim() === "") {
+    throw new TypeError(
+      localizedText(msg("ui.select_a_value1", { value1: label })),
+    );
+  }
   return value;
 }
 

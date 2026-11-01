@@ -4,13 +4,25 @@
   "root": {
     "id": "local-section",
     "type": "section",
-    "title": "Package",
+    "title": {
+      "package": "the8020/admin-core",
+      "key": "layout.package",
+      "fallback": "Package"
+    },
     "children": [
       {
         "id": "local-fields",
         "type": "field-group",
-        "title": "Identity",
-        "controls": ["author", "repository", "description"]
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.identity",
+          "fallback": "Identity"
+        },
+        "controls": [
+          "author",
+          "repository",
+          "description"
+        ]
       }
     ]
   }

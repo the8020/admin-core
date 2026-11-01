@@ -1,3 +1,4 @@
+import { resolveTexts } from "/p/the8020/i18n/mod.ts";
 import { sourceVersionOptions } from "/p/the8020/packages/types/source.ts";
 import { assertEquals } from "@std/assert";
 import type { PackageRepository } from "@the8020/kernel";
@@ -240,7 +241,7 @@ Deno.test("package source references become explicit version selectors", () => {
     commit: "abcdef123456",
   });
   assertEquals(
-    sourceVersionOptions({
+    resolveTexts(sourceVersionOptions({
       source: "https://github.com/the8020/uui.git",
       author: "the8020",
       repository: "uui",
@@ -251,7 +252,7 @@ Deno.test("package source references become explicit version selectors", () => {
         { kind: "branch", name: "stable", commit: "abcdef123456" },
         { kind: "tag", name: "v1.0.0", commit: "123456abcdef" },
       ],
-    }),
+    })),
     [
       { value: "latest", label: "Latest default branch" },
       { value: "commit:abcdef123456", label: "main (abcdef123456)" },

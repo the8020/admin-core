@@ -1,3 +1,5 @@
+import { text as localizedText } from "/p/the8020/i18n/mod.ts";
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import {
   formatLogRecord,
   type LogPage,
@@ -52,7 +54,13 @@ export function packageDetailModel(
     inspection: [
       ...(item.inspection_errors ?? []),
       ...(item.contents_truncated
-        ? [`Content inventory stopped at ${files.length} visible files`]
+        ? [
+          localizedText(
+            msg("view.content_inventory_stopped_at_value1_visible_files", {
+              value1: files.length,
+            }),
+          ),
+        ]
         : []),
     ].join("; "),
     repositoryStatus: repository.status,
@@ -194,18 +202,20 @@ export function sandboxHistoryDetailModel(
     archivedAt: record.archived_at,
     expiresAt: record.expires_at,
     logStatus: page.state === "expired"
-      ? "The referenced logs have expired."
+      ? localizedText(msg("view.the_referenced_logs_have_expired"))
       : page.state === "unavailable"
-      ? "Logs are currently unavailable."
+      ? localizedText(msg("view.logs_are_currently_unavailable"))
       : [
         page.tail_limited
-          ? "Showing recent logs. Use First logs for earlier entries."
+          ? localizedText(msg("view.showing_recent_logs_use_first_logs_for"))
           : "",
-        page.corrupt_records ? "Some log records could not be read." : "",
+        page.corrupt_records
+          ? localizedText(msg("view.some_log_records_could_not_be_read"))
+          : "",
         page.records.length === 0
           ? page.more
-            ? "No matching records on this page."
-            : "No matching logs."
+            ? localizedText(msg("view.no_matching_records_on_this_page"))
+            : localizedText(msg("view.no_matching_logs"))
           : "",
       ].filter(Boolean).join(" "),
     logs: page.records.map(formatLogRecord).join("\n"),
@@ -232,11 +242,11 @@ export function sandboxDetailModel(result: SandboxInspectResult) {
     memoryBytes: resources.memory_current ?? 0,
     cpuMicros: resources.cpu_usage_micros ?? 0,
     cpu: resources.cpu_usage_micros === undefined
-      ? "Not measured"
+      ? localizedText(msg("view.not_measured"))
       : cpuTime(resources.cpu_usage_micros),
     pids: resources.pid_current ?? 0,
     memory: resources.memory_current === undefined
-      ? "Not measured"
+      ? localizedText(msg("view.not_measured"))
       : `${(resources.memory_current / 1024 / 1024).toFixed(1)} MiB`,
     nodeId: sandbox.status.node_id,
     createdAt: sandbox.status.created_at,

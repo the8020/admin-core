@@ -14,16 +14,28 @@
     ],
     "columnOptions": {
       "sandboxId": {
-        "shortHeading": "Sandbox"
+        "shortHeading": {
+          "package": "the8020/admin-core",
+          "key": "layout.sandbox",
+          "fallback": "Sandbox"
+        }
       },
       "reason": {
         "length": "long"
       },
       "archivedAt": {
-        "shortHeading": "Archived"
+        "shortHeading": {
+          "package": "the8020/admin-core",
+          "key": "layout.archived",
+          "fallback": "Archived"
+        }
       },
       "expiresAt": {
-        "shortHeading": "Expires"
+        "shortHeading": {
+          "package": "the8020/admin-core",
+          "key": "layout.expires",
+          "fallback": "Expires"
+        }
       }
     }
   }

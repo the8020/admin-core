@@ -8,7 +8,11 @@
       {
         "id": "identity",
         "type": "detail",
-        "title": "Status",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.status",
+          "fallback": "Status"
+        },
         "controls": [
           "state",
           "type",
@@ -24,7 +28,11 @@
       {
         "id": "services",
         "type": "list",
-        "title": "Services",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.services",
+          "fallback": "Services"
+        },
         "bind": "services",
         "key": "navigation",
         "display": [
@@ -34,26 +42,46 @@
         ],
         "columnOptions": {
           "serviceId": {
-            "shortHeading": "Service"
+            "shortHeading": {
+              "package": "the8020/admin-core",
+              "key": "layout.service",
+              "fallback": "Service"
+            }
           },
           "enabled": {
             "length": "compact",
-            "shortHeading": "On"
+            "shortHeading": {
+              "package": "the8020/admin-core",
+              "key": "layout.on",
+              "fallback": "On"
+            }
           },
           "sandboxes": {
             "length": "compact",
-            "shortHeading": "S"
+            "shortHeading": {
+              "package": "the8020/admin-core",
+              "key": "layout.s",
+              "fallback": "S"
+            }
           },
           "workers": {
             "length": "short",
-            "shortHeading": "W"
+            "shortHeading": {
+              "package": "the8020/admin-core",
+              "key": "layout.w",
+              "fallback": "W"
+            }
           }
         }
       },
       {
         "id": "workers",
         "type": "list",
-        "title": "Workers",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.workers",
+          "fallback": "Workers"
+        },
         "bind": "workerRows",
         "key": "workerId",
         "display": [

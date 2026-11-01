@@ -23,7 +23,11 @@
       {
         "id": "workers",
         "type": "list",
-        "title": "Running Workers",
+        "title": {
+          "package": "the8020/admin-core",
+          "key": "layout.running_workers",
+          "fallback": "Running Workers"
+        },
         "bind": "runningWorkers",
         "key": "workerId",
         "display": [

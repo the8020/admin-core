@@ -1,3 +1,5 @@
+import { text } from "/p/the8020/i18n/mod.ts";
+import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { listServices } from "/p/the8020/services/src/admin.ts";
 import type { ServiceSummary } from "../../src/contracts.ts";
 
@@ -11,7 +13,9 @@ export default async function servicesStatus() {
     ).length;
   return {
     value: `${enabled.length}/${services.length}`,
-    detail: failing === 0 ? "enabled, all healthy" : `${failing} failing`,
+    detail: failing === 0
+      ? text(msg("widgets.healthy"))
+      : text(msg("widgets.failing", { count: failing })),
     status: failing === 0 ? "ok" : "danger",
   };
 }
