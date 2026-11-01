@@ -88,8 +88,8 @@
     "packages.cancel": "Zrušit",
     "packages.deleted_packageid": "Smazáno: {packageId}",
     "packages.advanced_packageid": "Pokročilé · {packageId}",
-    "packages.fetch": "Načíst z Gitu",
-    "packages.push": "Odeslat do Gitu",
+    "packages.fetch": "Načíst",
+    "packages.push": "Odeslat",
     "packages.checkout_branch": "Přepnout větev",
     "packages.checkout_commit": "Přepnout commit",
     "packages.save_secret": "Uložit tajný údaj",
@@ -301,7 +301,7 @@
     "layout.package": "Balíček",
     "layout.install_package": "Nainstalovat balíček",
     "layout.create_local_package": "Vytvořit místní balíček",
-    "layout.fetch": "Načíst z Gitu",
+    "layout.fetch": "Načíst",
     "layout.icon_refresh_refresh": "[[icon=refresh]] Obnovit",
     "layout.running_workers": "Běžící workery",
     "layout.status": "Stav",
@@ -351,8 +351,8 @@
     "ui.could_not_synchronize_value1": "Balíček {value1} se nepodařilo synchronizovat",
     "ui.maximum_workers_must_be_zero_or_at_least_minimum_workers": "Maximum workerů musí být nula nebo alespoň minimum workerů.",
     "ui.select_a_value1": "Vyberte {value1}",
-    "secrets.updated_name": "Údaj {name} byl aktualizován",
-    "secrets.created_name": "Údaj {name} byl vytvořen",
+    "secrets.updated_name": "Údaj {name} aktualizován",
+    "secrets.created_name": "Údaj {name} vytvořen",
     "ui.secret_name": "Tajný údaj {name}"
   }
 }

@@ -17,6 +17,6 @@
   "tasks": {
     "check": "deno fmt --check . && deno lint . && deno check types/*.ts programs/*/program.ts *_native_fixture.ts && deno task check:i18n",
     "test": "deno test .",
-    "check:i18n": "deno run --allow-read ../i18n/check.ts --complete=cs ."
+    "check:i18n": "deno run --allow-read ../i18n/check.ts --complete=builtin ."
   }
 }
