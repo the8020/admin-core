@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Valitse {value1}",
     "secrets.updated_name": "{name} päivitetty",
     "secrets.created_name": "{name} luotu",
-    "ui.secret_name": "Salaisuus {name}"
+    "ui.secret_name": "Salaisuus {name}",
+    "secrets.where_used": "Käyttökohteet",
+    "secrets.delete_secret": "Poista salaisuus",
+    "secrets.delete_secret_name": "Poistetaanko salaisuus {name}?",
+    "secrets.the_value_is_removed_permanently": "Arvo poistetaan pysyvästi, eikä sitä voi palauttaa.",
+    "secrets.deleted_name": "{name} poistettu",
+    "secrets.where_name_is_used": "Missä {name} on käytössä",
+    "secrets.name_cannot_be_deleted": "Salaisuutta {name} ei voi poistaa",
+    "secrets.no_installed_package_uses_this_secret": "Mikään asennettu paketti ei käytä tätä salaisuutta.",
+    "secrets.some_packages_could_not_be_checked": "Joitakin paketteja ei voitu tarkistaa. Yritä myöhemmin uudelleen.",
+    "secrets.remove_the_secret_from_these_places": "Salaisuus on yhä käytössä näissä kohteissa. Poista se ensin niistä ja poista sitten salaisuus.",
+    "secrets.open_a_place_to_see_or_change": "Avaa kohde nähdäksesi tai muuttaaksesi, miten salaisuutta käytetään.",
+    "secrets.could_not_check_package": "Pakettia {package} ei voitu tarkistaa: {message}",
+    "secrets.usage_place": "Kohde",
+    "secrets.where_the_secret_is_used_open_it": "Missä salaisuutta käytetään. Avaa rivi siirtyäksesi sinne.",
+    "secrets.usage_detail": "Tiedot",
+    "secrets.what_the_secret_is_used_for": "Mihin salaisuutta käytetään.",
+    "secrets.usage_package": "Paketti",
+    "secrets.the_package_that_uses_the_secret": "Paketti, joka käyttää salaisuutta."
   }
 }

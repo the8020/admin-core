@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Vælg {value1}",
     "secrets.updated_name": "Opdateret: {name}",
     "secrets.created_name": "Oprettet: {name}",
-    "ui.secret_name": "Hemmelighed {name}"
+    "ui.secret_name": "Hemmelighed {name}",
+    "secrets.where_used": "Anvendt i",
+    "secrets.delete_secret": "Slet hemmelighed",
+    "secrets.delete_secret_name": "Slet hemmeligheden {name}?",
+    "secrets.the_value_is_removed_permanently": "Værdien fjernes permanent og kan ikke gendannes.",
+    "secrets.deleted_name": "Slettet: {name}",
+    "secrets.where_name_is_used": "Hvor {name} bruges",
+    "secrets.name_cannot_be_deleted": "{name} kan ikke slettes",
+    "secrets.no_installed_package_uses_this_secret": "Ingen installeret pakke bruger denne hemmelighed.",
+    "secrets.some_packages_could_not_be_checked": "Nogle pakker kunne ikke kontrolleres. Prøv igen senere.",
+    "secrets.remove_the_secret_from_these_places": "Hemmeligheden bruges stadig disse steder. Fjern den først derfra, og slet den derefter.",
+    "secrets.open_a_place_to_see_or_change": "Åbn et sted for at se eller ændre, hvordan hemmeligheden bruges.",
+    "secrets.could_not_check_package": "Kunne ikke kontrollere {package}: {message}",
+    "secrets.usage_place": "Sted",
+    "secrets.where_the_secret_is_used_open_it": "Hvor hemmeligheden bruges. Åbn rækken for at gå dertil.",
+    "secrets.usage_detail": "Detalje",
+    "secrets.what_the_secret_is_used_for": "Hvad hemmeligheden bruges til.",
+    "secrets.usage_package": "Pakke",
+    "secrets.the_package_that_uses_the_secret": "Pakken, der bruger hemmeligheden."
   }
 }

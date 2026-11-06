@@ -353,6 +353,24 @@
     "ui.select_a_value1": "یک {value1} انتخاب کنید",
     "secrets.updated_name": "{name} به‌روز شد",
     "secrets.created_name": "{name} ایجاد شد",
-    "ui.secret_name": "راز {name}"
+    "ui.secret_name": "راز {name}",
+    "secrets.where_used": "محل استفاده",
+    "secrets.delete_secret": "حذف راز",
+    "secrets.delete_secret_name": "راز {name} حذف شود؟",
+    "secrets.the_value_is_removed_permanently": "مقدار برای همیشه حذف می‌شود و قابل بازیابی نیست.",
+    "secrets.deleted_name": "{name} حذف شد",
+    "secrets.where_name_is_used": "محل‌های استفاده از {name}",
+    "secrets.name_cannot_be_deleted": "{name} قابل حذف نیست",
+    "secrets.no_installed_package_uses_this_secret": "هیچ بستهٔ نصب‌شده‌ای از این راز استفاده نمی‌کند.",
+    "secrets.some_packages_could_not_be_checked": "برخی بسته‌ها بررسی نشدند. بعداً دوباره تلاش کنید.",
+    "secrets.remove_the_secret_from_these_places": "این راز هنوز در این مکان‌ها استفاده می‌شود. ابتدا آن را از این مکان‌ها حذف کنید، سپس راز را حذف کنید.",
+    "secrets.open_a_place_to_see_or_change": "یک مکان را باز کنید تا نحوهٔ استفاده از راز را ببینید یا تغییر دهید.",
+    "secrets.could_not_check_package": "بررسی {package} ممکن نشد: {message}",
+    "secrets.usage_place": "مکان",
+    "secrets.where_the_secret_is_used_open_it": "محل استفاده از راز. برای رفتن به آن، ردیف را باز کنید.",
+    "secrets.usage_detail": "جزئیات",
+    "secrets.what_the_secret_is_used_for": "کاربرد راز.",
+    "secrets.usage_package": "بسته",
+    "secrets.the_package_that_uses_the_secret": "بسته‌ای که از راز استفاده می‌کند."
   }
 }

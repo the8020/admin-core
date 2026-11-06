@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Selectați: {value1}",
     "secrets.updated_name": "Actualizat: {name}",
     "secrets.created_name": "Creat: {name}",
-    "ui.secret_name": "Secret {name}"
+    "ui.secret_name": "Secret {name}",
+    "secrets.where_used": "Unde este folosit",
+    "secrets.delete_secret": "Șterge secretul",
+    "secrets.delete_secret_name": "Ștergeți secretul {name}?",
+    "secrets.the_value_is_removed_permanently": "Valoarea este eliminată definitiv și nu poate fi restaurată.",
+    "secrets.deleted_name": "Șters: {name}",
+    "secrets.where_name_is_used": "Unde este folosit {name}",
+    "secrets.name_cannot_be_deleted": "{name} nu poate fi șters",
+    "secrets.no_installed_package_uses_this_secret": "Niciun pachet instalat nu folosește acest secret.",
+    "secrets.some_packages_could_not_be_checked": "Unele pachete nu au putut fi verificate. Încercați din nou mai târziu.",
+    "secrets.remove_the_secret_from_these_places": "Secretul este încă folosit în aceste locuri. Eliminați-l mai întâi de acolo, apoi ștergeți-l.",
+    "secrets.open_a_place_to_see_or_change": "Deschideți un loc pentru a vedea sau modifica modul în care este folosit secretul.",
+    "secrets.could_not_check_package": "Nu s-a putut verifica {package}: {message}",
+    "secrets.usage_place": "Loc",
+    "secrets.where_the_secret_is_used_open_it": "Unde este folosit secretul. Deschideți rândul pentru a merge acolo.",
+    "secrets.usage_detail": "Detaliu",
+    "secrets.what_the_secret_is_used_for": "Pentru ce este folosit secretul.",
+    "secrets.usage_package": "Pachet",
+    "secrets.the_package_that_uses_the_secret": "Pachetul care folosește secretul."
   }
 }

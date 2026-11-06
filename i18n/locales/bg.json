@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Изберете {value1}",
     "secrets.updated_name": "Обновена е {name}",
     "secrets.created_name": "Създадена е {name}",
-    "ui.secret_name": "Тайна {name}"
+    "ui.secret_name": "Тайна {name}",
+    "secrets.where_used": "Къде се използва",
+    "secrets.delete_secret": "Изтрий тайната",
+    "secrets.delete_secret_name": "Да се изтрие ли тайната {name}?",
+    "secrets.the_value_is_removed_permanently": "Стойността се премахва окончателно и не може да бъде възстановена.",
+    "secrets.deleted_name": "Изтрито: {name}",
+    "secrets.where_name_is_used": "Къде се използва {name}",
+    "secrets.name_cannot_be_deleted": "{name} не може да бъде изтрита",
+    "secrets.no_installed_package_uses_this_secret": "Нито един инсталиран пакет не използва тази тайна.",
+    "secrets.some_packages_could_not_be_checked": "Някои пакети не можаха да бъдат проверени. Опитайте отново по-късно.",
+    "secrets.remove_the_secret_from_these_places": "Тайната все още се използва на тези места. Първо я премахнете от тях, след това я изтрийте.",
+    "secrets.open_a_place_to_see_or_change": "Отворете място, за да видите или промените как се използва тайната.",
+    "secrets.could_not_check_package": "Неуспешна проверка на {package}: {message}",
+    "secrets.usage_place": "Място",
+    "secrets.where_the_secret_is_used_open_it": "Къде се използва тайната. Отворете реда, за да отидете там.",
+    "secrets.usage_detail": "Подробности",
+    "secrets.what_the_secret_is_used_for": "За какво се използва тайната.",
+    "secrets.usage_package": "Пакет",
+    "secrets.the_package_that_uses_the_secret": "Пакетът, който използва тайната."
   }
 }

@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Pumili ng {value1}",
     "secrets.updated_name": "Na-update ang {name}",
     "secrets.created_name": "Nagawa ang {name}",
-    "ui.secret_name": "Sikreto {name}"
+    "ui.secret_name": "Sikreto {name}",
+    "secrets.where_used": "Saan ginagamit",
+    "secrets.delete_secret": "Burahin ang sikreto",
+    "secrets.delete_secret_name": "Burahin ang sikretong {name}?",
+    "secrets.the_value_is_removed_permanently": "Permanenteng aalisin ang value at hindi na maibabalik.",
+    "secrets.deleted_name": "Nabura ang {name}",
+    "secrets.where_name_is_used": "Saan ginagamit ang {name}",
+    "secrets.name_cannot_be_deleted": "Hindi mabubura ang {name}",
+    "secrets.no_installed_package_uses_this_secret": "Walang naka-install na package na gumagamit ng sikretong ito.",
+    "secrets.some_packages_could_not_be_checked": "Hindi nasuri ang ilang package. Subukang muli mamaya.",
+    "secrets.remove_the_secret_from_these_places": "Ginagamit pa ang sikreto sa mga lugar na ito. Alisin muna ito sa mga iyon, saka ito burahin.",
+    "secrets.open_a_place_to_see_or_change": "Magbukas ng lugar para makita o mabago kung paano ginagamit ang sikreto.",
+    "secrets.could_not_check_package": "Hindi nasuri ang {package}: {message}",
+    "secrets.usage_place": "Lugar",
+    "secrets.where_the_secret_is_used_open_it": "Kung saan ginagamit ang sikreto. Buksan ang row para pumunta roon.",
+    "secrets.usage_detail": "Detalye",
+    "secrets.what_the_secret_is_used_for": "Kung para saan ginagamit ang sikreto.",
+    "secrets.usage_package": "Package",
+    "secrets.the_package_that_uses_the_secret": "Ang package na gumagamit ng sikreto."
   }
 }

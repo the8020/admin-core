@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Välj {value1}",
     "secrets.updated_name": "Uppdaterade {name}",
     "secrets.created_name": "Skapade {name}",
-    "ui.secret_name": "Hemlighet {name}"
+    "ui.secret_name": "Hemlighet {name}",
+    "secrets.where_used": "Används i",
+    "secrets.delete_secret": "Ta bort hemlighet",
+    "secrets.delete_secret_name": "Ta bort hemligheten {name}?",
+    "secrets.the_value_is_removed_permanently": "Värdet tas bort permanent och kan inte återställas.",
+    "secrets.deleted_name": "Tog bort {name}",
+    "secrets.where_name_is_used": "Var {name} används",
+    "secrets.name_cannot_be_deleted": "{name} kan inte tas bort",
+    "secrets.no_installed_package_uses_this_secret": "Inget installerat paket använder den här hemligheten.",
+    "secrets.some_packages_could_not_be_checked": "Vissa paket kunde inte kontrolleras. Försök igen senare.",
+    "secrets.remove_the_secret_from_these_places": "Hemligheten används fortfarande på de här platserna. Ta först bort den därifrån och ta sedan bort hemligheten.",
+    "secrets.open_a_place_to_see_or_change": "Öppna en plats för att se eller ändra hur hemligheten används.",
+    "secrets.could_not_check_package": "Kunde inte kontrollera {package}: {message}",
+    "secrets.usage_place": "Plats",
+    "secrets.where_the_secret_is_used_open_it": "Var hemligheten används. Öppna raden för att gå dit.",
+    "secrets.usage_detail": "Detalj",
+    "secrets.what_the_secret_is_used_for": "Vad hemligheten används till.",
+    "secrets.usage_package": "Paket",
+    "secrets.the_package_that_uses_the_secret": "Paketet som använder hemligheten."
   }
 }

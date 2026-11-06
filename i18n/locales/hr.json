@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Odaberite {value1}",
     "secrets.updated_name": "Ažurirana je {name}",
     "secrets.created_name": "Stvorena je {name}",
-    "ui.secret_name": "Tajna {name}"
+    "ui.secret_name": "Tajna {name}",
+    "secrets.where_used": "Gdje se koristi",
+    "secrets.delete_secret": "Izbriši tajnu",
+    "secrets.delete_secret_name": "Izbrisati tajnu {name}?",
+    "secrets.the_value_is_removed_permanently": "Vrijednost se trajno uklanja i ne može se vratiti.",
+    "secrets.deleted_name": "Izbrisano: {name}",
+    "secrets.where_name_is_used": "Gdje se koristi {name}",
+    "secrets.name_cannot_be_deleted": "{name} nije moguće izbrisati",
+    "secrets.no_installed_package_uses_this_secret": "Nijedan instalirani paket ne koristi ovu tajnu.",
+    "secrets.some_packages_could_not_be_checked": "Neke pakete nije bilo moguće provjeriti. Pokušajte ponovno kasnije.",
+    "secrets.remove_the_secret_from_these_places": "Tajna se još koristi na ovim mjestima. Najprije je uklonite s njih, a zatim je izbrišite.",
+    "secrets.open_a_place_to_see_or_change": "Otvorite mjesto da biste vidjeli ili promijenili kako se tajna koristi.",
+    "secrets.could_not_check_package": "Nije moguće provjeriti {package}: {message}",
+    "secrets.usage_place": "Mjesto",
+    "secrets.where_the_secret_is_used_open_it": "Gdje se tajna koristi. Otvorite redak da biste otišli onamo.",
+    "secrets.usage_detail": "Pojedinosti",
+    "secrets.what_the_secret_is_used_for": "Za što se tajna koristi.",
+    "secrets.usage_package": "Paket",
+    "secrets.the_package_that_uses_the_secret": "Paket koji koristi tajnu."
   }
 }

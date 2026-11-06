@@ -353,6 +353,24 @@
     "ui.select_a_value1": "選擇一個{value1}",
     "secrets.updated_name": "已更新 {name}",
     "secrets.created_name": "已建立 {name}",
-    "ui.secret_name": "機密 {name}"
+    "ui.secret_name": "機密 {name}",
+    "secrets.where_used": "使用位置",
+    "secrets.delete_secret": "刪除機密",
+    "secrets.delete_secret_name": "刪除機密 {name}？",
+    "secrets.the_value_is_removed_permanently": "此值將永久移除，且無法還原。",
+    "secrets.deleted_name": "已刪除 {name}",
+    "secrets.where_name_is_used": "{name} 的使用位置",
+    "secrets.name_cannot_be_deleted": "無法刪除 {name}",
+    "secrets.no_installed_package_uses_this_secret": "沒有已安裝的套件使用此機密。",
+    "secrets.some_packages_could_not_be_checked": "無法檢查部分套件。請稍後再試。",
+    "secrets.remove_the_secret_from_these_places": "此機密仍在以下位置使用。請先從這些位置移除，然後再刪除。",
+    "secrets.open_a_place_to_see_or_change": "開啟某個位置以檢視或變更機密的使用方式。",
+    "secrets.could_not_check_package": "無法檢查 {package}：{message}",
+    "secrets.usage_place": "位置",
+    "secrets.where_the_secret_is_used_open_it": "機密的使用位置。開啟該列即可前往。",
+    "secrets.usage_detail": "詳細資料",
+    "secrets.what_the_secret_is_used_for": "機密的用途。",
+    "secrets.usage_package": "套件",
+    "secrets.the_package_that_uses_the_secret": "使用該機密的套件。"
   }
 }

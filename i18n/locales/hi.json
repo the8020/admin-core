@@ -353,6 +353,24 @@
     "ui.select_a_value1": "{value1} चुनें",
     "secrets.updated_name": "{name} अपडेट हुआ",
     "secrets.created_name": "{name} बनाया गया",
-    "ui.secret_name": "सीक्रेट {name}"
+    "ui.secret_name": "सीक्रेट {name}",
+    "secrets.where_used": "कहाँ उपयोग होता है",
+    "secrets.delete_secret": "सीक्रेट हटाएँ",
+    "secrets.delete_secret_name": "सीक्रेट {name} हटाएँ?",
+    "secrets.the_value_is_removed_permanently": "मान स्थायी रूप से हटा दिया जाता है और वापस नहीं लाया जा सकता।",
+    "secrets.deleted_name": "{name} हटाया गया",
+    "secrets.where_name_is_used": "{name} कहाँ उपयोग होता है",
+    "secrets.name_cannot_be_deleted": "{name} को हटाया नहीं जा सकता",
+    "secrets.no_installed_package_uses_this_secret": "कोई भी इंस्टॉल किया गया पैकेज इस सीक्रेट का उपयोग नहीं करता।",
+    "secrets.some_packages_could_not_be_checked": "कुछ पैकेजों की जाँच नहीं हो सकी। बाद में फिर से कोशिश करें।",
+    "secrets.remove_the_secret_from_these_places": "सीक्रेट अभी इन स्थानों पर उपयोग में है। पहले इसे इनसे हटाएँ, फिर सीक्रेट हटाएँ।",
+    "secrets.open_a_place_to_see_or_change": "सीक्रेट का उपयोग देखने या बदलने के लिए कोई स्थान खोलें।",
+    "secrets.could_not_check_package": "{package} की जाँच नहीं हो सकी: {message}",
+    "secrets.usage_place": "स्थान",
+    "secrets.where_the_secret_is_used_open_it": "सीक्रेट कहाँ उपयोग होता है। वहाँ जाने के लिए पंक्ति खोलें।",
+    "secrets.usage_detail": "विवरण",
+    "secrets.what_the_secret_is_used_for": "सीक्रेट किस काम के लिए उपयोग होता है।",
+    "secrets.usage_package": "पैकेज",
+    "secrets.the_package_that_uses_the_secret": "वह पैकेज जो सीक्रेट का उपयोग करता है।"
   }
 }

@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Επιλέξτε {value1}",
     "secrets.updated_name": "Ενημερώθηκε: {name}",
     "secrets.created_name": "Δημιουργήθηκε: {name}",
-    "ui.secret_name": "Απόρρητο {name}"
+    "ui.secret_name": "Απόρρητο {name}",
+    "secrets.where_used": "Πού χρησιμοποιείται",
+    "secrets.delete_secret": "Διαγραφή απορρήτου",
+    "secrets.delete_secret_name": "Να διαγραφεί το απόρρητο {name};",
+    "secrets.the_value_is_removed_permanently": "Η τιμή αφαιρείται οριστικά και δεν μπορεί να ανακτηθεί.",
+    "secrets.deleted_name": "Το {name} διαγράφηκε",
+    "secrets.where_name_is_used": "Πού χρησιμοποιείται το {name}",
+    "secrets.name_cannot_be_deleted": "Το {name} δεν μπορεί να διαγραφεί",
+    "secrets.no_installed_package_uses_this_secret": "Κανένα εγκατεστημένο πακέτο δεν χρησιμοποιεί αυτό το απόρρητο.",
+    "secrets.some_packages_could_not_be_checked": "Δεν ήταν δυνατός ο έλεγχος ορισμένων πακέτων. Δοκιμάστε ξανά αργότερα.",
+    "secrets.remove_the_secret_from_these_places": "Το απόρρητο χρησιμοποιείται ακόμη σε αυτές τις θέσεις. Αφαιρέστε το πρώτα από αυτές και, στη συνέχεια, διαγράψτε το.",
+    "secrets.open_a_place_to_see_or_change": "Ανοίξτε μια θέση για να δείτε ή να αλλάξετε πώς χρησιμοποιείται το απόρρητο.",
+    "secrets.could_not_check_package": "Δεν ήταν δυνατός ο έλεγχος του {package}: {message}",
+    "secrets.usage_place": "Θέση",
+    "secrets.where_the_secret_is_used_open_it": "Πού χρησιμοποιείται το απόρρητο. Ανοίξτε τη γραμμή για να μεταβείτε εκεί.",
+    "secrets.usage_detail": "Λεπτομέρεια",
+    "secrets.what_the_secret_is_used_for": "Για ποιο σκοπό χρησιμοποιείται το απόρρητο.",
+    "secrets.usage_package": "Πακέτο",
+    "secrets.the_package_that_uses_the_secret": "Το πακέτο που χρησιμοποιεί το απόρρητο."
   }
 }

@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Vali {value1}",
     "secrets.updated_name": "{name} uuendatud",
     "secrets.created_name": "{name} loodud",
-    "ui.secret_name": "Saladus {name}"
+    "ui.secret_name": "Saladus {name}",
+    "secrets.where_used": "Kus kasutatakse",
+    "secrets.delete_secret": "Kustuta saladus",
+    "secrets.delete_secret_name": "Kas kustutada saladus {name}?",
+    "secrets.the_value_is_removed_permanently": "Väärtus eemaldatakse jäädavalt ja seda ei saa taastada.",
+    "secrets.deleted_name": "{name} kustutatud",
+    "secrets.where_name_is_used": "Kus {name} kasutusel on",
+    "secrets.name_cannot_be_deleted": "Saladust {name} ei saa kustutada",
+    "secrets.no_installed_package_uses_this_secret": "Ükski paigaldatud pakett ei kasuta seda saladust.",
+    "secrets.some_packages_could_not_be_checked": "Mõnda paketti ei õnnestunud kontrollida. Proovi hiljem uuesti.",
+    "secrets.remove_the_secret_from_these_places": "Saladus on nendes kohtades endiselt kasutusel. Eemalda see esmalt neist ja seejärel kustuta.",
+    "secrets.open_a_place_to_see_or_change": "Ava koht, et näha või muuta, kuidas saladust kasutatakse.",
+    "secrets.could_not_check_package": "{package} kontrollimine ebaõnnestus: {message}",
+    "secrets.usage_place": "Koht",
+    "secrets.where_the_secret_is_used_open_it": "Kus saladust kasutatakse. Ava rida, et sinna minna.",
+    "secrets.usage_detail": "Üksikasi",
+    "secrets.what_the_secret_is_used_for": "Milleks saladust kasutatakse.",
+    "secrets.usage_package": "Pakett",
+    "secrets.the_package_that_uses_the_secret": "Pakett, mis saladust kasutab."
   }
 }

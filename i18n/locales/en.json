@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Select a {value1}",
     "secrets.updated_name": "Updated {name}",
     "secrets.created_name": "Created {name}",
-    "ui.secret_name": "Secret {name}"
+    "ui.secret_name": "Secret {name}",
+    "secrets.where_used": "Where used",
+    "secrets.delete_secret": "Delete secret",
+    "secrets.delete_secret_name": "Delete secret {name}?",
+    "secrets.the_value_is_removed_permanently": "The value is removed permanently and cannot be restored.",
+    "secrets.deleted_name": "Deleted {name}",
+    "secrets.where_name_is_used": "Where {name} is used",
+    "secrets.name_cannot_be_deleted": "{name} cannot be deleted",
+    "secrets.no_installed_package_uses_this_secret": "No installed package uses this secret.",
+    "secrets.some_packages_could_not_be_checked": "Some packages could not be checked. Try again later.",
+    "secrets.remove_the_secret_from_these_places": "The secret is still used in these places. Remove it from them first, then delete it.",
+    "secrets.open_a_place_to_see_or_change": "Open a place to see or change how the secret is used.",
+    "secrets.could_not_check_package": "Could not check {package}: {message}",
+    "secrets.usage_place": "Place",
+    "secrets.where_the_secret_is_used_open_it": "Where the secret is used. Open the row to go there.",
+    "secrets.usage_detail": "Detail",
+    "secrets.what_the_secret_is_used_for": "What the secret is used for.",
+    "secrets.usage_package": "Package",
+    "secrets.the_package_that_uses_the_secret": "The package that uses the secret."
   }
 }

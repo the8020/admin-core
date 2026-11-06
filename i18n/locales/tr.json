@@ -353,6 +353,24 @@
     "ui.select_a_value1": "{value1} seçin",
     "secrets.updated_name": "{name} güncellendi",
     "secrets.created_name": "{name} oluşturuldu",
-    "ui.secret_name": "Gizli bilgi {name}"
+    "ui.secret_name": "Gizli bilgi {name}",
+    "secrets.where_used": "Kullanıldığı yerler",
+    "secrets.delete_secret": "Gizli bilgiyi sil",
+    "secrets.delete_secret_name": "{name} gizli bilgisi silinsin mi?",
+    "secrets.the_value_is_removed_permanently": "Değer kalıcı olarak kaldırılır ve geri yüklenemez.",
+    "secrets.deleted_name": "{name} silindi",
+    "secrets.where_name_is_used": "{name} nerede kullanılıyor",
+    "secrets.name_cannot_be_deleted": "{name} silinemiyor",
+    "secrets.no_installed_package_uses_this_secret": "Bu gizli bilgiyi kullanan yüklü paket yok.",
+    "secrets.some_packages_could_not_be_checked": "Bazı paketler denetlenemedi. Daha sonra yeniden deneyin.",
+    "secrets.remove_the_secret_from_these_places": "Gizli bilgi hâlâ bu yerlerde kullanılıyor. Önce buralardan kaldırın, ardından silin.",
+    "secrets.open_a_place_to_see_or_change": "Gizli bilginin nasıl kullanıldığını görmek veya değiştirmek için bir yer açın.",
+    "secrets.could_not_check_package": "{package} denetlenemedi: {message}",
+    "secrets.usage_place": "Yer",
+    "secrets.where_the_secret_is_used_open_it": "Gizli bilginin kullanıldığı yer. Oraya gitmek için satırı açın.",
+    "secrets.usage_detail": "Ayrıntı",
+    "secrets.what_the_secret_is_used_for": "Gizli bilginin ne için kullanıldığı.",
+    "secrets.usage_package": "Paket",
+    "secrets.the_package_that_uses_the_secret": "Gizli bilgiyi kullanan paket."
   }
 }

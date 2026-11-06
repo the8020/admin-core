@@ -353,6 +353,24 @@
     "ui.select_a_value1": "{value1}을(를) 선택하세요",
     "secrets.updated_name": "{name} 업데이트됨",
     "secrets.created_name": "{name} 생성됨",
-    "ui.secret_name": "시크릿 {name}"
+    "ui.secret_name": "시크릿 {name}",
+    "secrets.where_used": "사용 위치",
+    "secrets.delete_secret": "시크릿 삭제",
+    "secrets.delete_secret_name": "시크릿 {name}을(를) 삭제할까요?",
+    "secrets.the_value_is_removed_permanently": "값이 영구적으로 제거되며 복원할 수 없습니다.",
+    "secrets.deleted_name": "{name} 삭제됨",
+    "secrets.where_name_is_used": "{name} 사용 위치",
+    "secrets.name_cannot_be_deleted": "{name}을(를) 삭제할 수 없음",
+    "secrets.no_installed_package_uses_this_secret": "이 시크릿을 사용하는 설치된 패키지가 없습니다.",
+    "secrets.some_packages_could_not_be_checked": "일부 패키지를 확인할 수 없습니다. 나중에 다시 시도하세요.",
+    "secrets.remove_the_secret_from_these_places": "시크릿이 아직 이 위치에서 사용 중입니다. 먼저 이 위치에서 제거한 다음 삭제하세요.",
+    "secrets.open_a_place_to_see_or_change": "위치를 열어 시크릿 사용 방식을 확인하거나 변경하세요.",
+    "secrets.could_not_check_package": "{package}을(를) 확인할 수 없음: {message}",
+    "secrets.usage_place": "위치",
+    "secrets.where_the_secret_is_used_open_it": "시크릿이 사용되는 위치입니다. 행을 열면 해당 위치로 이동합니다.",
+    "secrets.usage_detail": "세부 정보",
+    "secrets.what_the_secret_is_used_for": "시크릿의 용도입니다.",
+    "secrets.usage_package": "패키지",
+    "secrets.the_package_that_uses_the_secret": "시크릿을 사용하는 패키지입니다."
   }
 }

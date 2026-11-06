@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Selecteer {value1}",
     "secrets.updated_name": "Bijgewerkt: {name}",
     "secrets.created_name": "Gemaakt: {name}",
-    "ui.secret_name": "Geheim {name}"
+    "ui.secret_name": "Geheim {name}",
+    "secrets.where_used": "Gebruikt in",
+    "secrets.delete_secret": "Geheim verwijderen",
+    "secrets.delete_secret_name": "Geheim {name} verwijderen?",
+    "secrets.the_value_is_removed_permanently": "De waarde wordt definitief verwijderd en kan niet worden hersteld.",
+    "secrets.deleted_name": "Verwijderd: {name}",
+    "secrets.where_name_is_used": "Waar {name} wordt gebruikt",
+    "secrets.name_cannot_be_deleted": "{name} kan niet worden verwijderd",
+    "secrets.no_installed_package_uses_this_secret": "Geen enkel geïnstalleerd pakket gebruikt dit geheim.",
+    "secrets.some_packages_could_not_be_checked": "Sommige pakketten konden niet worden gecontroleerd. Probeer het later opnieuw.",
+    "secrets.remove_the_secret_from_these_places": "Het geheim wordt nog op deze plaatsen gebruikt. Haal het daar eerst weg en verwijder het daarna.",
+    "secrets.open_a_place_to_see_or_change": "Open een plaats om te zien of te wijzigen hoe het geheim wordt gebruikt.",
+    "secrets.could_not_check_package": "Kan {package} niet controleren: {message}",
+    "secrets.usage_place": "Plaats",
+    "secrets.where_the_secret_is_used_open_it": "Waar het geheim wordt gebruikt. Open de rij om ernaartoe te gaan.",
+    "secrets.usage_detail": "Detail",
+    "secrets.what_the_secret_is_used_for": "Waarvoor het geheim wordt gebruikt.",
+    "secrets.usage_package": "Pakket",
+    "secrets.the_package_that_uses_the_secret": "Het pakket dat het geheim gebruikt."
   }
 }

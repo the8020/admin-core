@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Sélectionnez : {value1}",
     "secrets.updated_name": "{name} mis à jour",
     "secrets.created_name": "{name} créé",
-    "ui.secret_name": "Secret {name}"
+    "ui.secret_name": "Secret {name}",
+    "secrets.where_used": "Utilisation",
+    "secrets.delete_secret": "Supprimer le secret",
+    "secrets.delete_secret_name": "Supprimer le secret {name} ?",
+    "secrets.the_value_is_removed_permanently": "La valeur est supprimée définitivement et ne peut pas être restaurée.",
+    "secrets.deleted_name": "{name} supprimé",
+    "secrets.where_name_is_used": "Où {name} est utilisé",
+    "secrets.name_cannot_be_deleted": "Impossible de supprimer {name}",
+    "secrets.no_installed_package_uses_this_secret": "Aucun paquet installé n’utilise ce secret.",
+    "secrets.some_packages_could_not_be_checked": "Certains paquets n’ont pas pu être vérifiés. Réessayez plus tard.",
+    "secrets.remove_the_secret_from_these_places": "Le secret est encore utilisé à ces emplacements. Retirez-le d’abord de ceux-ci, puis supprimez-le.",
+    "secrets.open_a_place_to_see_or_change": "Ouvrez un emplacement pour voir ou modifier l’utilisation du secret.",
+    "secrets.could_not_check_package": "Impossible de vérifier {package} : {message}",
+    "secrets.usage_place": "Emplacement",
+    "secrets.where_the_secret_is_used_open_it": "Où le secret est utilisé. Ouvrez la ligne pour y accéder.",
+    "secrets.usage_detail": "Détail",
+    "secrets.what_the_secret_is_used_for": "À quoi sert le secret.",
+    "secrets.usage_package": "Paquet",
+    "secrets.the_package_that_uses_the_secret": "Le paquet qui utilise le secret."
   }
 }

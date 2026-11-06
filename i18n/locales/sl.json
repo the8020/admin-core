@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Izberite {value1}",
     "secrets.updated_name": "Posodobljena je {name}",
     "secrets.created_name": "Ustvarjena je {name}",
-    "ui.secret_name": "Skrivnost {name}"
+    "ui.secret_name": "Skrivnost {name}",
+    "secrets.where_used": "Kje se uporablja",
+    "secrets.delete_secret": "Izbriši skrivnost",
+    "secrets.delete_secret_name": "Izbrišem skrivnost {name}?",
+    "secrets.the_value_is_removed_permanently": "Vrednost bo trajno odstranjena in je ni mogoče obnoviti.",
+    "secrets.deleted_name": "Izbrisano: {name}",
+    "secrets.where_name_is_used": "Kje se uporablja {name}",
+    "secrets.name_cannot_be_deleted": "{name} ni mogoče izbrisati",
+    "secrets.no_installed_package_uses_this_secret": "Noben nameščeni paket ne uporablja te skrivnosti.",
+    "secrets.some_packages_could_not_be_checked": "Nekaterih paketov ni bilo mogoče preveriti. Poskusite znova pozneje.",
+    "secrets.remove_the_secret_from_these_places": "Skrivnost se še uporablja na teh mestih. Najprej jo odstranite od tam, nato jo izbrišite.",
+    "secrets.open_a_place_to_see_or_change": "Odprite mesto, da vidite ali spremenite, kako se skrivnost uporablja.",
+    "secrets.could_not_check_package": "Paketa {package} ni bilo mogoče preveriti: {message}",
+    "secrets.usage_place": "Mesto",
+    "secrets.where_the_secret_is_used_open_it": "Kje se skrivnost uporablja. Odprite vrstico, da greste tja.",
+    "secrets.usage_detail": "Podrobnosti",
+    "secrets.what_the_secret_is_used_for": "Za kaj se skrivnost uporablja.",
+    "secrets.usage_package": "Paket",
+    "secrets.the_package_that_uses_the_secret": "Paket, ki uporablja skrivnost."
   }
 }

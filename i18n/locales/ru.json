@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Выберите: {value1}",
     "secrets.updated_name": "Обновлено: {name}",
     "secrets.created_name": "Создано: {name}",
-    "ui.secret_name": "Секрет {name}"
+    "ui.secret_name": "Секрет {name}",
+    "secrets.where_used": "Где используется",
+    "secrets.delete_secret": "Удалить секрет",
+    "secrets.delete_secret_name": "Удалить секрет {name}?",
+    "secrets.the_value_is_removed_permanently": "Значение удаляется безвозвратно и не может быть восстановлено.",
+    "secrets.deleted_name": "Удалено: {name}",
+    "secrets.where_name_is_used": "Где используется {name}",
+    "secrets.name_cannot_be_deleted": "Нельзя удалить {name}",
+    "secrets.no_installed_package_uses_this_secret": "Ни один установленный пакет не использует этот секрет.",
+    "secrets.some_packages_could_not_be_checked": "Не удалось проверить некоторые пакеты. Повторите попытку позже.",
+    "secrets.remove_the_secret_from_these_places": "Секрет всё ещё используется в этих местах. Сначала уберите его оттуда, затем удалите.",
+    "secrets.open_a_place_to_see_or_change": "Откройте место, чтобы посмотреть или изменить, как используется секрет.",
+    "secrets.could_not_check_package": "Не удалось проверить {package}: {message}",
+    "secrets.usage_place": "Место",
+    "secrets.where_the_secret_is_used_open_it": "Где используется секрет. Откройте строку, чтобы перейти туда.",
+    "secrets.usage_detail": "Подробности",
+    "secrets.what_the_secret_is_used_for": "Для чего используется секрет.",
+    "secrets.usage_package": "Пакет",
+    "secrets.the_package_that_uses_the_secret": "Пакет, который использует секрет."
   }
 }

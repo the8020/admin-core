@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Veldu {value1}",
     "secrets.updated_name": "Uppfærði {name}",
     "secrets.created_name": "Bjó til {name}",
-    "ui.secret_name": "Leyndarmál {name}"
+    "ui.secret_name": "Leyndarmál {name}",
+    "secrets.where_used": "Notað hvar",
+    "secrets.delete_secret": "Eyða leyndarmáli",
+    "secrets.delete_secret_name": "Eyða leyndarmálinu {name}?",
+    "secrets.the_value_is_removed_permanently": "Gildið er fjarlægt varanlega og ekki er hægt að endurheimta það.",
+    "secrets.deleted_name": "Eyddi {name}",
+    "secrets.where_name_is_used": "Hvar {name} er notað",
+    "secrets.name_cannot_be_deleted": "Ekki er hægt að eyða {name}",
+    "secrets.no_installed_package_uses_this_secret": "Enginn uppsettur pakki notar þetta leyndarmál.",
+    "secrets.some_packages_could_not_be_checked": "Ekki tókst að athuga suma pakka. Reyndu aftur síðar.",
+    "secrets.remove_the_secret_from_these_places": "Leyndarmálið er enn notað á þessum stöðum. Fjarlægðu það fyrst þaðan og eyddu því síðan.",
+    "secrets.open_a_place_to_see_or_change": "Opnaðu stað til að sjá eða breyta því hvernig leyndarmálið er notað.",
+    "secrets.could_not_check_package": "Ekki tókst að athuga {package}: {message}",
+    "secrets.usage_place": "Staður",
+    "secrets.where_the_secret_is_used_open_it": "Hvar leyndarmálið er notað. Opnaðu línuna til að fara þangað.",
+    "secrets.usage_detail": "Nánar",
+    "secrets.what_the_secret_is_used_for": "Til hvers leyndarmálið er notað.",
+    "secrets.usage_package": "Pakki",
+    "secrets.the_package_that_uses_the_secret": "Pakkinn sem notar leyndarmálið."
   }
 }

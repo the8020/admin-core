@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Pilih {value1}",
     "secrets.updated_name": "{name} diperbarui",
     "secrets.created_name": "{name} dibuat",
-    "ui.secret_name": "Rahasia {name}"
+    "ui.secret_name": "Rahasia {name}",
+    "secrets.where_used": "Tempat penggunaan",
+    "secrets.delete_secret": "Hapus rahasia",
+    "secrets.delete_secret_name": "Hapus rahasia {name}?",
+    "secrets.the_value_is_removed_permanently": "Nilai dihapus secara permanen dan tidak dapat dipulihkan.",
+    "secrets.deleted_name": "{name} dihapus",
+    "secrets.where_name_is_used": "Tempat {name} digunakan",
+    "secrets.name_cannot_be_deleted": "{name} tidak dapat dihapus",
+    "secrets.no_installed_package_uses_this_secret": "Tidak ada paket terpasang yang menggunakan rahasia ini.",
+    "secrets.some_packages_could_not_be_checked": "Beberapa paket tidak dapat diperiksa. Coba lagi nanti.",
+    "secrets.remove_the_secret_from_these_places": "Rahasia masih digunakan di tempat-tempat ini. Lepaskan dulu dari tempat tersebut, lalu hapus.",
+    "secrets.open_a_place_to_see_or_change": "Buka tempat untuk melihat atau mengubah cara rahasia digunakan.",
+    "secrets.could_not_check_package": "Tidak dapat memeriksa {package}: {message}",
+    "secrets.usage_place": "Tempat",
+    "secrets.where_the_secret_is_used_open_it": "Tempat rahasia digunakan. Buka baris untuk menuju ke sana.",
+    "secrets.usage_detail": "Detail",
+    "secrets.what_the_secret_is_used_for": "Kegunaan rahasia.",
+    "secrets.usage_package": "Paket",
+    "secrets.the_package_that_uses_the_secret": "Paket yang menggunakan rahasia."
   }
 }

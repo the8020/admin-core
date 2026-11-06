@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Válasszon: {value1}",
     "secrets.updated_name": "Frissítve: {name}",
     "secrets.created_name": "Létrehozva: {name}",
-    "ui.secret_name": "Titok: {name}"
+    "ui.secret_name": "Titok: {name}",
+    "secrets.where_used": "Felhasználás helye",
+    "secrets.delete_secret": "Titok törlése",
+    "secrets.delete_secret_name": "Törli a(z) {name} titkot?",
+    "secrets.the_value_is_removed_permanently": "Az érték véglegesen törlődik, és nem állítható vissza.",
+    "secrets.deleted_name": "Törölve: {name}",
+    "secrets.where_name_is_used": "A(z) {name} felhasználási helyei",
+    "secrets.name_cannot_be_deleted": "A(z) {name} nem törölhető",
+    "secrets.no_installed_package_uses_this_secret": "Egyetlen telepített csomag sem használja ezt a titkot.",
+    "secrets.some_packages_could_not_be_checked": "Néhány csomagot nem sikerült ellenőrizni. Próbálja újra később.",
+    "secrets.remove_the_secret_from_these_places": "A titok még használatban van ezeken a helyeken. Előbb távolítsa el innen, majd törölje.",
+    "secrets.open_a_place_to_see_or_change": "Nyisson meg egy helyet a titok használatának megtekintéséhez vagy módosításához.",
+    "secrets.could_not_check_package": "A(z) {package} ellenőrzése sikertelen: {message}",
+    "secrets.usage_place": "Hely",
+    "secrets.where_the_secret_is_used_open_it": "Ahol a titkot használják. Nyissa meg a sort az odalépéshez.",
+    "secrets.usage_detail": "Részletek",
+    "secrets.what_the_secret_is_used_for": "Mire használják a titkot.",
+    "secrets.usage_package": "Csomag",
+    "secrets.the_package_that_uses_the_secret": "A titkot használó csomag."
   }
 }

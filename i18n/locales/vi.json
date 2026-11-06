@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Chọn {value1}",
     "secrets.updated_name": "Đã cập nhật {name}",
     "secrets.created_name": "Đã tạo {name}",
-    "ui.secret_name": "Bí mật {name}"
+    "ui.secret_name": "Bí mật {name}",
+    "secrets.where_used": "Nơi sử dụng",
+    "secrets.delete_secret": "Xóa bí mật",
+    "secrets.delete_secret_name": "Xóa bí mật {name}?",
+    "secrets.the_value_is_removed_permanently": "Giá trị bị xóa vĩnh viễn và không thể khôi phục.",
+    "secrets.deleted_name": "Đã xóa {name}",
+    "secrets.where_name_is_used": "Nơi {name} được sử dụng",
+    "secrets.name_cannot_be_deleted": "Không thể xóa {name}",
+    "secrets.no_installed_package_uses_this_secret": "Không có gói đã cài nào dùng bí mật này.",
+    "secrets.some_packages_could_not_be_checked": "Không thể kiểm tra một số gói. Hãy thử lại sau.",
+    "secrets.remove_the_secret_from_these_places": "Bí mật vẫn được dùng ở các vị trí này. Hãy gỡ nó khỏi các vị trí đó trước, rồi xóa.",
+    "secrets.open_a_place_to_see_or_change": "Mở một vị trí để xem hoặc thay đổi cách dùng bí mật.",
+    "secrets.could_not_check_package": "Không thể kiểm tra {package}: {message}",
+    "secrets.usage_place": "Vị trí",
+    "secrets.where_the_secret_is_used_open_it": "Nơi bí mật được dùng. Mở hàng để đi đến đó.",
+    "secrets.usage_detail": "Chi tiết",
+    "secrets.what_the_secret_is_used_for": "Bí mật được dùng để làm gì.",
+    "secrets.usage_package": "Gói",
+    "secrets.the_package_that_uses_the_secret": "Gói sử dụng bí mật."
   }
 }

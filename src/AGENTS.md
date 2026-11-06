@@ -95,8 +95,10 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 - Worker rows and details reuse `runtimeInfo.workerState`; sandbox statuses use
   `runtimeInfo.state`, preserving their distinct value-help sets.
 - Secret editing starts empty, writes through the typed API, and never loads the
-  stored secret value. Lists and writes call `the8020/secrets/mod.ts`; that
-  owner handles database encryption transparently.
+  stored secret value. Deletion goes through `secrets.delete()`, which refuses
+  secrets still in use; the screen shows the reported usages instead. Lists and
+  writes call `the8020/secrets/mod.ts`; that owner handles database encryption
+  transparently.
 - Sandbox history lists read metadata only. Details query the owning node's
   unified logs by saved position, sandbox ID and time range, retaining one page
   and cursor in their existing navigation frame. Render decoded stack traces

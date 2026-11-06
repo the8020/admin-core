@@ -353,6 +353,24 @@
     "ui.select_a_value1": "اختر {value1}",
     "secrets.updated_name": "تم تحديث {name}",
     "secrets.created_name": "تم إنشاء {name}",
-    "ui.secret_name": "السر {name}"
+    "ui.secret_name": "السر {name}",
+    "secrets.where_used": "أماكن الاستخدام",
+    "secrets.delete_secret": "حذف السر",
+    "secrets.delete_secret_name": "حذف السر {name}؟",
+    "secrets.the_value_is_removed_permanently": "تُزال القيمة نهائيًا ولا يمكن استعادتها.",
+    "secrets.deleted_name": "تم حذف {name}",
+    "secrets.where_name_is_used": "أماكن استخدام {name}",
+    "secrets.name_cannot_be_deleted": "لا يمكن حذف {name}",
+    "secrets.no_installed_package_uses_this_secret": "لا توجد حزمة مثبتة تستخدم هذا السر.",
+    "secrets.some_packages_could_not_be_checked": "تعذّر التحقق من بعض الحزم. حاول مرة أخرى لاحقًا.",
+    "secrets.remove_the_secret_from_these_places": "لا يزال السر مستخدمًا في هذه الأماكن. أزله منها أولًا، ثم احذفه.",
+    "secrets.open_a_place_to_see_or_change": "افتح مكانًا لعرض طريقة استخدام السر أو تغييرها.",
+    "secrets.could_not_check_package": "تعذّر التحقق من {package}: {message}",
+    "secrets.usage_place": "المكان",
+    "secrets.where_the_secret_is_used_open_it": "أماكن استخدام السر. افتح الصف للانتقال إليه.",
+    "secrets.usage_detail": "التفاصيل",
+    "secrets.what_the_secret_is_used_for": "الغرض من استخدام السر.",
+    "secrets.usage_package": "الحزمة",
+    "secrets.the_package_that_uses_the_secret": "الحزمة التي تستخدم السر."
   }
 }

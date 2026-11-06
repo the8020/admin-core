@@ -353,6 +353,24 @@
     "ui.select_a_value1": "בחרו {value1}",
     "secrets.updated_name": "{name} עודכן",
     "secrets.created_name": "{name} נוצר",
-    "ui.secret_name": "סוד {name}"
+    "ui.secret_name": "סוד {name}",
+    "secrets.where_used": "מקומות שימוש",
+    "secrets.delete_secret": "מחיקת סוד",
+    "secrets.delete_secret_name": "למחוק את הסוד {name}?",
+    "secrets.the_value_is_removed_permanently": "הערך יוסר לצמיתות ולא ניתן יהיה לשחזר אותו.",
+    "secrets.deleted_name": "{name} נמחק",
+    "secrets.where_name_is_used": "היכן נעשה שימוש ב-{name}",
+    "secrets.name_cannot_be_deleted": "לא ניתן למחוק את {name}",
+    "secrets.no_installed_package_uses_this_secret": "אף חבילה מותקנת לא משתמשת בסוד הזה.",
+    "secrets.some_packages_could_not_be_checked": "לא ניתן היה לבדוק חלק מהחבילות. נסו שוב מאוחר יותר.",
+    "secrets.remove_the_secret_from_these_places": "הסוד עדיין בשימוש במקומות האלה. הסירו אותו מהם קודם, ואז מחקו אותו.",
+    "secrets.open_a_place_to_see_or_change": "פתחו מקום כדי לראות או לשנות את אופן השימוש בסוד.",
+    "secrets.could_not_check_package": "לא ניתן לבדוק את {package}: {message}",
+    "secrets.usage_place": "מקום",
+    "secrets.where_the_secret_is_used_open_it": "היכן נעשה שימוש בסוד. פתחו את השורה כדי לעבור לשם.",
+    "secrets.usage_detail": "פרטים",
+    "secrets.what_the_secret_is_used_for": "למה משמש הסוד.",
+    "secrets.usage_package": "חבילה",
+    "secrets.the_package_that_uses_the_secret": "החבילה שמשתמשת בסוד."
   }
 }

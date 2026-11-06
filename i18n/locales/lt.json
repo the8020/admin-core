@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Pasirinkite {value1}",
     "secrets.updated_name": "Atnaujinta: {name}",
     "secrets.created_name": "Sukurta: {name}",
-    "ui.secret_name": "Paslaptis {name}"
+    "ui.secret_name": "Paslaptis {name}",
+    "secrets.where_used": "Kur naudojama",
+    "secrets.delete_secret": "Ištrinti paslaptį",
+    "secrets.delete_secret_name": "Ištrinti paslaptį {name}?",
+    "secrets.the_value_is_removed_permanently": "Reikšmė pašalinama visam laikui ir jos negalima atkurti.",
+    "secrets.deleted_name": "Ištrinta: {name}",
+    "secrets.where_name_is_used": "Kur naudojama {name}",
+    "secrets.name_cannot_be_deleted": "{name} negalima ištrinti",
+    "secrets.no_installed_package_uses_this_secret": "Jokie įdiegti paketai nenaudoja šios paslapties.",
+    "secrets.some_packages_could_not_be_checked": "Kai kurių paketų nepavyko patikrinti. Bandykite vėliau.",
+    "secrets.remove_the_secret_from_these_places": "Paslaptis vis dar naudojama šiose vietose. Pirmiausia pašalinkite ją iš jų, tada ištrinkite.",
+    "secrets.open_a_place_to_see_or_change": "Atidarykite vietą, kad pamatytumėte arba pakeistumėte, kaip naudojama paslaptis.",
+    "secrets.could_not_check_package": "Nepavyko patikrinti {package}: {message}",
+    "secrets.usage_place": "Vieta",
+    "secrets.where_the_secret_is_used_open_it": "Kur naudojama paslaptis. Atidarykite eilutę, kad ten pereitumėte.",
+    "secrets.usage_detail": "Detalės",
+    "secrets.what_the_secret_is_used_for": "Kam naudojama paslaptis.",
+    "secrets.usage_package": "Paketas",
+    "secrets.the_package_that_uses_the_secret": "Paketas, kuris naudoja paslaptį."
   }
 }

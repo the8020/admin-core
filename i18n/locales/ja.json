@@ -353,6 +353,24 @@
     "ui.select_a_value1": "{value1} を選択してください",
     "secrets.updated_name": "{name} を更新しました",
     "secrets.created_name": "{name} を作成しました",
-    "ui.secret_name": "シークレット {name}"
+    "ui.secret_name": "シークレット {name}",
+    "secrets.where_used": "使用場所",
+    "secrets.delete_secret": "シークレットを削除",
+    "secrets.delete_secret_name": "シークレット {name} を削除しますか？",
+    "secrets.the_value_is_removed_permanently": "値は完全に削除され、復元できません。",
+    "secrets.deleted_name": "{name} を削除しました",
+    "secrets.where_name_is_used": "{name} の使用場所",
+    "secrets.name_cannot_be_deleted": "{name} を削除できません",
+    "secrets.no_installed_package_uses_this_secret": "このシークレットを使用しているインストール済みパッケージはありません。",
+    "secrets.some_packages_could_not_be_checked": "一部のパッケージを確認できませんでした。しばらくしてから再試行してください。",
+    "secrets.remove_the_secret_from_these_places": "このシークレットはまだ以下の場所で使用されています。先にそこから外してから削除してください。",
+    "secrets.open_a_place_to_see_or_change": "場所を開くと、シークレットの使用方法を確認または変更できます。",
+    "secrets.could_not_check_package": "{package} を確認できませんでした: {message}",
+    "secrets.usage_place": "場所",
+    "secrets.where_the_secret_is_used_open_it": "シークレットの使用場所。行を開くとその場所に移動します。",
+    "secrets.usage_detail": "詳細",
+    "secrets.what_the_secret_is_used_for": "シークレットの用途。",
+    "secrets.usage_package": "パッケージ",
+    "secrets.the_package_that_uses_the_secret": "シークレットを使用しているパッケージ。"
   }
 }

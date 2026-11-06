@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Vyberte {value1}",
     "secrets.updated_name": "Údaj {name} aktualizován",
     "secrets.created_name": "Údaj {name} vytvořen",
-    "ui.secret_name": "Tajný údaj {name}"
+    "ui.secret_name": "Tajný údaj {name}",
+    "secrets.where_used": "Kde se používá",
+    "secrets.delete_secret": "Smazat tajný údaj",
+    "secrets.delete_secret_name": "Smazat tajný údaj {name}?",
+    "secrets.the_value_is_removed_permanently": "Hodnota bude trvale odstraněna a nelze ji obnovit.",
+    "secrets.deleted_name": "Smazáno: {name}",
+    "secrets.where_name_is_used": "Kde se používá {name}",
+    "secrets.name_cannot_be_deleted": "{name} nelze smazat",
+    "secrets.no_installed_package_uses_this_secret": "Žádný nainstalovaný balíček tento tajný údaj nepoužívá.",
+    "secrets.some_packages_could_not_be_checked": "Některé balíčky nebylo možné ověřit. Zkuste to znovu později.",
+    "secrets.remove_the_secret_from_these_places": "Tajný údaj se stále používá na těchto místech. Nejprve jej z nich odeberte a potom jej smažte.",
+    "secrets.open_a_place_to_see_or_change": "Otevřením místa zobrazíte nebo změníte, jak se tajný údaj používá.",
+    "secrets.could_not_check_package": "Nelze ověřit {package}: {message}",
+    "secrets.usage_place": "Místo",
+    "secrets.where_the_secret_is_used_open_it": "Kde se tajný údaj používá. Otevřením řádku na dané místo přejdete.",
+    "secrets.usage_detail": "Detail",
+    "secrets.what_the_secret_is_used_for": "K čemu se tajný údaj používá.",
+    "secrets.usage_package": "Balíček",
+    "secrets.the_package_that_uses_the_secret": "Balíček, který tajný údaj používá."
   }
 }

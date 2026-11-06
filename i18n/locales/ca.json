@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Selecciona {value1}",
     "secrets.updated_name": "Actualitzat: {name}",
     "secrets.created_name": "Creat: {name}",
-    "ui.secret_name": "Secret {name}"
+    "ui.secret_name": "Secret {name}",
+    "secrets.where_used": "On s'utilitza",
+    "secrets.delete_secret": "Elimina el secret",
+    "secrets.delete_secret_name": "Vols eliminar el secret {name}?",
+    "secrets.the_value_is_removed_permanently": "El valor s'elimina definitivament i no es pot restaurar.",
+    "secrets.deleted_name": "Eliminat: {name}",
+    "secrets.where_name_is_used": "On s'utilitza {name}",
+    "secrets.name_cannot_be_deleted": "No es pot eliminar {name}",
+    "secrets.no_installed_package_uses_this_secret": "Cap paquet instal·lat no utilitza aquest secret.",
+    "secrets.some_packages_could_not_be_checked": "No s'han pogut comprovar alguns paquets. Torna-ho a provar més tard.",
+    "secrets.remove_the_secret_from_these_places": "El secret encara s'utilitza en aquests llocs. Primer treu-lo d'aquests llocs i després elimina'l.",
+    "secrets.open_a_place_to_see_or_change": "Obre un lloc per veure o canviar com s'utilitza el secret.",
+    "secrets.could_not_check_package": "No s'ha pogut comprovar {package}: {message}",
+    "secrets.usage_place": "Lloc",
+    "secrets.where_the_secret_is_used_open_it": "On s'utilitza el secret. Obre la fila per anar-hi.",
+    "secrets.usage_detail": "Detall",
+    "secrets.what_the_secret_is_used_for": "Per a què s'utilitza el secret.",
+    "secrets.usage_package": "Paquet",
+    "secrets.the_package_that_uses_the_secret": "El paquet que utilitza el secret."
   }
 }

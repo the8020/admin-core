@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Izvēlieties {value1}",
     "secrets.updated_name": "Atjaunināts: {name}",
     "secrets.created_name": "Izveidots: {name}",
-    "ui.secret_name": "Noslēpums {name}"
+    "ui.secret_name": "Noslēpums {name}",
+    "secrets.where_used": "Kur izmantots",
+    "secrets.delete_secret": "Dzēst noslēpumu",
+    "secrets.delete_secret_name": "Vai dzēst noslēpumu {name}?",
+    "secrets.the_value_is_removed_permanently": "Vērtība tiek neatgriezeniski noņemta, un to nevar atjaunot.",
+    "secrets.deleted_name": "Dzēsts: {name}",
+    "secrets.where_name_is_used": "Kur tiek izmantots {name}",
+    "secrets.name_cannot_be_deleted": "{name} nevar dzēst",
+    "secrets.no_installed_package_uses_this_secret": "Neviena instalētā pakotne neizmanto šo noslēpumu.",
+    "secrets.some_packages_could_not_be_checked": "Dažas pakotnes neizdevās pārbaudīt. Mēģiniet vēlreiz vēlāk.",
+    "secrets.remove_the_secret_from_these_places": "Noslēpums joprojām tiek izmantots šajās vietās. Vispirms noņemiet to no tām un pēc tam to izdzēsiet.",
+    "secrets.open_a_place_to_see_or_change": "Atveriet vietu, lai skatītu vai mainītu, kā tiek izmantots noslēpums.",
+    "secrets.could_not_check_package": "Neizdevās pārbaudīt {package}: {message}",
+    "secrets.usage_place": "Vieta",
+    "secrets.where_the_secret_is_used_open_it": "Kur tiek izmantots noslēpums. Atveriet rindu, lai tur pārietu.",
+    "secrets.usage_detail": "Detaļas",
+    "secrets.what_the_secret_is_used_for": "Kam tiek izmantots noslēpums.",
+    "secrets.usage_package": "Pakotne",
+    "secrets.the_package_that_uses_the_secret": "Pakotne, kas izmanto noslēpumu."
   }
 }

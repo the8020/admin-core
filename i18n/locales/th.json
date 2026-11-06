@@ -353,6 +353,24 @@
     "ui.select_a_value1": "เลือก {value1}",
     "secrets.updated_name": "อัปเดต {name} แล้ว",
     "secrets.created_name": "สร้าง {name} แล้ว",
-    "ui.secret_name": "ข้อมูลลับ {name}"
+    "ui.secret_name": "ข้อมูลลับ {name}",
+    "secrets.where_used": "ใช้งานที่",
+    "secrets.delete_secret": "ลบข้อมูลลับ",
+    "secrets.delete_secret_name": "ลบข้อมูลลับ {name} หรือไม่?",
+    "secrets.the_value_is_removed_permanently": "ค่าจะถูกลบถาวรและกู้คืนไม่ได้",
+    "secrets.deleted_name": "ลบ {name} แล้ว",
+    "secrets.where_name_is_used": "ตำแหน่งที่ใช้ {name}",
+    "secrets.name_cannot_be_deleted": "ลบ {name} ไม่ได้",
+    "secrets.no_installed_package_uses_this_secret": "ไม่มีแพ็กเกจที่ติดตั้งใดใช้ข้อมูลลับนี้",
+    "secrets.some_packages_could_not_be_checked": "ตรวจสอบบางแพ็กเกจไม่ได้ โปรดลองอีกครั้งภายหลัง",
+    "secrets.remove_the_secret_from_these_places": "ข้อมูลลับยังถูกใช้ในตำแหน่งเหล่านี้ ให้นำออกจากตำแหน่งเหล่านั้นก่อน แล้วจึงลบ",
+    "secrets.open_a_place_to_see_or_change": "เปิดตำแหน่งเพื่อดูหรือเปลี่ยนวิธีใช้ข้อมูลลับ",
+    "secrets.could_not_check_package": "ตรวจสอบ {package} ไม่ได้: {message}",
+    "secrets.usage_place": "ตำแหน่ง",
+    "secrets.where_the_secret_is_used_open_it": "ตำแหน่งที่ใช้ข้อมูลลับ เปิดแถวเพื่อไปยังตำแหน่งนั้น",
+    "secrets.usage_detail": "รายละเอียด",
+    "secrets.what_the_secret_is_used_for": "ข้อมูลลับนี้ใช้ทำอะไร",
+    "secrets.usage_package": "แพ็กเกจ",
+    "secrets.the_package_that_uses_the_secret": "แพ็กเกจที่ใช้ข้อมูลลับ"
   }
 }

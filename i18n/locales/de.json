@@ -353,6 +353,24 @@
     "ui.select_a_value1": "Wählen Sie {value1} aus",
     "secrets.updated_name": "{name} aktualisiert",
     "secrets.created_name": "{name} erstellt",
-    "ui.secret_name": "Geheimnis {name}"
+    "ui.secret_name": "Geheimnis {name}",
+    "secrets.where_used": "Verwendet in",
+    "secrets.delete_secret": "Geheimnis löschen",
+    "secrets.delete_secret_name": "Geheimnis {name} löschen?",
+    "secrets.the_value_is_removed_permanently": "Der Wert wird dauerhaft entfernt und kann nicht wiederhergestellt werden.",
+    "secrets.deleted_name": "{name} gelöscht",
+    "secrets.where_name_is_used": "Wo {name} verwendet wird",
+    "secrets.name_cannot_be_deleted": "{name} kann nicht gelöscht werden",
+    "secrets.no_installed_package_uses_this_secret": "Kein installiertes Paket verwendet dieses Geheimnis.",
+    "secrets.some_packages_could_not_be_checked": "Einige Pakete konnten nicht geprüft werden. Versuchen Sie es später erneut.",
+    "secrets.remove_the_secret_from_these_places": "Das Geheimnis wird an diesen Stellen noch verwendet. Entfernen Sie es zuerst dort und löschen Sie es dann.",
+    "secrets.open_a_place_to_see_or_change": "Öffnen Sie eine Stelle, um zu sehen oder zu ändern, wie das Geheimnis verwendet wird.",
+    "secrets.could_not_check_package": "{package} konnte nicht geprüft werden: {message}",
+    "secrets.usage_place": "Stelle",
+    "secrets.where_the_secret_is_used_open_it": "Wo das Geheimnis verwendet wird. Öffnen Sie die Zeile, um dorthin zu wechseln.",
+    "secrets.usage_detail": "Detail",
+    "secrets.what_the_secret_is_used_for": "Wofür das Geheimnis verwendet wird.",
+    "secrets.usage_package": "Paket",
+    "secrets.the_package_that_uses_the_secret": "Das Paket, das das Geheimnis verwendet."
   }
 }

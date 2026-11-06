@@ -234,7 +234,11 @@ below.
   field, never calls secret get, clears the submitted model value, and
   overwrites the named value through `the8020/secrets/mod.ts`. One field group
   owns name and replacement value. Shared secret-name help can open this screen
-  from another entity and remains available on the secret's own name field.
+  from another entity and remains available on the secret's own name field. An
+  existing secret's detail offers Where used and Delete secret. Both read
+  `secrets.usages()`; a used secret, or one whose use could not be checked,
+  shows its usages in a modal instead of deleting, and each usage row opens its
+  reported UUI program. An unused secret is deleted after confirmation.
 - Package management screens use the authorized packages API backed by typed
   private kernel operations; they never read host paths or run Git.
 - Package detail exposes Delete package with a modal naming the selected package
