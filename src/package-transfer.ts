@@ -172,7 +172,7 @@ export async function packageExport(
       model: frame.model({ packages: rows }),
       header: {
         actions: [{
-          id: "export",
+          id: "save",
           label: msg("layout.export"),
           kind: "primary" as const,
         }],
@@ -196,7 +196,7 @@ export async function packageExport(
     }
     const action = (await done).action;
     if (action === BACK_EVENT) return { view: "back" };
-    exporting = action === "export";
+    exporting = action === "save";
     if (exporting && !file) reportBlocked();
   }
 }
