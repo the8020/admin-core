@@ -145,20 +145,23 @@ function status(icon: string, color: string, text: string): string {
 /**
  * Show the selected packages, verify them one by one with a short visible
  * result, open a row's full explanation on click, and export one list only
- * when all pass; Refresh rechecks blocked packages.
+ * when all pass; Refresh resets every row to Waiting and checks all again.
  */
 export async function packageExport(
   packageIds: string[],
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
-  const rows: ExportRowData[] = packageIds.map((id) => ({
-    package: id,
+  const waiting = () => ({
     result: status(
       "hourglass_empty",
       "muted",
       localizedText(msg("package_transfer.waiting")),
     ),
     version: "",
+  });
+  const rows: ExportRowData[] = packageIds.map((id) => ({
+    package: id,
+    ...waiting(),
   }));
   const details = new Map<string, string>();
   const entries = new Map<string, PackageListEntry>();
@@ -264,10 +267,13 @@ export async function packageExport(
       if (!file) reportBlocked();
     }
     if (event.action === "refresh" && finished && !file) {
-      // Check the blocked packages again, e.g. after pushing their commits.
+      // Start over: every package waits and is checked again.
       finished = false;
       reported = false;
-      void check(rows.filter((row) => !entries.has(row.package)));
+      entries.clear();
+      details.clear();
+      for (const row of rows) Object.assign(row, waiting());
+      void check(rows);
       continue;
     }
     const selected = event.action === "select" && "value" in event &&
