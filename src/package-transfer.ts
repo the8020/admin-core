@@ -165,8 +165,10 @@ export async function packageExport(
     try {
       if (file && offer) downloadList(file, channel);
     } catch (error) {
-      console.error("DIAG export download", String((error as Error)?.name), String((error as Error)?.message), String((error as Error)?.stack));
-      throw error;
+      // Without a connected browser the screen keeps Download for a retry.
+      if (!(error instanceof DOMException && error.name === "AbortError")) {
+        throw error;
+      }
     }
     const action = (await done).action;
     if (action === BACK_EVENT) return { view: "back" };
