@@ -59,6 +59,11 @@ function checkResult(
   const ui = {
     advanced: localizedText(msg("packages.advanced")),
     push: localizedText(msg("packages.push")),
+    // The Refresh button label carries icon markup; prose needs only its text.
+    refresh: localizedText(msg("programs.refresh")).replace(
+      /^\[\[icon=[^\]]*\]\]\s*/,
+      "",
+    ),
   };
   if (!("code" in entry)) {
     return {
@@ -98,7 +103,10 @@ function checkResult(
     ]
     : [
       msg("package_transfer.check_failed"),
-      msg("package_transfer.detail_failed", { detail: entry.detail ?? "" }),
+      msg("package_transfer.detail_failed", {
+        ...ui,
+        detail: entry.detail ?? "",
+      }),
     ];
   return {
     result: status("error", "danger", localizedText(result)),
