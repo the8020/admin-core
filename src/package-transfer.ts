@@ -145,7 +145,7 @@ function status(icon: string, color: string, text: string): string {
 /**
  * Show the selected packages, verify them one by one with a short visible
  * result, open a row's full explanation on click, and export one list only
- * when all pass.
+ * when all pass; Refresh rechecks blocked packages.
  */
 export async function packageExport(
   packageIds: string[],
@@ -161,12 +161,12 @@ export async function packageExport(
     version: "",
   }));
   const details = new Map<string, string>();
-  const entries: PackageListEntry[] = [];
+  const entries = new Map<string, PackageListEntry>();
   let channel = nextScreenChannel();
   let stopped = false;
   let finished = false;
-  void (async () => {
-    for (const row of rows) {
+  const check = async (targets: ExportRowData[]) => {
+    for (const row of targets) {
       if (stopped) return;
       row.result = status(
         "sync",
@@ -179,7 +179,7 @@ export async function packageExport(
       row.result = checked.result;
       details.set(row.package, checked.detail);
       if (!("code" in entry)) {
-        entries.push(entry);
+        entries.set(row.package, entry);
         row.version = entry.tag
           ? `${entry.tag} (${short(entry.commit)})`
           : short(entry.commit);
@@ -188,7 +188,8 @@ export async function packageExport(
     }
     finished = true;
     channel.exit("checked");
-  })();
+  };
+  void check(rows);
 
   let file: PackageListFile | undefined;
   let reported = false;
@@ -196,7 +197,7 @@ export async function packageExport(
     sendMessage(
       localizedText(
         msg("package_transfer.export_blocked", {
-          count: rows.length - entries.length,
+          count: rows.length - entries.size,
           total: rows.length,
         }),
       ),
@@ -206,8 +207,11 @@ export async function packageExport(
   while (true) {
     if (finished && !reported) {
       reported = true;
-      if (entries.length === rows.length) {
-        file = { schema: 1, packages: entries };
+      if (entries.size === rows.length) {
+        file = {
+          schema: 1,
+          packages: rows.map((row) => entries.get(row.package)!),
+        };
       } else reportBlocked();
     }
     // Checks redraw only the list call; a detail modal gets no channel.
@@ -220,11 +224,16 @@ export async function packageExport(
       model: frame.model({ packages: rows }),
       header: {
         actions: finished
-          ? [{
-            id: "save",
-            label: msg("layout.export"),
-            kind: "primary" as const,
-          }]
+          ? [
+            {
+              id: "save",
+              label: msg("layout.export"),
+              kind: "primary" as const,
+            },
+            ...(file
+              ? []
+              : [{ id: "refresh", label: msg("programs.refresh") }]),
+          ]
           : [],
       },
     });
@@ -233,7 +242,7 @@ export async function packageExport(
         downloadList(file, channel);
         sendMessage(
           localizedText(
-            msg("package_transfer.exported", { count: entries.length }),
+            msg("package_transfer.exported", { count: entries.size }),
           ),
           "success",
         );
@@ -253,6 +262,13 @@ export async function packageExport(
     if (event.action === "save") {
       exporting = true;
       if (!file) reportBlocked();
+    }
+    if (event.action === "refresh" && finished && !file) {
+      // Check the blocked packages again, e.g. after pushing their commits.
+      finished = false;
+      reported = false;
+      void check(rows.filter((row) => !entries.has(row.package)));
+      continue;
     }
     const selected = event.action === "select" && "value" in event &&
         typeof event.value === "string"
