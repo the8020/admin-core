@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "无效的软件包列表：{detail}",
     "package_transfer.imported_summary": "已导入 {imported}；已跳过 {skipped}；失败 {failed}",
     "package_transfer.outcome_local": "{package}：已存在具有此 ID 的本地软件包",
-    "package_transfer.outcome_install": "{package}：安装失败：{detail}"
+    "package_transfer.outcome_install": "{package}：安装失败：{detail}",
+    "package_transfer.dependencies": "依赖项",
+    "package_transfer.dependencies_missing": "缺少：{packages}",
+    "package_transfer.dependencies_warning": "依赖项不在列表中的软件包：{count}",
+    "package_transfer.dependencies_failed": "无法读取依赖项：{detail}",
+    "package_transfer.dependencies_none": "没有平台以外的依赖项。",
+    "package_transfer.dependency_listed": "{package}：在列表中",
+    "package_transfer.dependency_missing": "{package}：不在列表中",
+    "package_transfer.add_dependencies": "添加依赖项"
   }
 }

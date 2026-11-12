@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Недійсний список пакетів: {detail}",
     "package_transfer.imported_summary": "Імпортовано: {imported}; пропущено: {skipped}; помилок: {failed}",
     "package_transfer.outcome_local": "{package}: локальний пакет із цим ID уже існує",
-    "package_transfer.outcome_install": "{package}: помилка встановлення: {detail}"
+    "package_transfer.outcome_install": "{package}: помилка встановлення: {detail}",
+    "package_transfer.dependencies": "Залежності",
+    "package_transfer.dependencies_missing": "Бракує: {packages}",
+    "package_transfer.dependencies_warning": "Пакети із залежностями, яких бракує в списку: {count}",
+    "package_transfer.dependencies_failed": "Не вдалося прочитати залежності: {detail}",
+    "package_transfer.dependencies_none": "Немає залежностей поза платформою.",
+    "package_transfer.dependency_listed": "{package}: у списку",
+    "package_transfer.dependency_missing": "{package}: бракує в списку",
+    "package_transfer.add_dependencies": "Додати залежності"
   }
 }

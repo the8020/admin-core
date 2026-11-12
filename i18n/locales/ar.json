@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "قائمة حزم غير صالحة: {detail}",
     "package_transfer.imported_summary": "تم الاستيراد: {imported}؛ تم التخطي: {skipped}؛ فشل: {failed}",
     "package_transfer.outcome_local": "{package}: توجد بالفعل حزمة محلية بهذا المعرّف",
-    "package_transfer.outcome_install": "{package}: فشل التثبيت: {detail}"
+    "package_transfer.outcome_install": "{package}: فشل التثبيت: {detail}",
+    "package_transfer.dependencies": "التبعيات",
+    "package_transfer.dependencies_missing": "مفقود: {packages}",
+    "package_transfer.dependencies_warning": "حزم لها تبعيات مفقودة من القائمة: {count}",
+    "package_transfer.dependencies_failed": "تعذّرت قراءة التبعيات: {detail}",
+    "package_transfer.dependencies_none": "لا توجد تبعيات خارج المنصة.",
+    "package_transfer.dependency_listed": "{package}: في القائمة",
+    "package_transfer.dependency_missing": "{package}: مفقودة من القائمة",
+    "package_transfer.add_dependencies": "إضافة التبعيات"
   }
 }

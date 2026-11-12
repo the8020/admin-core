@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "잘못된 패키지 목록: {detail}",
     "package_transfer.imported_summary": "가져옴 {imported}, 건너뜀 {skipped}, 실패 {failed}",
     "package_transfer.outcome_local": "{package}: 이 ID의 로컬 패키지가 이미 있습니다",
-    "package_transfer.outcome_install": "{package}: 설치 실패: {detail}"
+    "package_transfer.outcome_install": "{package}: 설치 실패: {detail}",
+    "package_transfer.dependencies": "종속성",
+    "package_transfer.dependencies_missing": "누락: {packages}",
+    "package_transfer.dependencies_warning": "목록에 없는 종속성이 있는 패키지: {count}",
+    "package_transfer.dependencies_failed": "종속성을 읽을 수 없습니다: {detail}",
+    "package_transfer.dependencies_none": "플랫폼 외부 종속성이 없습니다.",
+    "package_transfer.dependency_listed": "{package}: 목록에 있음",
+    "package_transfer.dependency_missing": "{package}: 목록에 없음",
+    "package_transfer.add_dependencies": "종속성 추가"
   }
 }

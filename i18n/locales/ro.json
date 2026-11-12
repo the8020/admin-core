@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Listă de pachete nevalidă: {detail}",
     "package_transfer.imported_summary": "Importate {imported}; omise {skipped}; eșuate {failed}",
     "package_transfer.outcome_local": "{package}: există deja un pachet local cu acest ID",
-    "package_transfer.outcome_install": "{package}: instalarea a eșuat: {detail}"
+    "package_transfer.outcome_install": "{package}: instalarea a eșuat: {detail}",
+    "package_transfer.dependencies": "Dependențe",
+    "package_transfer.dependencies_missing": "Lipsește: {packages}",
+    "package_transfer.dependencies_warning": "Pachete cu dependențe care lipsesc din listă: {count}",
+    "package_transfer.dependencies_failed": "Dependențele nu au putut fi citite: {detail}",
+    "package_transfer.dependencies_none": "Nicio dependență în afara platformei.",
+    "package_transfer.dependency_listed": "{package}: în listă",
+    "package_transfer.dependency_missing": "{package}: lipsește din listă",
+    "package_transfer.add_dependencies": "Adaugă dependențe"
   }
 }

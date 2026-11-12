@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Llista de paquets no vàlida: {detail}",
     "package_transfer.imported_summary": "Importats {imported}; omesos {skipped}; fallits {failed}",
     "package_transfer.outcome_local": "{package}: ja existeix un paquet local amb aquest ID",
-    "package_transfer.outcome_install": "{package}: la instal·lació ha fallat: {detail}"
+    "package_transfer.outcome_install": "{package}: la instal·lació ha fallat: {detail}",
+    "package_transfer.dependencies": "Dependències",
+    "package_transfer.dependencies_missing": "Falta: {packages}",
+    "package_transfer.dependencies_warning": "Paquets amb dependències que falten a la llista: {count}",
+    "package_transfer.dependencies_failed": "No s'han pogut llegir les dependències: {detail}",
+    "package_transfer.dependencies_none": "Cap dependència fora de la plataforma.",
+    "package_transfer.dependency_listed": "{package}: a la llista",
+    "package_transfer.dependency_missing": "{package}: falta a la llista",
+    "package_transfer.add_dependencies": "Afegeix dependències"
   }
 }

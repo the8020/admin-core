@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "فهرست بستهٔ نامعتبر: {detail}",
     "package_transfer.imported_summary": "واردشده {imported}؛ ردشده {skipped}؛ ناموفق {failed}",
     "package_transfer.outcome_local": "{package}: بستهٔ محلی با این شناسه از قبل وجود دارد",
-    "package_transfer.outcome_install": "{package}: نصب ناموفق بود: {detail}"
+    "package_transfer.outcome_install": "{package}: نصب ناموفق بود: {detail}",
+    "package_transfer.dependencies": "وابستگی‌ها",
+    "package_transfer.dependencies_missing": "ناموجود: {packages}",
+    "package_transfer.dependencies_warning": "بسته‌هایی با وابستگی‌های ناموجود در فهرست: {count}",
+    "package_transfer.dependencies_failed": "خواندن وابستگی‌ها ممکن نبود: {detail}",
+    "package_transfer.dependencies_none": "وابستگی خارج از پلتفرم وجود ندارد.",
+    "package_transfer.dependency_listed": "{package}: در فهرست",
+    "package_transfer.dependency_missing": "{package}: در فهرست نیست",
+    "package_transfer.add_dependencies": "افزودن وابستگی‌ها"
   }
 }

@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Ogiltig paketlista: {detail}",
     "package_transfer.imported_summary": "Importerade {imported}; {skipped} hoppades över; {failed} misslyckades",
     "package_transfer.outcome_local": "{package}: ett lokalt paket med detta ID finns redan",
-    "package_transfer.outcome_install": "{package}: installationen misslyckades: {detail}"
+    "package_transfer.outcome_install": "{package}: installationen misslyckades: {detail}",
+    "package_transfer.dependencies": "Beroenden",
+    "package_transfer.dependencies_missing": "Saknas: {packages}",
+    "package_transfer.dependencies_warning": "Paket med beroenden som saknas i listan: {count}",
+    "package_transfer.dependencies_failed": "Beroenden kunde inte läsas: {detail}",
+    "package_transfer.dependencies_none": "Inga beroenden utanför plattformen.",
+    "package_transfer.dependency_listed": "{package}: i listan",
+    "package_transfer.dependency_missing": "{package}: saknas i listan",
+    "package_transfer.add_dependencies": "Lägg till beroenden"
   }
 }

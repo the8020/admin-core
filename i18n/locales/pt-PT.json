@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Lista de pacotes inválida: {detail}",
     "package_transfer.imported_summary": "Importados {imported}; ignorados {skipped}; falhados {failed}",
     "package_transfer.outcome_local": "{package}: já existe um pacote local com este ID",
-    "package_transfer.outcome_install": "{package}: a instalação falhou: {detail}"
+    "package_transfer.outcome_install": "{package}: a instalação falhou: {detail}",
+    "package_transfer.dependencies": "Dependências",
+    "package_transfer.dependencies_missing": "Em falta: {packages}",
+    "package_transfer.dependencies_warning": "Pacotes com dependências em falta na lista: {count}",
+    "package_transfer.dependencies_failed": "Não foi possível ler as dependências: {detail}",
+    "package_transfer.dependencies_none": "Nenhuma dependência fora da plataforma.",
+    "package_transfer.dependency_listed": "{package}: na lista",
+    "package_transfer.dependency_missing": "{package}: em falta na lista",
+    "package_transfer.add_dependencies": "Adicionar dependências"
   }
 }

@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Neveljaven seznam paketov: {detail}",
     "package_transfer.imported_summary": "Uvoženo {imported}; preskočeno {skipped}; neuspešno {failed}",
     "package_transfer.outcome_local": "{package}: lokalni paket s tem ID-jem že obstaja",
-    "package_transfer.outcome_install": "{package}: namestitev ni uspela: {detail}"
+    "package_transfer.outcome_install": "{package}: namestitev ni uspela: {detail}",
+    "package_transfer.dependencies": "Odvisnosti",
+    "package_transfer.dependencies_missing": "Manjka: {packages}",
+    "package_transfer.dependencies_warning": "Paketi z odvisnostmi, ki manjkajo na seznamu: {count}",
+    "package_transfer.dependencies_failed": "Odvisnosti ni mogoče prebrati: {detail}",
+    "package_transfer.dependencies_none": "Ni odvisnosti zunaj platforme.",
+    "package_transfer.dependency_listed": "{package}: na seznamu",
+    "package_transfer.dependency_missing": "{package}: manjka na seznamu",
+    "package_transfer.add_dependencies": "Dodaj odvisnosti"
   }
 }

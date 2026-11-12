@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Ugyldig pakkeliste: {detail}",
     "package_transfer.imported_summary": "Importeret {imported}; {skipped} sprunget over; {failed} mislykkedes",
     "package_transfer.outcome_local": "{package}: der findes allerede en lokal pakke med dette ID",
-    "package_transfer.outcome_install": "{package}: installation mislykkedes: {detail}"
+    "package_transfer.outcome_install": "{package}: installation mislykkedes: {detail}",
+    "package_transfer.dependencies": "Afhængigheder",
+    "package_transfer.dependencies_missing": "Mangler: {packages}",
+    "package_transfer.dependencies_warning": "Pakker med afhængigheder, der mangler på listen: {count}",
+    "package_transfer.dependencies_failed": "Afhængigheder kunne ikke læses: {detail}",
+    "package_transfer.dependencies_none": "Ingen afhængigheder uden for platformen.",
+    "package_transfer.dependency_listed": "{package}: på listen",
+    "package_transfer.dependency_missing": "{package}: mangler på listen",
+    "package_transfer.add_dependencies": "Tilføj afhængigheder"
   }
 }

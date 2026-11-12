@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Geçersiz paket listesi: {detail}",
     "package_transfer.imported_summary": "İçe aktarılan {imported}; atlanan {skipped}; başarısız {failed}",
     "package_transfer.outcome_local": "{package}: bu kimliğe sahip yerel bir paket zaten var",
-    "package_transfer.outcome_install": "{package}: kurulum başarısız: {detail}"
+    "package_transfer.outcome_install": "{package}: kurulum başarısız: {detail}",
+    "package_transfer.dependencies": "Bağımlılıklar",
+    "package_transfer.dependencies_missing": "Eksik: {packages}",
+    "package_transfer.dependencies_warning": "Listede eksik bağımlılıkları olan paketler: {count}",
+    "package_transfer.dependencies_failed": "Bağımlılıklar okunamadı: {detail}",
+    "package_transfer.dependencies_none": "Platform dışında bağımlılık yok.",
+    "package_transfer.dependency_listed": "{package}: listede",
+    "package_transfer.dependency_missing": "{package}: listede eksik",
+    "package_transfer.add_dependencies": "Bağımlılıkları ekle"
   }
 }

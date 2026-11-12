@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "無効なパッケージリスト: {detail}",
     "package_transfer.imported_summary": "インポート {imported}、スキップ {skipped}、失敗 {failed}",
     "package_transfer.outcome_local": "{package}: この ID のローカルパッケージが既に存在します",
-    "package_transfer.outcome_install": "{package}: インストールに失敗しました: {detail}"
+    "package_transfer.outcome_install": "{package}: インストールに失敗しました: {detail}",
+    "package_transfer.dependencies": "依存関係",
+    "package_transfer.dependencies_missing": "不足: {packages}",
+    "package_transfer.dependencies_warning": "リストにない依存関係を持つパッケージ: {count}",
+    "package_transfer.dependencies_failed": "依存関係を読み取れませんでした: {detail}",
+    "package_transfer.dependencies_none": "プラットフォーム外の依存関係はありません。",
+    "package_transfer.dependency_listed": "{package}: リストにあり",
+    "package_transfer.dependency_missing": "{package}: リストにありません",
+    "package_transfer.add_dependencies": "依存関係を追加"
   }
 }

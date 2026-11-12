@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Liste de paquets non valide : {detail}",
     "package_transfer.imported_summary": "Importés : {imported} ; ignorés : {skipped} ; échecs : {failed}",
     "package_transfer.outcome_local": "{package} : un paquet local avec cet ID existe déjà",
-    "package_transfer.outcome_install": "{package} : échec de l'installation : {detail}"
+    "package_transfer.outcome_install": "{package} : échec de l'installation : {detail}",
+    "package_transfer.dependencies": "Dépendances",
+    "package_transfer.dependencies_missing": "Manquant : {packages}",
+    "package_transfer.dependencies_warning": "Paquets dont des dépendances manquent dans la liste : {count}",
+    "package_transfer.dependencies_failed": "Impossible de lire les dépendances : {detail}",
+    "package_transfer.dependencies_none": "Aucune dépendance hors de la plateforme.",
+    "package_transfer.dependency_listed": "{package} : dans la liste",
+    "package_transfer.dependency_missing": "{package} : absent de la liste",
+    "package_transfer.add_dependencies": "Ajouter les dépendances"
   }
 }

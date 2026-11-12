@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "अमान्य पैकेज सूची: {detail}",
     "package_transfer.imported_summary": "आयातित {imported}; छोड़े गए {skipped}; विफल {failed}",
     "package_transfer.outcome_local": "{package}: इस ID वाला स्थानीय पैकेज पहले से मौजूद है",
-    "package_transfer.outcome_install": "{package}: इंस्टॉलेशन विफल: {detail}"
+    "package_transfer.outcome_install": "{package}: इंस्टॉलेशन विफल: {detail}",
+    "package_transfer.dependencies": "निर्भरताएँ",
+    "package_transfer.dependencies_missing": "अनुपलब्ध: {packages}",
+    "package_transfer.dependencies_warning": "सूची में अनुपलब्ध निर्भरताओं वाले पैकेज: {count}",
+    "package_transfer.dependencies_failed": "निर्भरताएँ पढ़ी नहीं जा सकीं: {detail}",
+    "package_transfer.dependencies_none": "प्लेटफ़ॉर्म के बाहर कोई निर्भरता नहीं।",
+    "package_transfer.dependency_listed": "{package}: सूची में",
+    "package_transfer.dependency_missing": "{package}: सूची में नहीं",
+    "package_transfer.add_dependencies": "निर्भरताएँ जोड़ें"
   }
 }

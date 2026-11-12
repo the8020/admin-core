@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Danh sách gói không hợp lệ: {detail}",
     "package_transfer.imported_summary": "Đã nhập {imported}; bỏ qua {skipped}; thất bại {failed}",
     "package_transfer.outcome_local": "{package}: đã có gói cục bộ với ID này",
-    "package_transfer.outcome_install": "{package}: cài đặt thất bại: {detail}"
+    "package_transfer.outcome_install": "{package}: cài đặt thất bại: {detail}",
+    "package_transfer.dependencies": "Phụ thuộc",
+    "package_transfer.dependencies_missing": "Thiếu: {packages}",
+    "package_transfer.dependencies_warning": "Gói có phụ thuộc bị thiếu trong danh sách: {count}",
+    "package_transfer.dependencies_failed": "Không thể đọc phụ thuộc: {detail}",
+    "package_transfer.dependencies_none": "Không có phụ thuộc ngoài nền tảng.",
+    "package_transfer.dependency_listed": "{package}: có trong danh sách",
+    "package_transfer.dependency_missing": "{package}: thiếu trong danh sách",
+    "package_transfer.add_dependencies": "Thêm phụ thuộc"
   }
 }

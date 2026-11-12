@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Daftar paket tidak valid: {detail}",
     "package_transfer.imported_summary": "Diimpor {imported}; dilewati {skipped}; gagal {failed}",
     "package_transfer.outcome_local": "{package}: paket lokal dengan ID ini sudah ada",
-    "package_transfer.outcome_install": "{package}: instalasi gagal: {detail}"
+    "package_transfer.outcome_install": "{package}: instalasi gagal: {detail}",
+    "package_transfer.dependencies": "Dependensi",
+    "package_transfer.dependencies_missing": "Kurang: {packages}",
+    "package_transfer.dependencies_warning": "Paket dengan dependensi yang tidak ada di daftar: {count}",
+    "package_transfer.dependencies_failed": "Dependensi tidak dapat dibaca: {detail}",
+    "package_transfer.dependencies_none": "Tidak ada dependensi di luar platform.",
+    "package_transfer.dependency_listed": "{package}: ada di daftar",
+    "package_transfer.dependency_missing": "{package}: tidak ada di daftar",
+    "package_transfer.add_dependencies": "Tambahkan dependensi"
   }
 }

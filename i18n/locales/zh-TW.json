@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "無效的套件清單：{detail}",
     "package_transfer.imported_summary": "已匯入 {imported}；已略過 {skipped}；失敗 {failed}",
     "package_transfer.outcome_local": "{package}：已存在具有此 ID 的本機套件",
-    "package_transfer.outcome_install": "{package}：安裝失敗：{detail}"
+    "package_transfer.outcome_install": "{package}：安裝失敗：{detail}",
+    "package_transfer.dependencies": "相依性",
+    "package_transfer.dependencies_missing": "缺少：{packages}",
+    "package_transfer.dependencies_warning": "相依性不在清單中的套件：{count}",
+    "package_transfer.dependencies_failed": "無法讀取相依性：{detail}",
+    "package_transfer.dependencies_none": "沒有平台以外的相依性。",
+    "package_transfer.dependency_listed": "{package}：在清單中",
+    "package_transfer.dependency_missing": "{package}：不在清單中",
+    "package_transfer.add_dependencies": "新增相依性"
   }
 }

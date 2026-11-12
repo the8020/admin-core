@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Hindi wastong listahan ng package: {detail}",
     "package_transfer.imported_summary": "Na-import {imported}; nilaktawan {skipped}; nabigo {failed}",
     "package_transfer.outcome_local": "{package}: may lokal na package na may ganitong ID na",
-    "package_transfer.outcome_install": "{package}: nabigo ang pag-install: {detail}"
+    "package_transfer.outcome_install": "{package}: nabigo ang pag-install: {detail}",
+    "package_transfer.dependencies": "Mga dependency",
+    "package_transfer.dependencies_missing": "Kulang: {packages}",
+    "package_transfer.dependencies_warning": "Mga package na may dependency na wala sa listahan: {count}",
+    "package_transfer.dependencies_failed": "Hindi mabasa ang mga dependency: {detail}",
+    "package_transfer.dependencies_none": "Walang dependency sa labas ng platform.",
+    "package_transfer.dependency_listed": "{package}: nasa listahan",
+    "package_transfer.dependency_missing": "{package}: wala sa listahan",
+    "package_transfer.add_dependencies": "Idagdag ang mga dependency"
   }
 }

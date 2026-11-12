@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Neplatný zoznam balíkov: {detail}",
     "package_transfer.imported_summary": "Importované {imported}; preskočené {skipped}; zlyhané {failed}",
     "package_transfer.outcome_local": "{package}: lokálny balík s týmto ID už existuje",
-    "package_transfer.outcome_install": "{package}: inštalácia zlyhala: {detail}"
+    "package_transfer.outcome_install": "{package}: inštalácia zlyhala: {detail}",
+    "package_transfer.dependencies": "Závislosti",
+    "package_transfer.dependencies_missing": "Chýba: {packages}",
+    "package_transfer.dependencies_warning": "Balíky so závislosťami, ktoré chýbajú v zozname: {count}",
+    "package_transfer.dependencies_failed": "Závislosti nemožno načítať: {detail}",
+    "package_transfer.dependencies_none": "Žiadne závislosti mimo platformy.",
+    "package_transfer.dependency_listed": "{package}: v zozname",
+    "package_transfer.dependency_missing": "{package}: chýba v zozname",
+    "package_transfer.add_dependencies": "Pridať závislosti"
   }
 }

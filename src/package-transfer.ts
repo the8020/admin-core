@@ -2,6 +2,7 @@ import { text as localizedText } from "/p/the8020/i18n/mod.ts";
 import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { packageId as packageField } from "/p/the8020/packages/types/package.ts";
 import { sourceInfo } from "/p/the8020/packages/types/source.ts";
+import { packages } from "/p/the8020/packages/src/admin.ts";
 import {
   type ExportProblem,
   type ImportOutcome,
@@ -109,6 +110,9 @@ const ExportRow = z.object({
   package: packageField,
   result: field(z.string(), { label: msg("package_transfer.result") }),
   version: versionField,
+  dependencies: field(z.string(), {
+    label: msg("package_transfer.dependencies"),
+  }),
 });
 const ExportScreen = z.object({ packages: z.array(ExportRow) });
 type ExportRowData = z.infer<typeof ExportRow>;
@@ -124,7 +128,17 @@ const ExportDetail = z.object({
     rowSpan: 6,
     length: "full",
   }),
+  dependencies: field(z.string(), {
+    label: msg("package_transfer.dependencies"),
+    control: "textarea",
+    readOnly: true,
+    rowSpan: 4,
+    length: "full",
+  }),
 });
+
+/** Platform packages are present on every system and stay out of the list. */
+const platform = (packageId: string) => packageId.startsWith("the8020/");
 
 function downloadList(
   file: PackageListFile,
@@ -137,6 +151,31 @@ function downloadList(
   }, channel.downloads);
 }
 
+/** One line per non-platform dependency, stating whether it is listed. */
+function dependencyDetail(
+  found: string[] | Error | undefined,
+  rows: ExportRowData[],
+): string {
+  if (found instanceof Error) {
+    return localizedText(
+      msg("package_transfer.dependencies_failed", { detail: found.message }),
+    );
+  }
+  if (!found?.length) {
+    return localizedText(msg("package_transfer.dependencies_none"));
+  }
+  return found.map((id) =>
+    localizedText(
+      msg(
+        rows.some((row) => row.package === id)
+          ? "package_transfer.dependency_listed"
+          : "package_transfer.dependency_missing",
+        { package: id },
+      ),
+    )
+  ).join("\n");
+}
+
 /** Status icon markup is presentation, not translated prose. */
 function status(icon: string, color: string, text: string): string {
   return `[[icon=${icon} color=${color}]] ${text}`;
@@ -146,6 +185,8 @@ function status(icon: string, color: string, text: string): string {
  * Show the selected packages, verify them one by one with a short visible
  * result, open a row's full explanation on click, and export one list only
  * when all pass; Refresh resets every row to Waiting and checks all again.
+ * Imported non-platform packages missing from the list only warn and can be
+ * added to it.
  */
 export async function packageExport(
   packageIds: string[],
@@ -158,6 +199,7 @@ export async function packageExport(
       localizedText(msg("package_transfer.waiting")),
     ),
     version: "",
+    dependencies: "",
   });
   const rows: ExportRowData[] = packageIds.map((id) => ({
     package: id,
@@ -165,6 +207,33 @@ export async function packageExport(
   }));
   const details = new Map<string, string>();
   const entries = new Map<string, PackageListEntry>();
+  /** Non-platform imports per checked package; absent when unreadable. */
+  const imports = new Map<string, string[] | Error>();
+  const missing = (packageId: string) => {
+    const found = imports.get(packageId);
+    return Array.isArray(found)
+      ? found.filter((id) => !rows.some((row) => row.package === id))
+      : [];
+  };
+  const showDependencies = () => {
+    for (const row of rows) {
+      const found = imports.get(row.package);
+      const absent = missing(row.package);
+      row.dependencies = !Array.isArray(found) || !found.length
+        ? ""
+        : absent.length
+        ? status(
+          "warning",
+          "warning",
+          localizedText(
+            msg("package_transfer.dependencies_missing", {
+              packages: absent.join(", "),
+            }),
+          ),
+        )
+        : status("check_circle", "success", found.join(", "));
+    }
+  };
   let channel = nextScreenChannel();
   let stopped = false;
   let finished = false;
@@ -181,6 +250,20 @@ export async function packageExport(
       const checked = checkResult(entry);
       row.result = checked.result;
       details.set(row.package, checked.detail);
+      try {
+        imports.set(
+          row.package,
+          (await packages.dependencies(row.package)).filter((id) =>
+            !platform(id)
+          ),
+        );
+      } catch (error) {
+        imports.set(
+          row.package,
+          error instanceof Error ? error : new Error(String(error)),
+        );
+      }
+      showDependencies();
       if (!("code" in entry)) {
         entries.set(row.package, entry);
         row.version = entry.tag
@@ -210,6 +293,17 @@ export async function packageExport(
   while (true) {
     if (finished && !reported) {
       reported = true;
+      const incomplete = rows.filter((row) => missing(row.package).length);
+      if (incomplete.length) {
+        sendMessage(
+          localizedText(
+            msg("package_transfer.dependencies_warning", {
+              count: incomplete.length,
+            }),
+          ),
+          "warning",
+        );
+      }
       if (entries.size === rows.length) {
         file = {
           schema: 1,
@@ -234,6 +328,12 @@ export async function packageExport(
               kind: "primary" as const,
             },
             { id: "refresh", label: msg("programs.refresh") },
+            ...(rows.some((row) => missing(row.package).length)
+              ? [{
+                id: "add-dependencies",
+                label: msg("package_transfer.add_dependencies"),
+              }]
+              : []),
           ]
           : [],
       },
@@ -271,8 +371,23 @@ export async function packageExport(
       file = undefined;
       entries.clear();
       details.clear();
+      imports.clear();
       for (const row of rows) Object.assign(row, waiting());
       void check(rows);
+      continue;
+    }
+    if (event.action === "add-dependencies" && finished) {
+      // Added packages are checked too and may bring their own dependencies.
+      const added = [...new Set(rows.flatMap((row) => missing(row.package)))]
+        .sort().map((id): ExportRowData => ({ package: id, ...waiting() }));
+      if (added.length) {
+        rows.push(...added);
+        showDependencies();
+        finished = false;
+        reported = false;
+        file = undefined;
+        void check(added);
+      }
       continue;
     }
     const selected = event.action === "select" && "value" in event &&
@@ -291,8 +406,13 @@ export async function packageExport(
           model: new Model({
             result: row.result.replace(/^\[\[icon=[^\]]*\]\]\s*/, ""),
             detail,
+            dependencies: dependencyDetail(imports.get(row.package), rows),
           }),
-          controls: [{ bind: "result" }, { bind: "detail" }],
+          controls: [
+            { bind: "result" },
+            { bind: "detail" },
+            { bind: "dependencies" },
+          ],
         })
       );
     }

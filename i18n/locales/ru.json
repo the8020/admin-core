@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Недопустимый список пакетов: {detail}",
     "package_transfer.imported_summary": "Импортировано: {imported}; пропущено: {skipped}; ошибок: {failed}",
     "package_transfer.outcome_local": "{package}: локальный пакет с этим ID уже существует",
-    "package_transfer.outcome_install": "{package}: ошибка установки: {detail}"
+    "package_transfer.outcome_install": "{package}: ошибка установки: {detail}",
+    "package_transfer.dependencies": "Зависимости",
+    "package_transfer.dependencies_missing": "Отсутствует: {packages}",
+    "package_transfer.dependencies_warning": "Пакеты с зависимостями, отсутствующими в списке: {count}",
+    "package_transfer.dependencies_failed": "Не удалось прочитать зависимости: {detail}",
+    "package_transfer.dependencies_none": "Нет зависимостей вне платформы.",
+    "package_transfer.dependency_listed": "{package}: в списке",
+    "package_transfer.dependency_missing": "{package}: отсутствует в списке",
+    "package_transfer.add_dependencies": "Добавить зависимости"
   }
 }

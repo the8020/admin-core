@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "רשימת חבילות לא תקינה: {detail}",
     "package_transfer.imported_summary": "יובאו {imported}; דולגו {skipped}; נכשלו {failed}",
     "package_transfer.outcome_local": "{package}: כבר קיימת חבילה מקומית עם מזהה זה",
-    "package_transfer.outcome_install": "{package}: ההתקנה נכשלה: {detail}"
+    "package_transfer.outcome_install": "{package}: ההתקנה נכשלה: {detail}",
+    "package_transfer.dependencies": "תלויות",
+    "package_transfer.dependencies_missing": "חסר: {packages}",
+    "package_transfer.dependencies_warning": "חבילות עם תלויות שחסרות ברשימה: {count}",
+    "package_transfer.dependencies_failed": "לא ניתן לקרוא את התלויות: {detail}",
+    "package_transfer.dependencies_none": "אין תלויות מחוץ לפלטפורמה.",
+    "package_transfer.dependency_listed": "{package}: ברשימה",
+    "package_transfer.dependency_missing": "{package}: חסרה ברשימה",
+    "package_transfer.add_dependencies": "הוספת תלויות"
   }
 }

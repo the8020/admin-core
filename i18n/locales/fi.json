@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Virheellinen pakettiluettelo: {detail}",
     "package_transfer.imported_summary": "Tuotu {imported}; ohitettu {skipped}; epäonnistui {failed}",
     "package_transfer.outcome_local": "{package}: paikallinen paketti tällä tunnuksella on jo olemassa",
-    "package_transfer.outcome_install": "{package}: asennus epäonnistui: {detail}"
+    "package_transfer.outcome_install": "{package}: asennus epäonnistui: {detail}",
+    "package_transfer.dependencies": "Riippuvuudet",
+    "package_transfer.dependencies_missing": "Puuttuu: {packages}",
+    "package_transfer.dependencies_warning": "Paketit, joiden riippuvuuksia puuttuu luettelosta: {count}",
+    "package_transfer.dependencies_failed": "Riippuvuuksia ei voitu lukea: {detail}",
+    "package_transfer.dependencies_none": "Ei riippuvuuksia alustan ulkopuolella.",
+    "package_transfer.dependency_listed": "{package}: luettelossa",
+    "package_transfer.dependency_missing": "{package}: puuttuu luettelosta",
+    "package_transfer.add_dependencies": "Lisää riippuvuudet"
   }
 }

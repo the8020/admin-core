@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Nederīgs pakotņu saraksts: {detail}",
     "package_transfer.imported_summary": "Importētas {imported}; izlaistas {skipped}; neizdevās {failed}",
     "package_transfer.outcome_local": "{package}: lokāla pakotne ar šo ID jau pastāv",
-    "package_transfer.outcome_install": "{package}: instalēšana neizdevās: {detail}"
+    "package_transfer.outcome_install": "{package}: instalēšana neizdevās: {detail}",
+    "package_transfer.dependencies": "Atkarības",
+    "package_transfer.dependencies_missing": "Trūkst: {packages}",
+    "package_transfer.dependencies_warning": "Pakotnes ar atkarībām, kuru trūkst sarakstā: {count}",
+    "package_transfer.dependencies_failed": "Neizdevās nolasīt atkarības: {detail}",
+    "package_transfer.dependencies_none": "Nav atkarību ārpus platformas.",
+    "package_transfer.dependency_listed": "{package}: sarakstā",
+    "package_transfer.dependency_missing": "{package}: trūkst sarakstā",
+    "package_transfer.add_dependencies": "Pievienot atkarības"
   }
 }

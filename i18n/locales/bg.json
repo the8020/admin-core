@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Невалиден списък с пакети: {detail}",
     "package_transfer.imported_summary": "Импортирани {imported}; пропуснати {skipped}; неуспешни {failed}",
     "package_transfer.outcome_local": "{package}: вече съществува локален пакет с този ID",
-    "package_transfer.outcome_install": "{package}: инсталацията е неуспешна: {detail}"
+    "package_transfer.outcome_install": "{package}: инсталацията е неуспешна: {detail}",
+    "package_transfer.dependencies": "Зависимости",
+    "package_transfer.dependencies_missing": "Липсва: {packages}",
+    "package_transfer.dependencies_warning": "Пакети със зависимости, липсващи в списъка: {count}",
+    "package_transfer.dependencies_failed": "Зависимостите не могат да бъдат прочетени: {detail}",
+    "package_transfer.dependencies_none": "Няма зависимости извън платформата.",
+    "package_transfer.dependency_listed": "{package}: в списъка",
+    "package_transfer.dependency_missing": "{package}: липсва в списъка",
+    "package_transfer.add_dependencies": "Добави зависимости"
   }
 }

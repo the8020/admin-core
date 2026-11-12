@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Μη έγκυρη λίστα πακέτων: {detail}",
     "package_transfer.imported_summary": "Εισήχθησαν {imported}· παραλείφθηκαν {skipped}· απέτυχαν {failed}",
     "package_transfer.outcome_local": "{package}: υπάρχει ήδη τοπικό πακέτο με αυτό το ID",
-    "package_transfer.outcome_install": "{package}: η εγκατάσταση απέτυχε: {detail}"
+    "package_transfer.outcome_install": "{package}: η εγκατάσταση απέτυχε: {detail}",
+    "package_transfer.dependencies": "Εξαρτήσεις",
+    "package_transfer.dependencies_missing": "Λείπει: {packages}",
+    "package_transfer.dependencies_warning": "Πακέτα με εξαρτήσεις που λείπουν από τη λίστα: {count}",
+    "package_transfer.dependencies_failed": "Δεν ήταν δυνατή η ανάγνωση των εξαρτήσεων: {detail}",
+    "package_transfer.dependencies_none": "Καμία εξάρτηση εκτός πλατφόρμας.",
+    "package_transfer.dependency_listed": "{package}: στη λίστα",
+    "package_transfer.dependency_missing": "{package}: λείπει από τη λίστα",
+    "package_transfer.add_dependencies": "Προσθήκη εξαρτήσεων"
   }
 }

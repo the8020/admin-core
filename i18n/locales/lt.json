@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Netinkamas paketų sąrašas: {detail}",
     "package_transfer.imported_summary": "Importuota {imported}; praleista {skipped}; nepavyko {failed}",
     "package_transfer.outcome_local": "{package}: vietinis paketas su šiuo ID jau yra",
-    "package_transfer.outcome_install": "{package}: įdiegti nepavyko: {detail}"
+    "package_transfer.outcome_install": "{package}: įdiegti nepavyko: {detail}",
+    "package_transfer.dependencies": "Priklausomybės",
+    "package_transfer.dependencies_missing": "Trūksta: {packages}",
+    "package_transfer.dependencies_warning": "Paketai, kurių priklausomybių trūksta sąraše: {count}",
+    "package_transfer.dependencies_failed": "Nepavyko nuskaityti priklausomybių: {detail}",
+    "package_transfer.dependencies_none": "Nėra priklausomybių už platformos ribų.",
+    "package_transfer.dependency_listed": "{package}: sąraše",
+    "package_transfer.dependency_missing": "{package}: trūksta sąraše",
+    "package_transfer.add_dependencies": "Pridėti priklausomybes"
   }
 }

@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Érvénytelen csomaglista: {detail}",
     "package_transfer.imported_summary": "Importálva {imported}; kihagyva {skipped}; sikertelen {failed}",
     "package_transfer.outcome_local": "{package}: már létezik helyi csomag ezzel az azonosítóval",
-    "package_transfer.outcome_install": "{package}: a telepítés sikertelen: {detail}"
+    "package_transfer.outcome_install": "{package}: a telepítés sikertelen: {detail}",
+    "package_transfer.dependencies": "Függőségek",
+    "package_transfer.dependencies_missing": "Hiányzik: {packages}",
+    "package_transfer.dependencies_warning": "Csomagok, amelyek függőségei hiányoznak a listából: {count}",
+    "package_transfer.dependencies_failed": "A függőségek nem olvashatók: {detail}",
+    "package_transfer.dependencies_none": "Nincs a platformon kívüli függőség.",
+    "package_transfer.dependency_listed": "{package}: a listában",
+    "package_transfer.dependency_missing": "{package}: hiányzik a listából",
+    "package_transfer.add_dependencies": "Függőségek hozzáadása"
   }
 }

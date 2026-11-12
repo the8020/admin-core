@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Vigane paketiloend: {detail}",
     "package_transfer.imported_summary": "Imporditud {imported}; vahele jäetud {skipped}; ebaõnnestunud {failed}",
     "package_transfer.outcome_local": "{package}: selle ID-ga kohalik pakett on juba olemas",
-    "package_transfer.outcome_install": "{package}: paigaldamine ebaõnnestus: {detail}"
+    "package_transfer.outcome_install": "{package}: paigaldamine ebaõnnestus: {detail}",
+    "package_transfer.dependencies": "Sõltuvused",
+    "package_transfer.dependencies_missing": "Puudu: {packages}",
+    "package_transfer.dependencies_warning": "Paketid, mille sõltuvused loendist puuduvad: {count}",
+    "package_transfer.dependencies_failed": "Sõltuvusi ei saanud lugeda: {detail}",
+    "package_transfer.dependencies_none": "Platvormiväliseid sõltuvusi pole.",
+    "package_transfer.dependency_listed": "{package}: loendis",
+    "package_transfer.dependency_missing": "{package}: loendist puudu",
+    "package_transfer.add_dependencies": "Lisa sõltuvused"
   }
 }

@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Nieprawidłowa lista pakietów: {detail}",
     "package_transfer.imported_summary": "Zaimportowano {imported}; pominięto {skipped}; nieudane {failed}",
     "package_transfer.outcome_local": "{package}: lokalny pakiet o tym ID już istnieje",
-    "package_transfer.outcome_install": "{package}: instalacja nie powiodła się: {detail}"
+    "package_transfer.outcome_install": "{package}: instalacja nie powiodła się: {detail}",
+    "package_transfer.dependencies": "Zależności",
+    "package_transfer.dependencies_missing": "Brak: {packages}",
+    "package_transfer.dependencies_warning": "Pakiety z zależnościami brakującymi na liście: {count}",
+    "package_transfer.dependencies_failed": "Nie można odczytać zależności: {detail}",
+    "package_transfer.dependencies_none": "Brak zależności poza platformą.",
+    "package_transfer.dependency_listed": "{package}: na liście",
+    "package_transfer.dependency_missing": "{package}: brak na liście",
+    "package_transfer.add_dependencies": "Dodaj zależności"
   }
 }

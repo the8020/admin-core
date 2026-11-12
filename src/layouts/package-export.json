@@ -13,10 +13,14 @@
         "display": [
           "package",
           "result",
-          "version"
+          "version",
+          "dependencies"
         ],
         "columnOptions": {
           "result": {
+            "length": "long"
+          },
+          "dependencies": {
             "length": "long"
           }
         }

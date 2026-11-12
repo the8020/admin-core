@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "รายการแพ็กเกจไม่ถูกต้อง: {detail}",
     "package_transfer.imported_summary": "นำเข้า {imported}; ข้าม {skipped}; ล้มเหลว {failed}",
     "package_transfer.outcome_local": "{package}: มีแพ็กเกจภายในเครื่องที่ใช้ ID นี้อยู่แล้ว",
-    "package_transfer.outcome_install": "{package}: ติดตั้งไม่สำเร็จ: {detail}"
+    "package_transfer.outcome_install": "{package}: ติดตั้งไม่สำเร็จ: {detail}",
+    "package_transfer.dependencies": "การพึ่งพา",
+    "package_transfer.dependencies_missing": "ขาด: {packages}",
+    "package_transfer.dependencies_warning": "แพ็กเกจที่มีการพึ่งพาซึ่งไม่อยู่ในรายการ: {count}",
+    "package_transfer.dependencies_failed": "อ่านการพึ่งพาไม่ได้: {detail}",
+    "package_transfer.dependencies_none": "ไม่มีการพึ่งพานอกแพลตฟอร์ม",
+    "package_transfer.dependency_listed": "{package}: อยู่ในรายการ",
+    "package_transfer.dependency_missing": "{package}: ไม่อยู่ในรายการ",
+    "package_transfer.add_dependencies": "เพิ่มการพึ่งพา"
   }
 }

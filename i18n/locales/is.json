@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Ógildur pakkalisti: {detail}",
     "package_transfer.imported_summary": "Flutt inn {imported}; sleppt {skipped}; mistókst {failed}",
     "package_transfer.outcome_local": "{package}: staðbundinn pakki með þessu auðkenni er þegar til",
-    "package_transfer.outcome_install": "{package}: uppsetning mistókst: {detail}"
+    "package_transfer.outcome_install": "{package}: uppsetning mistókst: {detail}",
+    "package_transfer.dependencies": "Kerfisháðir pakkar",
+    "package_transfer.dependencies_missing": "Vantar: {packages}",
+    "package_transfer.dependencies_warning": "Pakkar með háða pakka sem vantar á listann: {count}",
+    "package_transfer.dependencies_failed": "Ekki tókst að lesa háða pakka: {detail}",
+    "package_transfer.dependencies_none": "Engir háðir pakkar utan kerfisins.",
+    "package_transfer.dependency_listed": "{package}: á listanum",
+    "package_transfer.dependency_missing": "{package}: vantar á listann",
+    "package_transfer.add_dependencies": "Bæta við háðum pökkum"
   }
 }

@@ -239,9 +239,14 @@ below.
   Export and Refresh appear (both hidden while checking). Its Export action
   downloads one JSON list only when all passed; otherwise it repeats the blocked
   error. Refresh always resets every package to Waiting and checks all again.
-  Back stops further checks. Its Version column shows the desired tag with the
-  running short commit from one `index.list` read. Import opens an Import
-  package list screen: Load parses an uploaded list (at most 256 KiB) and
+  Back stops further checks. Each check also reads the package's non-platform
+  dependencies (`the8020/*` are hidden): the Dependencies column shows them with
+  a check icon, or a warning listing those missing from the list; the modal
+  lists each with its state. Missing dependencies only warn (one warning message
+  after the checks) and never block the export; Add dependencies appends them as
+  Waiting rows and checks only those. Its Version column shows the desired tag
+  with the running short commit from one `index.list` read. Import opens an
+  Import package list screen: Load parses an uploaded list (at most 256 KiB) and
   previews each row's state; new rows start selected, existing ones change only
   when the user selects them. Import writes the desired index and Import and
   install also synchronizes, with one counted notification.

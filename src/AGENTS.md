@@ -68,10 +68,12 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   `select` opens its retained detail in a modal without a channel, checks
   continuing meanwhile; Export and Refresh appear once checks finish and
   downloads only when all passed; Refresh resets all rows to Waiting and
-  rechecks them) and the Import package list screen. Both call the packages
-  repository's transfer API; the screen keeps the loaded list and selection in
-  its navigation frame and passes explicit overwrite only for user-selected
-  rows.
+  rechecks them; each check also calls `packages.dependencies`, keeps
+  non-platform results per package and recomputes missing ones against the
+  current rows; Add dependencies appends and checks only the missing ones) and
+  the Import package list screen. Both call the packages repository's transfer
+  API; the screen keeps the loaded list and selection in its navigation frame
+  and passes explicit overwrite only for user-selected rows.
 - Advanced Fetch refreshes Git references without changing installed code.
   Versions/Apply and checkout explicitly change the running version, retaining
   the attached branch. Push uses that branch through the packages API.

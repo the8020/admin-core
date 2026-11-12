@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Ongeldige pakketlijst: {detail}",
     "package_transfer.imported_summary": "{imported} geïmporteerd; {skipped} overgeslagen; {failed} mislukt",
     "package_transfer.outcome_local": "{package}: er bestaat al een lokaal pakket met deze ID",
-    "package_transfer.outcome_install": "{package}: installatie mislukt: {detail}"
+    "package_transfer.outcome_install": "{package}: installatie mislukt: {detail}",
+    "package_transfer.dependencies": "Afhankelijkheden",
+    "package_transfer.dependencies_missing": "Ontbreekt: {packages}",
+    "package_transfer.dependencies_warning": "Pakketten met afhankelijkheden die in de lijst ontbreken: {count}",
+    "package_transfer.dependencies_failed": "Afhankelijkheden konden niet worden gelezen: {detail}",
+    "package_transfer.dependencies_none": "Geen afhankelijkheden buiten het platform.",
+    "package_transfer.dependency_listed": "{package}: in de lijst",
+    "package_transfer.dependency_missing": "{package}: ontbreekt in de lijst",
+    "package_transfer.add_dependencies": "Afhankelijkheden toevoegen"
   }
 }

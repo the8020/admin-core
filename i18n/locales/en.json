@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Invalid package list: {detail}",
     "package_transfer.imported_summary": "Imported {imported}; {skipped} skipped; {failed} failed",
     "package_transfer.outcome_local": "{package}: a local package with this ID already exists",
-    "package_transfer.outcome_install": "{package}: installation failed: {detail}"
+    "package_transfer.outcome_install": "{package}: installation failed: {detail}",
+    "package_transfer.dependencies": "Dependencies",
+    "package_transfer.dependencies_missing": "Missing: {packages}",
+    "package_transfer.dependencies_warning": "Packages with dependencies missing from the list: {count}",
+    "package_transfer.dependencies_failed": "Dependencies could not be read: {detail}",
+    "package_transfer.dependencies_none": "No dependencies outside the platform.",
+    "package_transfer.dependency_listed": "{package}: in the list",
+    "package_transfer.dependency_missing": "{package}: missing from the list",
+    "package_transfer.add_dependencies": "Add dependencies"
   }
 }

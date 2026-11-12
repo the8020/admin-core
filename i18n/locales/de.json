@@ -389,6 +389,14 @@
     "package_transfer.invalid_file": "Ungültige Paketliste: {detail}",
     "package_transfer.imported_summary": "{imported} importiert; {skipped} übersprungen; {failed} fehlgeschlagen",
     "package_transfer.outcome_local": "{package}: Ein lokales Paket mit dieser ID existiert bereits",
-    "package_transfer.outcome_install": "{package}: Installation fehlgeschlagen: {detail}"
+    "package_transfer.outcome_install": "{package}: Installation fehlgeschlagen: {detail}",
+    "package_transfer.dependencies": "Abhängigkeiten",
+    "package_transfer.dependencies_missing": "Fehlt: {packages}",
+    "package_transfer.dependencies_warning": "Pakete mit Abhängigkeiten, die in der Liste fehlen: {count}",
+    "package_transfer.dependencies_failed": "Abhängigkeiten konnten nicht gelesen werden: {detail}",
+    "package_transfer.dependencies_none": "Keine Abhängigkeiten außerhalb der Plattform.",
+    "package_transfer.dependency_listed": "{package}: in der Liste",
+    "package_transfer.dependency_missing": "{package}: fehlt in der Liste",
+    "package_transfer.add_dependencies": "Abhängigkeiten hinzufügen"
   }
 }
