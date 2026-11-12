@@ -266,7 +266,11 @@ export async function packageExport(
           id: "core-admin-package-export-detail",
           title: row.package,
           schema: ExportDetail,
-          model: new Model({ result: row.result, detail }),
+          // Form fields show values literally; icons render only in lists.
+          model: new Model({
+            result: row.result.replace(/^\[\[icon=[^\]]*\]\]\s*/, ""),
+            detail,
+          }),
           controls: [{ bind: "result" }, { bind: "detail" }],
         })
       );
