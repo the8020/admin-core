@@ -3,15 +3,16 @@ import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { packageId as packageField } from "/p/the8020/packages/types/package.ts";
 import { sourceInfo } from "/p/the8020/packages/types/source.ts";
 import {
-  exportPackageList,
   type ExportProblem,
   type ImportOutcome,
   importPackageList,
   type ImportPreview,
   type ImportState,
+  type PackageListEntry,
   type PackageListFile,
   packageListFile,
   previewImport,
+  verifyExportEntry,
 } from "/p/the8020/packages/src/transfer.ts";
 import type { PackageIndex } from "@the8020/kernel";
 import {
@@ -20,11 +21,14 @@ import {
   download,
   field,
   fileUpload,
-  type nextScreenChannel,
+  nextScreenChannel,
   sendMessage,
   z,
 } from "/p/the8020/uui/mod.ts";
 import packageImportLayout from "./layouts/package-import.json" with {
+  type: "json",
+};
+import packageExportLayout from "./layouts/package-export.json" with {
   type: "json",
 };
 import { ScreenFrame } from "./screen_frame.ts";
@@ -43,54 +47,31 @@ export function versionLabel(index?: PackageIndex): string {
   return index?.tag ? `${index.tag} (${commit})` : commit;
 }
 
-const problemKeys: Record<ExportProblem["code"], string> = {
-  not_active: "package_transfer.problem_not_active",
-  no_remote: "package_transfer.problem_no_remote",
-  identity: "package_transfer.problem_identity",
-  not_in_remote: "package_transfer.problem_not_in_remote",
-  failed: "package_transfer.problem_failed",
+const problemKeys: Record<
+  Exclude<ExportProblem["code"], "failed">,
+  string
+> = {
+  not_active: "package_transfer.not_active",
+  no_remote: "package_transfer.no_remote",
+  identity: "package_transfer.identity",
+  not_in_remote: "package_transfer.not_in_remote",
 };
 
 function problemText(problem: ExportProblem): string {
-  return localizedText(
-    msg(problemKeys[problem.code], {
-      package: problem.package,
-      detail: problem.detail ?? "",
-    }),
+  return problem.code === "failed" ? problem.detail ?? "" : localizedText(
+    msg(problemKeys[problem.code], { detail: problem.detail ?? "" }),
   );
 }
 
-/** Verify the selected packages; any problem withholds the whole list. */
-export async function verifyExport(
-  packageIds: string[],
-): Promise<PackageListFile | undefined> {
-  const { file, problems } = await exportPackageList(packageIds);
-  if (!file) {
-    sendMessage(
-      [
-        localizedText(
-          msg("package_transfer.export_blocked", {
-            count: problems.length,
-            total: packageIds.length,
-          }),
-        ),
-        ...problems.slice(0, MAX_ERRORS).map(problemText),
-      ].join("\n"),
-      "error",
-    );
-    return undefined;
-  }
-  sendMessage(
-    localizedText(
-      msg("package_transfer.exported", { count: file.packages.length }),
-    ),
-    "success",
-  );
-  return file;
-}
+const ExportRow = z.object({
+  package: packageField,
+  result: field(z.string(), { label: msg("package_transfer.result") }),
+  version: versionField,
+});
+const ExportScreen = z.object({ packages: z.array(ExportRow) });
+type ExportRowData = z.infer<typeof ExportRow>;
 
-/** Offer the verified list as a download on the pending screen. */
-export function downloadList(
+function downloadList(
   file: PackageListFile,
   channel: ReturnType<typeof nextScreenChannel>,
 ): void {
@@ -99,6 +80,93 @@ export function downloadList(
     contentType: "application/json",
     body: new Blob([JSON.stringify(file, null, 2) + "\n"]).stream(),
   }, channel.downloads);
+}
+
+/**
+ * Show the selected packages, verify them one by one with a visible result,
+ * and offer one list only when all pass.
+ */
+export async function packageExport(
+  packageIds: string[],
+  frame = new ScreenFrame(),
+): Promise<ScreenResult> {
+  const rows: ExportRowData[] = packageIds.map((id) => ({
+    package: id,
+    result: localizedText(msg("package_transfer.waiting")),
+    version: "",
+  }));
+  const screen = {
+    id: "core-admin-package-export",
+    title: msg("package_transfer.export_package_list"),
+    schema: ExportScreen,
+    layout: packageExportLayout,
+  };
+  const checking = nextScreenChannel();
+  const pending = callScreen({
+    ...screen,
+    model: frame.model({ packages: rows }),
+  });
+  let left = false;
+  const entries: PackageListEntry[] = [];
+  const checks = (async () => {
+    for (const row of rows) {
+      if (left) return;
+      row.result = localizedText(msg("package_transfer.checking"));
+      checking.redraw();
+      const entry = await verifyExportEntry(row.package);
+      if ("code" in entry) row.result = problemText(entry);
+      else {
+        entries.push(entry);
+        row.result = localizedText(msg("package_transfer.passed"));
+        row.version = entry.tag
+          ? `${entry.tag} (${entry.commit.slice(0, 7)})`
+          : entry.commit.slice(0, 7);
+      }
+      checking.redraw();
+    }
+    if (!left) checking.exit("checked");
+  })();
+  const event = await pending;
+  left = true;
+  if (event.action !== "checked") return { view: "back" };
+  await checks;
+
+  const blocked = rows.length - entries.length;
+  const file: PackageListFile | undefined = blocked
+    ? undefined
+    : { schema: 1, packages: entries };
+  sendMessage(
+    localizedText(
+      file
+        ? msg("package_transfer.exported", { count: entries.length })
+        : msg("package_transfer.export_blocked", {
+          count: blocked,
+          total: rows.length,
+        }),
+    ),
+    file ? "success" : "error",
+  );
+  let offer = file !== undefined;
+  while (true) {
+    const channel = nextScreenChannel();
+    const done = callScreen({
+      ...screen,
+      model: frame.model({ packages: rows }),
+      header: {
+        actions: file
+          ? [{
+            id: "download",
+            label: msg("package_transfer.download"),
+            kind: "primary" as const,
+          }]
+          : [],
+      },
+    });
+    if (file && offer) downloadList(file, channel);
+    const action = (await done).action;
+    if (action === BACK_EVENT) return { view: "back" };
+    offer = action === "download";
+  }
 }
 
 const stateLabels: Record<ImportState, ReturnType<typeof msg>> = {

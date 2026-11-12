@@ -26,6 +26,7 @@ Parent DOX: [admin-core/src DOX](../AGENTS.md).
 - Package detail is a compact overview plus service/program lists. The advanced
   layout owns full manifest, Git, and file cards; empty main content lists are
   omitted by the screen.
+- Package export is one read-only list ordered package, result, version.
 - Package import shows the upload field, then a selectable list ordered package,
   state, version, installed version and source; the screen omits the list until
   a file is loaded.

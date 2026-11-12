@@ -62,10 +62,12 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   Require proven ancestry, a clean tree, and the same checked HEAD; skip
   diverged/incomplete history and never downgrade. Native checkout owns
   activation; successful remote updates also record their desired selector.
-- `package-transfer.ts` owns catalog Export (verification before the next list
-  screen, download attached to it through `nextScreenChannel`) and the Import
-  package list screen. Both call the packages repository's transfer API; the
-  screen keeps the loaded list and selection in its navigation frame and passes
+- `package-transfer.ts` owns the Export package list screen (rows checked one at
+  a time with `verifyExportEntry`, each result redrawn through the pending
+  call's `nextScreenChannel`, which exits when all are checked; the final screen
+  starts and offers the download only when all passed) and the Import package
+  list screen. Both call the packages repository's transfer API; the screen
+  keeps the loaded list and selection in its navigation frame and passes
   explicit overwrite only for user-selected rows.
 - Advanced Fetch refreshes Git references without changing installed code.
   Versions/Apply and checkout explicitly change the running version, retaining

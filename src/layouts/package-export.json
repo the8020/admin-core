@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "id": "package-export",
+  "root": {
+    "id": "export",
+    "type": "stack",
+    "children": [
+      {
+        "id": "packages",
+        "type": "list",
+        "bind": "packages",
+        "key": "package",
+        "display": [
+          "package",
+          "result",
+          "version"
+        ],
+        "columnOptions": {
+          "result": {
+            "length": "long"
+          }
+        }
+      }
+    ]
+  }
+}
