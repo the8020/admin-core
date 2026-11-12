@@ -9,6 +9,7 @@ import {
   importPackageList,
   type ImportPreview,
   type ImportState,
+  isPlatformPackage,
   type PackageListEntry,
   type PackageListFile,
   packageListFile,
@@ -145,9 +146,6 @@ const ExportDetail = z.object({
   }),
 });
 
-/** Platform packages are present on every system and stay out of the list. */
-const platform = (packageId: string) => packageId.startsWith("the8020/");
-
 function downloadList(
   file: PackageListFile,
   channel: ReturnType<typeof nextScreenChannel>,
@@ -262,7 +260,7 @@ export async function packageExport(
         imports.set(
           row.package,
           (await packages.dependencies(row.package)).filter((id) =>
-            !platform(id)
+            !isPlatformPackage(id)
           ),
         );
       } catch (error) {
