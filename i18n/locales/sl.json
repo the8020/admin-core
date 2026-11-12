@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Čaka",
     "package_transfer.checking": "Preverjanje…",
     "package_transfer.passed": "V redu",
-    "package_transfer.download": "Prenesi",
     "package_transfer.result": "Rezultat",
     "package_transfer.not_active": "Ni nameščen",
     "package_transfer.no_remote": "Ni oddaljenega repozitorija Git",

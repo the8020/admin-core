@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Đang chờ",
     "package_transfer.checking": "Đang kiểm tra…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "Tải xuống",
     "package_transfer.result": "Kết quả",
     "package_transfer.not_active": "Chưa cài đặt",
     "package_transfer.no_remote": "Không có Git remote",

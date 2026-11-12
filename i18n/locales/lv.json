@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Gaida",
     "package_transfer.checking": "Pārbauda…",
     "package_transfer.passed": "Labi",
-    "package_transfer.download": "Lejupielādēt",
     "package_transfer.result": "Rezultāts",
     "package_transfer.not_active": "Nav instalēta",
     "package_transfer.no_remote": "Nav Git remote",

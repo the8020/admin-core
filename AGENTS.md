@@ -232,10 +232,11 @@ below.
   existing explicit desired-version synchronization action remains available.
 - Package list Export opens Export package list with the selected packages as
   Waiting rows, checks them one by one through
-  `the8020/packages/src/transfer.ts` and shows each row's result as it finishes.
-  Only when all pass does it download one JSON list and offer Download again;
-  otherwise the rows show every blocked package. Back stops further checks. Its
-  Version column shows the desired tag with the running short commit from one
+  `the8020/packages/src/transfer.ts` and shows each row's result as it finishes,
+  with a colored status icon (waiting, checking, passed, blocked). After the
+  checks its Export action downloads one JSON list only when all passed;
+  otherwise it repeats the blocked error. Back stops further checks. Its Version
+  column shows the desired tag with the running short commit from one
   `index.list` read. Import opens an Import package list screen: Load parses an
   uploaded list (at most 256 KiB) and previews each row's state; new rows start
   selected, existing ones change only when the user selects them. Import writes

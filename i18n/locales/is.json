@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Bíður",
     "package_transfer.checking": "Athugar…",
     "package_transfer.passed": "Í lagi",
-    "package_transfer.download": "Sækja",
     "package_transfer.result": "Niðurstaða",
     "package_transfer.not_active": "Ekki uppsettur",
     "package_transfer.no_remote": "Ekkert Git-fjarsafn",

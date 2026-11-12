@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Ожидание",
     "package_transfer.checking": "Проверка…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "Скачать",
     "package_transfer.result": "Результат",
     "package_transfer.not_active": "Не установлен",
     "package_transfer.no_remote": "Нет удалённого Git-репозитория",

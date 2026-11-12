@@ -361,7 +361,6 @@
     "package_transfer.waiting": "En attente",
     "package_transfer.checking": "Vérification…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "Télécharger",
     "package_transfer.result": "Résultat",
     "package_transfer.not_active": "Non installé",
     "package_transfer.no_remote": "Aucun dépôt Git distant",

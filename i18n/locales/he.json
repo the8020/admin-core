@@ -361,7 +361,6 @@
     "package_transfer.waiting": "ממתין",
     "package_transfer.checking": "בודק…",
     "package_transfer.passed": "תקין",
-    "package_transfer.download": "הורדה",
     "package_transfer.result": "תוצאה",
     "package_transfer.not_active": "לא מותקנת",
     "package_transfer.no_remote": "אין Git remote",

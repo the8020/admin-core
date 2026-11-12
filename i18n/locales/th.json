@@ -361,7 +361,6 @@
     "package_transfer.waiting": "กำลังรอ",
     "package_transfer.checking": "กำลังตรวจสอบ…",
     "package_transfer.passed": "ผ่าน",
-    "package_transfer.download": "ดาวน์โหลด",
     "package_transfer.result": "ผลลัพธ์",
     "package_transfer.not_active": "ไม่ได้ติดตั้ง",
     "package_transfer.no_remote": "ไม่มี Git remote",

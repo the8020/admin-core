@@ -361,7 +361,6 @@
     "package_transfer.waiting": "قيد الانتظار",
     "package_transfer.checking": "جارٍ التحقق…",
     "package_transfer.passed": "ناجح",
-    "package_transfer.download": "تنزيل",
     "package_transfer.result": "النتيجة",
     "package_transfer.not_active": "غير مثبّتة",
     "package_transfer.no_remote": "لا يوجد مستودع Git بعيد",

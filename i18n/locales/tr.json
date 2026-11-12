@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Bekliyor",
     "package_transfer.checking": "Denetleniyor…",
     "package_transfer.passed": "Tamam",
-    "package_transfer.download": "İndir",
     "package_transfer.result": "Sonuç",
     "package_transfer.not_active": "Kurulu değil",
     "package_transfer.no_remote": "Git uzak deposu yok",

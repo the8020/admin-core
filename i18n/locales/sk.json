@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Čaká",
     "package_transfer.checking": "Kontroluje sa…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "Stiahnuť",
     "package_transfer.result": "Výsledok",
     "package_transfer.not_active": "Nie je nainštalovaný",
     "package_transfer.no_remote": "Nemá Git remote",

@@ -361,7 +361,6 @@
     "package_transfer.waiting": "待機中",
     "package_transfer.checking": "確認中…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "ダウンロード",
     "package_transfer.result": "結果",
     "package_transfer.not_active": "未インストール",
     "package_transfer.no_remote": "Git リモートがありません",

@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Čeka",
     "package_transfer.checking": "Provjera…",
     "package_transfer.passed": "U redu",
-    "package_transfer.download": "Preuzmi",
     "package_transfer.result": "Rezultat",
     "package_transfer.not_active": "Nije instaliran",
     "package_transfer.no_remote": "Nema Git remotea",

@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Väntar",
     "package_transfer.checking": "Kontrollerar…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "Ladda ned",
     "package_transfer.result": "Resultat",
     "package_transfer.not_active": "Inte installerat",
     "package_transfer.no_remote": "Ingen Git-remote",

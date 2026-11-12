@@ -65,7 +65,7 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 - `package-transfer.ts` owns the Export package list screen (rows checked one at
   a time with `verifyExportEntry`, each result redrawn through the pending
   call's `nextScreenChannel`, which exits when all are checked; the final screen
-  starts and offers the download only when all passed) and the Import package
+  offers Export, which downloads only when all passed) and the Import package
   list screen. Both call the packages repository's transfer API; the screen
   keeps the loaded list and selection in its navigation frame and passes
   explicit overwrite only for user-selected rows.

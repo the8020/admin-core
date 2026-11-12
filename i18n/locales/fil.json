@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Naghihintay",
     "package_transfer.checking": "Sinusuri…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "I-download",
     "package_transfer.result": "Resulta",
     "package_transfer.not_active": "Hindi naka-install",
     "package_transfer.no_remote": "Walang Git remote",

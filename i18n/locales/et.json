@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Ootel",
     "package_transfer.checking": "Kontrollimine…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "Laadi alla",
     "package_transfer.result": "Tulemus",
     "package_transfer.not_active": "Pole paigaldatud",
     "package_transfer.no_remote": "Git remote puudub",

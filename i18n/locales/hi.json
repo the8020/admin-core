@@ -361,7 +361,6 @@
     "package_transfer.waiting": "प्रतीक्षारत",
     "package_transfer.checking": "जाँच हो रही है…",
     "package_transfer.passed": "ठीक",
-    "package_transfer.download": "डाउनलोड करें",
     "package_transfer.result": "परिणाम",
     "package_transfer.not_active": "इंस्टॉल नहीं है",
     "package_transfer.no_remote": "कोई Git रिमोट नहीं",

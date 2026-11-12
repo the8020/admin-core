@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Várakozik",
     "package_transfer.checking": "Ellenőrzés…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "Letöltés",
     "package_transfer.result": "Eredmény",
     "package_transfer.not_active": "Nincs telepítve",
     "package_transfer.no_remote": "Nincs Git remote",

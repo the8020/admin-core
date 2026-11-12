@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Wachten",
     "package_transfer.checking": "Controleren…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "Downloaden",
     "package_transfer.result": "Resultaat",
     "package_transfer.not_active": "Niet geïnstalleerd",
     "package_transfer.no_remote": "Geen Git-remote",

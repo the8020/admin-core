@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Venter",
     "package_transfer.checking": "Kontrollerer…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "Last ned",
     "package_transfer.result": "Resultat",
     "package_transfer.not_active": "Ikke installert",
     "package_transfer.no_remote": "Ingen Git-remote",

@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Menunggu",
     "package_transfer.checking": "Memeriksa…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "Unduh",
     "package_transfer.result": "Hasil",
     "package_transfer.not_active": "Tidak terinstal",
     "package_transfer.no_remote": "Tidak ada remote Git",

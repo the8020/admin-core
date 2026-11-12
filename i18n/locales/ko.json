@@ -361,7 +361,6 @@
     "package_transfer.waiting": "대기 중",
     "package_transfer.checking": "확인 중…",
     "package_transfer.passed": "정상",
-    "package_transfer.download": "다운로드",
     "package_transfer.result": "결과",
     "package_transfer.not_active": "설치되지 않음",
     "package_transfer.no_remote": "Git 원격 없음",

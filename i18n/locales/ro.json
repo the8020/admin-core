@@ -361,7 +361,6 @@
     "package_transfer.waiting": "În așteptare",
     "package_transfer.checking": "Se verifică…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "Descarcă",
     "package_transfer.result": "Rezultat",
     "package_transfer.not_active": "Neinstalat",
     "package_transfer.no_remote": "Niciun remote Git",

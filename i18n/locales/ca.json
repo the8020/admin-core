@@ -361,7 +361,6 @@
     "package_transfer.waiting": "En espera",
     "package_transfer.checking": "S'està comprovant…",
     "package_transfer.passed": "Correcte",
-    "package_transfer.download": "Baixa",
     "package_transfer.result": "Resultat",
     "package_transfer.not_active": "No instal·lat",
     "package_transfer.no_remote": "Sense remot Git",

@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Σε αναμονή",
     "package_transfer.checking": "Έλεγχος…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "Λήψη",
     "package_transfer.result": "Αποτέλεσμα",
     "package_transfer.not_active": "Δεν είναι εγκατεστημένο",
     "package_transfer.no_remote": "Δεν υπάρχει απομακρυσμένο Git",

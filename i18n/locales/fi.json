@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Odottaa",
     "package_transfer.checking": "Tarkistetaan…",
     "package_transfer.passed": "OK",
-    "package_transfer.download": "Lataa",
     "package_transfer.result": "Tulos",
     "package_transfer.not_active": "Ei asennettu",
     "package_transfer.no_remote": "Ei Git-etävarastoa",

@@ -361,7 +361,6 @@
     "package_transfer.waiting": "等待中",
     "package_transfer.checking": "正在檢查…",
     "package_transfer.passed": "通過",
-    "package_transfer.download": "下載",
     "package_transfer.result": "結果",
     "package_transfer.not_active": "未安裝",
     "package_transfer.no_remote": "沒有 Git 遠端儲存庫",

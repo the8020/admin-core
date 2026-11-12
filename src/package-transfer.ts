@@ -82,9 +82,14 @@ function downloadList(
   }, channel.downloads);
 }
 
+/** Status icon markup is presentation, not translated prose. */
+function status(icon: string, color: string, text: string): string {
+  return `[[icon=${icon} color=${color}]] ${text}`;
+}
+
 /**
  * Show the selected packages, verify them one by one with a visible result,
- * and offer one list only when all pass.
+ * and export one list only when all pass.
  */
 export async function packageExport(
   packageIds: string[],
@@ -92,7 +97,11 @@ export async function packageExport(
 ): Promise<ScreenResult> {
   const rows: ExportRowData[] = packageIds.map((id) => ({
     package: id,
-    result: localizedText(msg("package_transfer.waiting")),
+    result: status(
+      "hourglass_empty",
+      "muted",
+      localizedText(msg("package_transfer.waiting")),
+    ),
     version: "",
   }));
   const screen = {
@@ -111,13 +120,22 @@ export async function packageExport(
   const checks = (async () => {
     for (const row of rows) {
       if (left) return;
-      row.result = localizedText(msg("package_transfer.checking"));
+      row.result = status(
+        "sync",
+        "info",
+        localizedText(msg("package_transfer.checking")),
+      );
       checking.redraw();
       const entry = await verifyExportEntry(row.package);
-      if ("code" in entry) row.result = problemText(entry);
-      else {
+      if ("code" in entry) {
+        row.result = status("error", "danger", problemText(entry));
+      } else {
         entries.push(entry);
-        row.result = localizedText(msg("package_transfer.passed"));
+        row.result = status(
+          "check_circle",
+          "success",
+          localizedText(msg("package_transfer.passed")),
+        );
         row.version = entry.tag
           ? `${entry.tag} (${entry.commit.slice(0, 7)})`
           : entry.commit.slice(0, 7);
@@ -135,44 +153,51 @@ export async function packageExport(
   const file: PackageListFile | undefined = blocked
     ? undefined
     : { schema: 1, packages: entries };
-  sendMessage(
-    localizedText(
-      file
-        ? msg("package_transfer.exported", { count: entries.length })
-        : msg("package_transfer.export_blocked", {
+  const reportBlocked = () =>
+    sendMessage(
+      localizedText(
+        msg("package_transfer.export_blocked", {
           count: blocked,
           total: rows.length,
         }),
-    ),
-    file ? "success" : "error",
-  );
-  let offer = file !== undefined;
+      ),
+      "error",
+    );
+  if (!file) reportBlocked();
+  let exporting = false;
   while (true) {
     const channel = nextScreenChannel();
     const done = callScreen({
       ...screen,
       model: frame.model({ packages: rows }),
       header: {
-        actions: file
-          ? [{
-            id: "download",
-            label: msg("package_transfer.download"),
-            kind: "primary" as const,
-          }]
-          : [],
+        actions: [{
+          id: "export",
+          label: msg("layout.export"),
+          kind: "primary" as const,
+        }],
       },
     });
-    try {
-      if (file && offer) downloadList(file, channel);
-    } catch (error) {
-      // Without a connected browser the screen keeps Download for a retry.
-      if (!(error instanceof DOMException && error.name === "AbortError")) {
-        throw error;
+    if (exporting && file) {
+      try {
+        downloadList(file, channel);
+        sendMessage(
+          localizedText(
+            msg("package_transfer.exported", { count: entries.length }),
+          ),
+          "success",
+        );
+      } catch (error) {
+        // Without a connected browser the screen keeps Export for a retry.
+        if (!(error instanceof DOMException && error.name === "AbortError")) {
+          throw error;
+        }
       }
     }
     const action = (await done).action;
     if (action === BACK_EVENT) return { view: "back" };
-    offer = action === "download";
+    exporting = action === "export";
+    if (exporting && !file) reportBlocked();
   }
 }
 

@@ -361,7 +361,6 @@
     "package_transfer.waiting": "Laukiama",
     "package_transfer.checking": "Tikrinama…",
     "package_transfer.passed": "Gerai",
-    "package_transfer.download": "Atsisiųsti",
     "package_transfer.result": "Rezultatas",
     "package_transfer.not_active": "Neįdiegtas",
     "package_transfer.no_remote": "Nėra Git remote",
