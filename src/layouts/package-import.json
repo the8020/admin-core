@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "package-import",
+  "root": {
+    "id": "import",
+    "type": "stack",
+    "children": [
+      {
+        "id": "file",
+        "type": "field-group",
+        "controls": [
+          "file"
+        ]
+      },
+      {
+        "id": "packages",
+        "type": "list",
+        "bind": "packages",
+        "key": "package",
+        "selection": "selected",
+        "display": [
+          "package",
+          "state",
+          "version",
+          "current",
+          "source"
+        ],
+        "columnOptions": {
+          "source": {
+            "length": "long"
+          }
+        }
+      }
+    ]
+  }
+}

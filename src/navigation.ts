@@ -11,6 +11,7 @@ import {
   packageVersions,
 } from "./package-management.ts";
 import { packageAdvanced, packageDetail, packageList } from "./packages.ts";
+import { packageImport } from "./package-transfer.ts";
 import { serviceDetail, serviceList, serviceSettings } from "./services.ts";
 import { secretEdit, secretList } from "./secrets.ts";
 import { programDetail, programList } from "./programs.ts";
@@ -24,6 +25,7 @@ export type AdminTarget =
   | { view: "packageAdvanced"; packageId: string }
   | { view: "packageInstall" }
   | { view: "packageLocal" }
+  | { view: "packageImport" }
   | { view: "packageVersions"; packageId: string }
   | { view: "services" }
   | { view: "service"; serviceId: string }
@@ -71,6 +73,8 @@ function show(target: AdminTarget, frame: ScreenFrame): Promise<ScreenResult> {
       return packageInstall(frame);
     case "packageLocal":
       return packageLocal(frame);
+    case "packageImport":
+      return packageImport(frame);
     case "packageVersions":
       return packageVersions(target.packageId, frame);
     case "services":

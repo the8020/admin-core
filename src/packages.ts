@@ -25,6 +25,7 @@ import {
   confirmAction,
   field,
   invokeProgram,
+  nextScreenChannel,
   sendMessage,
   z,
 } from "/p/the8020/uui/mod.ts";
@@ -46,6 +47,13 @@ import type {
   ServiceSummary,
 } from "./contracts.ts";
 import type { ScreenResult } from "./navigation.ts";
+import {
+  downloadList,
+  verifyExport,
+  versionField,
+  versionLabel,
+} from "./package-transfer.ts";
+import type { PackageListFile } from "/p/the8020/packages/src/transfer.ts";
 import { packageDetailModel, packageRows } from "./view.ts";
 import {
   applyPackageUpdate,
@@ -61,6 +69,7 @@ const PackageRow = z.object({
   valid: packageInfo.shape.valid,
   status: packageInfo.shape.status,
   updates: packageUpdateField,
+  version: versionField,
   selected: z.boolean(),
   services: packageInfo.shape.serviceCount,
   description: packageInfo.shape.description,
@@ -178,11 +187,14 @@ export async function packageList(
     selected: new Set<string>(),
     updates: new Map<string, PackageUpdate>(),
   });
+  let exported: PackageListFile | undefined;
   while (true) {
-    const [packages, services] = await Promise.all([
+    const [packages, services, indexes] = await Promise.all([
       packageAdmin.list<PackageSummary>(),
       listServices<ServiceSummary>(),
+      packageAdmin.index.list(),
     ]);
+    const index = new Map(indexes.map((row) => [row.package_id, row]));
     const result: PackageListResult = { packages, services };
     const rows = [];
     for (const item of packageRows(result)) {
@@ -201,17 +213,25 @@ export async function packageList(
           ? localizedText(msg("packages.ready"))
           : localizedText(msg("packages.needs_attention")),
         updates: localizedText(updateLabels[status.state]),
+        version: versionLabel(index.get(item.canonicalName)),
         selected: state.selected.has(item.canonicalName),
       });
     }
     const model = frame.model({ packages: rows });
-    const event = await callScreen({
+    // A download attaches to the screen that is pending when it starts.
+    const channel = nextScreenChannel();
+    const pending = callScreen({
       id: "core-admin-packages",
       title: msg("packages.packages"),
       schema: PackageList,
       model,
       layout: packageListLayout,
     });
+    if (exported) {
+      downloadList(exported, channel);
+      exported = undefined;
+    }
+    const event = await pending;
     state.selected = new Set(
       model.data.packages.filter((row) => row.selected)
         .map((row) => row.canonicalName),
@@ -220,6 +240,25 @@ export async function packageList(
     if (event.action === "refresh") continue;
     if (event.action === "install") return { view: "packageInstall" };
     if (event.action === "local") return { view: "packageLocal" };
+    if (event.action === "import") return { view: "packageImport" };
+    if (event.action === "export") {
+      if (state.selected.size) {
+        try {
+          exported = await verifyExport([...state.selected]);
+        } catch (error) {
+          sendMessage(
+            error instanceof Error ? error.message : String(error),
+            "error",
+          );
+        }
+      } else {
+        sendMessage(
+          localizedText(msg("packages.select_packages_first")),
+          "info",
+        );
+      }
+      continue;
+    }
     if (event.action === "fetch" || event.action === "update") {
       if (!state.selected.size) {
         sendMessage(

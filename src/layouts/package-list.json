@@ -9,6 +9,7 @@
     "selection": "selected",
     "display": [
       "canonicalName",
+      "version",
       "updates",
       "status",
       "services",
@@ -66,6 +67,22 @@
           "package": "the8020/admin-core",
           "key": "layout.update",
           "fallback": "Update"
+        }
+      },
+      {
+        "id": "export",
+        "label": {
+          "package": "the8020/admin-core",
+          "key": "layout.export",
+          "fallback": "Export"
+        }
+      },
+      {
+        "id": "import",
+        "label": {
+          "package": "the8020/admin-core",
+          "key": "layout.import",
+          "fallback": "Import"
         }
       },
       {

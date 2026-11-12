@@ -11,9 +11,9 @@ Parent DOX: [admin-core/src DOX](../AGENTS.md).
 
 # Local Contracts
 
-- List creation, selection-based fetch/update, version application, refresh, and
-  backend paging belong in the owning list toolbar. Keep related-page navigation
-  and entity/form actions in screen headers.
+- List creation, selection-based fetch/update/export, import, version
+  application, refresh, and backend paging belong in the owning list toolbar.
+  Keep related-page navigation and entity/form actions in screen headers.
 
 - Authored headings and action labels use serializable package/key message
   references with English fallback. UUI resolves them per session.
@@ -26,6 +26,9 @@ Parent DOX: [admin-core/src DOX](../AGENTS.md).
 - Package detail is a compact overview plus service/program lists. The advanced
   layout owns full manifest, Git, and file cards; empty main content lists are
   omitted by the screen.
+- Package import shows the upload field, then a selectable list ordered package,
+  state, version, installed version and source; the screen omits the list until
+  a file is loaded.
 - Install prioritizes URL and version; Versions prioritizes the selected version
   and readable changes. Their field help owns reference selection. Secret
   editing uses one field group for name and value without redundant section

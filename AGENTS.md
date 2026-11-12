@@ -230,6 +230,14 @@ below.
   `the8020/secrets/types/secret.ts` and loads names only when help opens. Git
   operations remain typed kernel calls and refresh only affected services; the
   existing explicit desired-version synchronization action remains available.
+- Package list Export verifies the selected packages through
+  `the8020/packages/src/transfer.ts` and downloads one JSON list only when all
+  pass; otherwise it reports every blocked package. Its Version column shows the
+  desired tag with the running short commit from one `index.list` read. Import
+  opens an Import package list screen: Load parses an uploaded list (at most 256
+  KiB) and previews each row's state; new rows start selected, existing ones
+  change only when the user selects them. Import writes the desired index and
+  Import and install also synchronizes, with one counted notification.
 - Secrets lists names and update times. Add/edit starts with a blank password
   field, never calls secret get, clears the submitted model value, and
   overwrites the named value through `the8020/secrets/mod.ts`. One field group
