@@ -267,6 +267,7 @@ export async function packageExport(
           title: row.package,
           schema: ExportDetail,
           model: new Model({ result: row.result, detail }),
+          controls: [{ bind: "result" }, { bind: "detail" }],
         })
       );
     }
