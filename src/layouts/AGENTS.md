@@ -28,6 +28,9 @@ Parent DOX: [admin-core/src DOX](../AGENTS.md).
   omitted by the screen.
 - Package export is one read-only list ordered package, result, version,
   dependencies.
+- Layout element IDs share one namespace with the screen's header and toolbar
+  action IDs; never reuse an action ID (`import`, `export`, ...) for a layout
+  node.
 - Package import shows the upload field, then a selectable list ordered package,
   state, version, installed version and source; the screen omits the list until
   a file is loaded.

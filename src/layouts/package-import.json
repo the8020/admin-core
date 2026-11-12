@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "package-import",
   "root": {
-    "id": "import",
+    "id": "import-root",
     "type": "stack",
     "children": [
       {
