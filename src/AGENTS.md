@@ -63,12 +63,14 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   diverged/incomplete history and never downgrade. Native checkout owns
   activation; successful remote updates also record their desired selector.
 - `package-transfer.ts` owns the Export package list screen (rows checked one at
-  a time with `verifyExportEntry`, each result redrawn through the pending
-  call's `nextScreenChannel`, which exits when all are checked; the final screen
-  offers Export, which downloads only when all passed) and the Import package
-  list screen. Both call the packages repository's transfer API; the screen
-  keeps the loaded list and selection in its navigation frame and passes
-  explicit overwrite only for user-selected rows.
+  a time with `verifyExportEntry`, each short result redrawn through the current
+  list call's `nextScreenChannel`, which exits when all are checked; a row
+  `select` opens its retained detail in a modal without a channel, checks
+  continuing meanwhile; Export appears once checks finish and downloads only
+  when all passed) and the Import package list screen. Both call the packages
+  repository's transfer API; the screen keeps the loaded list and selection in
+  its navigation frame and passes explicit overwrite only for user-selected
+  rows.
 - Advanced Fetch refreshes Git references without changing installed code.
   Versions/Apply and checkout explicitly change the running version, retaining
   the attached branch. Push uses that branch through the packages API.

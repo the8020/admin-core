@@ -21,7 +21,9 @@ import {
   download,
   field,
   fileUpload,
+  Model,
   nextScreenChannel,
+  presentModal,
   sendMessage,
   z,
 } from "/p/the8020/uui/mod.ts";
@@ -47,19 +49,60 @@ export function versionLabel(index?: PackageIndex): string {
   return index?.tag ? `${index.tag} (${commit})` : commit;
 }
 
-const problemKeys: Record<
-  Exclude<ExportProblem["code"], "failed">,
-  string
-> = {
-  not_active: "package_transfer.not_active",
-  no_remote: "package_transfer.no_remote",
-  not_in_remote: "package_transfer.not_in_remote",
-};
+const short = (commit: string) => commit.slice(0, 7);
 
-function problemText(problem: ExportProblem): string {
-  return problem.code === "failed" ? problem.detail ?? "" : localizedText(
-    msg(problemKeys[problem.code], { detail: problem.detail ?? "" }),
-  );
+/** Short row result and the full explanation with the suggested next step. */
+function checkResult(
+  entry: PackageListEntry | ExportProblem,
+): { result: string; detail: string } {
+  const ui = {
+    advanced: localizedText(msg("packages.advanced")),
+    push: localizedText(msg("packages.push")),
+  };
+  if (!("code" in entry)) {
+    return {
+      result: status(
+        "check_circle",
+        "success",
+        localizedText(msg("package_transfer.passed")),
+      ),
+      detail: localizedText(
+        msg("package_transfer.detail_passed", {
+          commit: short(entry.commit),
+          source: entry.source,
+        }),
+      ),
+    };
+  }
+  const [result, detail] = entry.code === "not_active"
+    ? [
+      msg("package_transfer.not_active"),
+      msg("package_transfer.detail_not_active"),
+    ]
+    : entry.code === "no_remote"
+    ? [
+      msg("package_transfer.no_remote"),
+      msg("package_transfer.detail_no_remote", ui),
+    ]
+    : entry.code === "not_in_remote"
+    ? [
+      msg("package_transfer.not_pushed", {
+        commit: short(entry.detail ?? ""),
+      }),
+      msg("package_transfer.detail_not_in_remote", {
+        ...ui,
+        commit: entry.detail ?? "",
+        source: entry.source ?? "",
+      }),
+    ]
+    : [
+      msg("package_transfer.check_failed"),
+      msg("package_transfer.detail_failed", { detail: entry.detail ?? "" }),
+    ];
+  return {
+    result: status("error", "danger", localizedText(result)),
+    detail: localizedText(detail),
+  };
 }
 
 const ExportRow = z.object({
@@ -69,6 +112,19 @@ const ExportRow = z.object({
 });
 const ExportScreen = z.object({ packages: z.array(ExportRow) });
 type ExportRowData = z.infer<typeof ExportRow>;
+const ExportDetail = z.object({
+  result: field(z.string(), {
+    label: msg("package_transfer.result"),
+    readOnly: true,
+  }),
+  detail: field(z.string(), {
+    label: msg("package_transfer.detail"),
+    control: "textarea",
+    readOnly: true,
+    rowSpan: 6,
+    length: "full",
+  }),
+});
 
 function downloadList(
   file: PackageListFile,
@@ -87,8 +143,9 @@ function status(icon: string, color: string, text: string): string {
 }
 
 /**
- * Show the selected packages, verify them one by one with a visible result,
- * and export one list only when all pass.
+ * Show the selected packages, verify them one by one with a short visible
+ * result, open a row's full explanation on click, and export one list only
+ * when all pass.
  */
 export async function packageExport(
   packageIds: string[],
@@ -103,78 +160,72 @@ export async function packageExport(
     ),
     version: "",
   }));
-  const screen = {
-    id: "core-admin-package-export",
-    title: msg("package_transfer.export_package_list"),
-    schema: ExportScreen,
-    layout: packageExportLayout,
-  };
-  const checking = nextScreenChannel();
-  const pending = callScreen({
-    ...screen,
-    model: frame.model({ packages: rows }),
-  });
-  let left = false;
+  const details = new Map<string, string>();
   const entries: PackageListEntry[] = [];
-  const checks = (async () => {
+  let channel = nextScreenChannel();
+  let stopped = false;
+  let finished = false;
+  void (async () => {
     for (const row of rows) {
-      if (left) return;
+      if (stopped) return;
       row.result = status(
         "sync",
         "info",
         localizedText(msg("package_transfer.checking")),
       );
-      checking.redraw();
+      channel.redraw();
       const entry = await verifyExportEntry(row.package);
-      if ("code" in entry) {
-        row.result = status("error", "danger", problemText(entry));
-      } else {
+      const checked = checkResult(entry);
+      row.result = checked.result;
+      details.set(row.package, checked.detail);
+      if (!("code" in entry)) {
         entries.push(entry);
-        row.result = status(
-          "check_circle",
-          "success",
-          localizedText(msg("package_transfer.passed")),
-        );
         row.version = entry.tag
-          ? `${entry.tag} (${entry.commit.slice(0, 7)})`
-          : entry.commit.slice(0, 7);
+          ? `${entry.tag} (${short(entry.commit)})`
+          : short(entry.commit);
       }
-      checking.redraw();
+      channel.redraw();
     }
-    if (!left) checking.exit("checked");
+    finished = true;
+    channel.exit("checked");
   })();
-  const event = await pending;
-  left = true;
-  if (event.action !== "checked") return { view: "back" };
-  await checks;
 
-  const blocked = rows.length - entries.length;
-  const file: PackageListFile | undefined = blocked
-    ? undefined
-    : { schema: 1, packages: entries };
+  let file: PackageListFile | undefined;
+  let reported = false;
   const reportBlocked = () =>
     sendMessage(
       localizedText(
         msg("package_transfer.export_blocked", {
-          count: blocked,
+          count: rows.length - entries.length,
           total: rows.length,
         }),
       ),
       "error",
     );
-  if (!file) reportBlocked();
   let exporting = false;
   while (true) {
-    const channel = nextScreenChannel();
-    const done = callScreen({
-      ...screen,
+    if (finished && !reported) {
+      reported = true;
+      if (entries.length === rows.length) {
+        file = { schema: 1, packages: entries };
+      } else reportBlocked();
+    }
+    // Checks redraw only the list call; a detail modal gets no channel.
+    channel = nextScreenChannel();
+    const pending = callScreen({
+      id: "core-admin-package-export",
+      title: msg("package_transfer.export_package_list"),
+      schema: ExportScreen,
+      layout: packageExportLayout,
       model: frame.model({ packages: rows }),
       header: {
-        actions: [{
-          id: "save",
-          label: msg("layout.export"),
-          kind: "primary" as const,
-        }],
+        actions: finished
+          ? [{
+            id: "save",
+            label: msg("layout.export"),
+            kind: "primary" as const,
+          }]
+          : [],
       },
     });
     if (exporting && file) {
@@ -193,10 +244,32 @@ export async function packageExport(
         }
       }
     }
-    const action = (await done).action;
-    if (action === BACK_EVENT) return { view: "back" };
-    exporting = action === "save";
-    if (exporting && !file) reportBlocked();
+    exporting = false;
+    const event = await pending;
+    if (event.action === BACK_EVENT) {
+      stopped = true;
+      return { view: "back" };
+    }
+    if (event.action === "save") {
+      exporting = true;
+      if (!file) reportBlocked();
+    }
+    const selected = event.action === "select" && "value" in event &&
+        typeof event.value === "string"
+      ? event.value
+      : undefined;
+    const detail = selected === undefined ? undefined : details.get(selected);
+    if (detail !== undefined) {
+      const row = rows.find((item) => item.package === selected)!;
+      await presentModal(() =>
+        callScreen({
+          id: "core-admin-package-export-detail",
+          title: row.package,
+          schema: ExportDetail,
+          model: new Model({ result: row.result, detail }),
+        })
+      );
+    }
   }
 }
 
