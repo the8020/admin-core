@@ -53,7 +53,6 @@ const problemKeys: Record<
 > = {
   not_active: "package_transfer.not_active",
   no_remote: "package_transfer.no_remote",
-  identity: "package_transfer.identity",
   not_in_remote: "package_transfer.not_in_remote",
 };
 
@@ -235,9 +234,7 @@ function importRows(preview: ImportPreview[], selected: Set<string>) {
 }
 
 function outcomeText(item: ImportOutcome): string {
-  const key = item.code === "identity"
-    ? "package_transfer.problem_identity"
-    : item.code === "local"
+  const key = item.code === "local"
     ? "package_transfer.outcome_local"
     : item.code === "install"
     ? "package_transfer.outcome_install"
