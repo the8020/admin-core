@@ -162,7 +162,12 @@ export async function packageExport(
           : [],
       },
     });
-    if (file && offer) downloadList(file, channel);
+    try {
+      if (file && offer) downloadList(file, channel);
+    } catch (error) {
+      console.error("DIAG export download", error);
+      throw error;
+    }
     const action = (await done).action;
     if (action === BACK_EVENT) return { view: "back" };
     offer = action === "download";
