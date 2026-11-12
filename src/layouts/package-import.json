@@ -6,7 +6,7 @@
     "type": "stack",
     "children": [
       {
-        "id": "file",
+        "id": "upload",
         "type": "field-group",
         "controls": [
           "file"
