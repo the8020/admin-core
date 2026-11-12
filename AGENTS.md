@@ -235,15 +235,16 @@ below.
   `the8020/packages/src/transfer.ts` and shows each row's result as it finishes,
   with a colored status icon (waiting, checking, passed, blocked) and a short
   text that fits one line. Clicking a checked row opens a modal with the full
-  explanation, including the remote and the suggested fix. After the checks its
-  Export action downloads one JSON list only when all passed; otherwise it
-  repeats the blocked error, and Refresh resets every package to Waiting and
-  checks all again. Back stops further checks. Its Version column shows the
-  desired tag with the running short commit from one `index.list` read. Import
-  opens an Import package list screen: Load parses an uploaded list (at most 256
-  KiB) and previews each row's state; new rows start selected, existing ones
-  change only when the user selects them. Import writes the desired index and
-  Import and install also synchronizes, with one counted notification.
+  explanation, including the remote and the suggested fix. After the checks,
+  Export and Refresh appear (both hidden while checking). Its Export action
+  downloads one JSON list only when all passed; otherwise it repeats the blocked
+  error. Refresh always resets every package to Waiting and checks all again.
+  Back stops further checks. Its Version column shows the desired tag with the
+  running short commit from one `index.list` read. Import opens an Import
+  package list screen: Load parses an uploaded list (at most 256 KiB) and
+  previews each row's state; new rows start selected, existing ones change only
+  when the user selects them. Import writes the desired index and Import and
+  install also synchronizes, with one counted notification.
 - Secrets lists names and update times. Add/edit starts with a blank password
   field, never calls secret get, clears the submitted model value, and
   overwrites the named value through `the8020/secrets/mod.ts`. One field group

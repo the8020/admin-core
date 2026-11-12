@@ -233,9 +233,7 @@ export async function packageExport(
               label: msg("layout.export"),
               kind: "primary" as const,
             },
-            ...(file
-              ? []
-              : [{ id: "refresh", label: msg("programs.refresh") }]),
+            { id: "refresh", label: msg("programs.refresh") },
           ]
           : [],
       },
@@ -266,10 +264,11 @@ export async function packageExport(
       exporting = true;
       if (!file) reportBlocked();
     }
-    if (event.action === "refresh" && finished && !file) {
+    if (event.action === "refresh" && finished) {
       // Start over: every package waits and is checked again.
       finished = false;
       reported = false;
+      file = undefined;
       entries.clear();
       details.clear();
       for (const row of rows) Object.assign(row, waiting());
