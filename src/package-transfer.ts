@@ -165,7 +165,7 @@ export async function packageExport(
     try {
       if (file && offer) downloadList(file, channel);
     } catch (error) {
-      console.error("DIAG export download", error);
+      console.error("DIAG export download", String((error as Error)?.name), String((error as Error)?.message), String((error as Error)?.stack));
       throw error;
     }
     const action = (await done).action;
