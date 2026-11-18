@@ -2,3 +2,5 @@ schema = 1
 description = "Programs"
 entrypoint = "program.ts"
 uui = true
+
+shortcut = "PROG"
