@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Detall",
     "secrets.what_the_secret_is_used_for": "Per a què s'utilitza el secret.",
     "secrets.usage_package": "Paquet",
-    "secrets.the_package_that_uses_the_secret": "El paquet que utilitza el secret."
+    "secrets.the_package_that_uses_the_secret": "El paquet que utilitza el secret.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Per a un repositori privat, escolli un secret d'autenticació.",
+    "errors.package_has_no_desired_index_metadata": "El paquet no té metadades d'índex desitjades",
+    "package_transfer.version_description": "La versió desitjada i actualment en funcionament comprometi.",
+    "kernel_console.truncated": "Truncats"
   }
 }

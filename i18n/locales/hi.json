@@ -415,6 +415,10 @@
     "secrets.usage_detail": "विवरण",
     "secrets.what_the_secret_is_used_for": "सीक्रेट किस काम के लिए उपयोग होता है।",
     "secrets.usage_package": "पैकेज",
-    "secrets.the_package_that_uses_the_secret": "वह पैकेज जो सीक्रेट का उपयोग करता है।"
+    "secrets.the_package_that_uses_the_secret": "वह पैकेज जो सीक्रेट का उपयोग करता है।",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}। एक निजी भंडार के लिए, एक प्रमाणीकरण रहस्य चुनें।",
+    "errors.package_has_no_desired_index_metadata": "पैकेज में वांछित सूचकांक मेटाडेटा नहीं है",
+    "package_transfer.version_description": "वांछित संस्करण और वर्तमान में चल रहा प्रतिबद्धता।",
+    "kernel_console.truncated": "कटा हुआ"
   }
 }

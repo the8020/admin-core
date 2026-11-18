@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Detalye",
     "secrets.what_the_secret_is_used_for": "Kung para saan ginagamit ang sikreto.",
     "secrets.usage_package": "Package",
-    "secrets.the_package_that_uses_the_secret": "Ang package na gumagamit ng sikreto."
+    "secrets.the_package_that_uses_the_secret": "Ang package na gumagamit ng sikreto.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Para sa isang pribadong repository, piliin ang isang lihim sa pag-authenticate.",
+    "errors.package_has_no_desired_index_metadata": "Ang package ay walang nais na metadata ng index",
+    "package_transfer.version_description": "Nais na bersyon at kasalukuyang nagpapatakbo commit.",
+    "kernel_console.truncated": "Nakakumpit"
   }
 }

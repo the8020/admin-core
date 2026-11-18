@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Detalj",
     "secrets.what_the_secret_is_used_for": "Vad hemligheten används till.",
     "secrets.usage_package": "Paket",
-    "secrets.the_package_that_uses_the_secret": "Paketet som använder hemligheten."
+    "secrets.the_package_that_uses_the_secret": "Paketet som använder hemligheten.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "- {value1}. Välj en autentiseringshemlighet för ett privat lag.",
+    "errors.package_has_no_desired_index_metadata": "Paketet har inga önskade indexmetadata",
+    "package_transfer.version_description": "Önskad version och för närvarande kör commit.",
+    "kernel_console.truncated": "Truncated"
   }
 }

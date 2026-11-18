@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Detaļas",
     "secrets.what_the_secret_is_used_for": "Kam tiek izmantots noslēpums.",
     "secrets.usage_package": "Pakotne",
-    "secrets.the_package_that_uses_the_secret": "Pakotne, kas izmanto noslēpumu."
+    "secrets.the_package_that_uses_the_secret": "Pakotne, kas izmanto noslēpumu.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Privātās noliktavās izvēlieties autentifikācijas noslēpumu.",
+    "errors.package_has_no_desired_index_metadata": "Paketā nav vēlams indekss metadati",
+    "package_transfer.version_description": "Nē, vēlamo versiju un tagad strādāju ar saistību.",
+    "kernel_console.truncated": "Apstrādāti"
   }
 }

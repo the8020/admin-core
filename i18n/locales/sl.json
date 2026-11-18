@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Podrobnosti",
     "secrets.what_the_secret_is_used_for": "Za kaj se skrivnost uporablja.",
     "secrets.usage_package": "Paket",
-    "secrets.the_package_that_uses_the_secret": "Paket, ki uporablja skrivnost."
+    "secrets.the_package_that_uses_the_secret": "Paket, ki uporablja skrivnost.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Za zasebno skladišče izberite skrivnost za preverjanje pristnosti.",
+    "errors.package_has_no_desired_index_metadata": "Paket ne vsebuje želenih indeksnih metapodatkov",
+    "package_transfer.version_description": "Želeni različica in trenutno v teku commit.",
+    "kernel_console.truncated": "Iztrgnjeno"
   }
 }

@@ -306,7 +306,7 @@
     "packages.ready": "آماده",
     "packages.updated": "به‌روز شد",
     "packages.fetched": "دریافت شد",
-    "package.description": "برنامه‌های مدیریت اصلی \u206680|20\u2069",
+    "package.description": "برنامه‌های مدیریت اصلی ⁦80|20⁩",
     "widgets.kernel-console.title": "فراخوانی‌های هسته",
     "widgets.kernel-console.description": "فراخوانی‌های هسته",
     "widgets.packages.title": "بسته‌ها",
@@ -415,6 +415,10 @@
     "secrets.usage_detail": "جزئیات",
     "secrets.what_the_secret_is_used_for": "کاربرد راز.",
     "secrets.usage_package": "بسته",
-    "secrets.the_package_that_uses_the_secret": "بسته‌ای که از راز استفاده می‌کند."
+    "secrets.the_package_that_uses_the_secret": "بسته‌ای که از راز استفاده می‌کند.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1} برای یک مخزن خصوصی، یک راز تأیید هویت را انتخاب کنید.",
+    "errors.package_has_no_desired_index_metadata": "بسته هیچ متاداتی از شاخص مورد نیاز ندارد",
+    "package_transfer.version_description": "نسخه مورد نظر و در حال حاضر انجام شده است.",
+    "kernel_console.truncated": "قطع شده"
   }
 }

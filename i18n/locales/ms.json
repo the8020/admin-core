@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Butiran",
     "secrets.what_the_secret_is_used_for": "Kegunaan rahsia.",
     "secrets.usage_package": "Pakej",
-    "secrets.the_package_that_uses_the_secret": "Pakej yang menggunakan rahsia."
+    "secrets.the_package_that_uses_the_secret": "Pakej yang menggunakan rahsia.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Untuk repositori peribadi, pilih rahsia pengesahan.",
+    "errors.package_has_no_desired_index_metadata": "Pakej tidak mempunyai metadata indeks yang dikehendaki",
+    "package_transfer.version_description": "Versi yang dikehendaki dan kini sedang berjalan commit.",
+    "kernel_console.truncated": "Dipotong"
   }
 }

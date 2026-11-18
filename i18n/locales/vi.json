@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Chi tiết",
     "secrets.what_the_secret_is_used_for": "Bí mật được dùng để làm gì.",
     "secrets.usage_package": "Gói",
-    "secrets.the_package_that_uses_the_secret": "Gói sử dụng bí mật."
+    "secrets.the_package_that_uses_the_secret": "Gói sử dụng bí mật.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Đối với một kho lưu trữ riêng tư, chọn một bí mật xác thực.",
+    "errors.package_has_no_desired_index_metadata": "Các gói không có metadata chỉ mục mong muốn",
+    "package_transfer.version_description": "Phiên bản mong muốn và hiện đang chạy commit.",
+    "kernel_console.truncated": "Truncated"
   }
 }

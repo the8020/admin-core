@@ -306,7 +306,7 @@
     "packages.ready": "جاهز",
     "packages.updated": "تم التحديث",
     "packages.fetched": "تم الجلب",
-    "package.description": "برامج الإدارة الأساسية في \u206680|20\u2069",
+    "package.description": "برامج الإدارة الأساسية في ⁦80|20⁩",
     "widgets.kernel-console.title": "استدعاءات النواة",
     "widgets.kernel-console.description": "استدعاءات النواة",
     "widgets.packages.title": "الحزم",
@@ -415,6 +415,10 @@
     "secrets.usage_detail": "التفاصيل",
     "secrets.what_the_secret_is_used_for": "الغرض من استخدام السر.",
     "secrets.usage_package": "الحزمة",
-    "secrets.the_package_that_uses_the_secret": "الحزمة التي تستخدم السر."
+    "secrets.the_package_that_uses_the_secret": "الحزمة التي تستخدم السر.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1} لخزنة خاصة، اختر سر مصادقة.",
+    "errors.package_has_no_desired_index_metadata": "الحزمة لا تحتوي على البيانات المعدنية للمؤشر المطلوبة",
+    "package_transfer.version_description": "النسخة المرغوب فيها والتي تعمل حالياً.",
+    "kernel_console.truncated": "قُطعت"
   }
 }

@@ -62,9 +62,12 @@ class Channel {
       }
     }
   }
-  async screen(count: number) {
+  async screen(count: number, id?: string) {
     for (let i = 0; i < 100; i++) {
-      if (this.screens.length >= count) return this.screens[count - 1]!;
+      const screen = this.screens.slice(count - 1).find((screen) =>
+        id === undefined || screen.id === id
+      );
+      if (screen) return screen;
       await new Promise((resolve) => setTimeout(resolve, 0));
     }
     throw new Error("Screen did not appear");
@@ -474,6 +477,9 @@ Deno.test("catalog opens a searchable standard modal and Back restores the conso
   const globals = globalThis as unknown as Record<symbol, unknown>;
   const previous = globals[kernelInvokeSymbol];
   globals[kernelInvokeSymbol] = ((operation, input) => {
+    if (operation === "database.execute") {
+      return Promise.resolve({ columns: [], rows: [] });
+    }
     const call = decodeKernelCall(operation, input);
     assertEquals(call.command, "admin.catalog");
     return Promise.resolve(kernelSuccess(call, {
@@ -495,7 +501,7 @@ Deno.test("catalog opens a searchable standard modal and Back restores the conso
     void run.catch(() => {});
     const first = await channel.screen(1);
     channel.act(first, "calls");
-    const picker = await channel.screen(2);
+    const picker = await channel.screen(2, "kernel-call-picker");
     assertEquals(picker.id, "kernel-call-picker");
     const layout = picker.layout as {
       root: { key: string; focusSearch: boolean };

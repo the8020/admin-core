@@ -415,6 +415,10 @@
     "secrets.usage_detail": "詳細",
     "secrets.what_the_secret_is_used_for": "シークレットの用途。",
     "secrets.usage_package": "パッケージ",
-    "secrets.the_package_that_uses_the_secret": "シークレットを使用しているパッケージ。"
+    "secrets.the_package_that_uses_the_secret": "シークレットを使用しているパッケージ。",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}。非公開リポジトリの場合は、認証用のシークレットを選択してください。",
+    "errors.package_has_no_desired_index_metadata": "パッケージには望ましいインデックスメタデータがない",
+    "package_transfer.version_description": "必要なバージョンと現在実行されているコンディクト.",
+    "kernel_console.truncated": "切り切り"
   }
 }

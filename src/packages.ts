@@ -1,3 +1,5 @@
+import { localizedText as resolveMessage } from "/p/the8020/i18n/mod.ts";
+import { msg as messageSymbol } from "/p/the8020/admin-core/i18n/messages.ts";
 import { text as localizedText } from "/p/the8020/i18n/mod.ts";
 import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { listServices } from "/p/the8020/services/src/admin.ts";
@@ -584,7 +586,11 @@ export async function packageAdvanced(
           break;
         case "save-secret":
           if (index === undefined) {
-            throw new Error("Package has no desired index metadata");
+            throw new Error(
+              await resolveMessage(
+                messageSymbol("errors.package_has_no_desired_index_metadata"),
+              ),
+            );
           }
           await savePackageSecret(index, model.secretName);
           sendMessage(

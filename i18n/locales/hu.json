@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Részletek",
     "secrets.what_the_secret_is_used_for": "Mire használják a titkot.",
     "secrets.usage_package": "Csomag",
-    "secrets.the_package_that_uses_the_secret": "A titkot használó csomag."
+    "secrets.the_package_that_uses_the_secret": "A titkot használó csomag.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Egy magán tárolóhoz válassz egy hitelesítési titkot.",
+    "errors.package_has_no_desired_index_metadata": "A csomag nem tartalmaz a kívánt index metadátát",
+    "package_transfer.version_description": "A kívánt verzió és a jelenleg futó commit.",
+    "kernel_console.truncated": "Károsított"
   }
 }

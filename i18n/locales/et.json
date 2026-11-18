@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Üksikasi",
     "secrets.what_the_secret_is_used_for": "Milleks saladust kasutatakse.",
     "secrets.usage_package": "Pakett",
-    "secrets.the_package_that_uses_the_secret": "Pakett, mis saladust kasutab."
+    "secrets.the_package_that_uses_the_secret": "Pakett, mis saladust kasutab.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Isikliku salvestuse jaoks vali autentimissalaksus.",
+    "errors.package_has_no_desired_index_metadata": "Pakendis ei ole soovitud indeksi metadata",
+    "package_transfer.version_description": "Soovitav versioon ja praegu käivitav commit.",
+    "kernel_console.truncated": "Rõõmitud"
   }
 }

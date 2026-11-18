@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Pojedinosti",
     "secrets.what_the_secret_is_used_for": "Za što se tajna koristi.",
     "secrets.usage_package": "Paket",
-    "secrets.the_package_that_uses_the_secret": "Paket koji koristi tajnu."
+    "secrets.the_package_that_uses_the_secret": "Paket koji koristi tajnu.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Za privatni repozitorij, izaberite tajnu autentifikaciju.",
+    "errors.package_has_no_desired_index_metadata": "Paket ne sadrži željene metapodatke indeksa",
+    "package_transfer.version_description": "Željena verzija i trenutno u pokretu commit.",
+    "kernel_console.truncated": "Srezane"
   }
 }

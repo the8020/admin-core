@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Подробности",
     "secrets.what_the_secret_is_used_for": "Для чего используется секрет.",
     "secrets.usage_package": "Пакет",
-    "secrets.the_package_that_uses_the_secret": "Пакет, который использует секрет."
+    "secrets.the_package_that_uses_the_secret": "Пакет, который использует секрет.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Для частного хранилища выберите секрет аутентификации.",
+    "errors.package_has_no_desired_index_metadata": "У пакета нет желаемых метаданных индекса",
+    "package_transfer.version_description": "Желаемая версия и в настоящее время выполняется обязательство.",
+    "kernel_console.truncated": "Обрезанные"
   }
 }

@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Подробиці",
     "secrets.what_the_secret_is_used_for": "Для чого використовується секрет.",
     "secrets.usage_package": "Пакет",
-    "secrets.the_package_that_uses_the_secret": "Пакет, який використовує секрет."
+    "secrets.the_package_that_uses_the_secret": "Пакет, який використовує секрет.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Для приватного сховища виберіть таємницю аутентифікації.",
+    "errors.package_has_no_desired_index_metadata": "Пакет не має метаданні індексу",
+    "package_transfer.version_description": "Бажана версія і в даний час виконується комбінація.",
+    "kernel_console.truncated": "Орізані"
   }
 }
