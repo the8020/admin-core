@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Detalje",
     "secrets.what_the_secret_is_used_for": "Hvad hemmeligheden bruges til.",
     "secrets.usage_package": "Pakke",
-    "secrets.the_package_that_uses_the_secret": "Pakken, der bruger hemmeligheden."
+    "secrets.the_package_that_uses_the_secret": "Pakken, der bruger hemmeligheden.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. For et privat arkiv skal du vælge en autentiseringshemmelighed.",
+    "errors.package_has_no_desired_index_metadata": "Pakke indeholder ingen ønskede indeksmetadata",
+    "package_transfer.version_description": "Ønsket version og i øjeblikket kører commit.",
+    "kernel_console.truncated": "Truncated"
   }
 }

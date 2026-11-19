@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Detail",
     "secrets.what_the_secret_is_used_for": "K čemu se tajný údaj používá.",
     "secrets.usage_package": "Balíček",
-    "secrets.the_package_that_uses_the_secret": "Balíček, který tajný údaj používá."
+    "secrets.the_package_that_uses_the_secret": "Balíček, který tajný údaj používá.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Pro soukromý repozitář vyberte tajný údaj pro ověření.",
+    "errors.package_has_no_desired_index_metadata": "Balíček nemá metadata požadovaného indexu",
+    "package_transfer.version_description": "Požadovaná verze a aktuálně spuštěný commit.",
+    "kernel_console.truncated": "Zkráceno"
   }
 }

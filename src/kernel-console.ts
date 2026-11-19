@@ -150,18 +150,26 @@ export async function kernelConsole(): Promise<void> {
       if (event.action === "run") {
         const result = await kernel.admin.runLine(model.data.line);
         model.data.output = result.output;
-        status = `Node ${context.nodeId} · ${
+        status = `${
+          localizedText(msg("kernel_logs.node"))
+        } ${context.nodeId} · ${
           result.exit_code === 0
             ? localizedText(msg("kernel_console.succeeded"))
             : localizedText(msg("kernel_console.failed"))
-        }${result.truncated ? " · Truncated" : ""}`;
+        }${
+          result.truncated
+            ? ` · ${localizedText(msg("kernel_console.truncated"))}`
+            : ""
+        }`;
       }
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") throw error;
       model.data.output = error instanceof Error
         ? error.message
         : String(error);
-      status = `Node ${context.nodeId} · Failed`;
+      status = `${localizedText(msg("kernel_logs.node"))} ${context.nodeId} · ${
+        localizedText(msg("kernel_console.failed"))
+      }`;
     }
   }
 }

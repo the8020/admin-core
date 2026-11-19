@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Detaliu",
     "secrets.what_the_secret_is_used_for": "Pentru ce este folosit secretul.",
     "secrets.usage_package": "Pachet",
-    "secrets.the_package_that_uses_the_secret": "Pachetul care folosește secretul."
+    "secrets.the_package_that_uses_the_secret": "Pachetul care folosește secretul.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Pentru un depozit privat, alege un secret de autentificare.",
+    "errors.package_has_no_desired_index_metadata": "Pachetul nu are metadatele de index dorite",
+    "package_transfer.version_description": "Versiunea dorită și în curs de executare.",
+    "kernel_console.truncated": "Truncate"
   }
 }

@@ -43,6 +43,7 @@ const MAX_ERRORS = 10;
 
 export const versionField = field(z.string(), {
   label: msg("package_transfer.version"),
+  description: msg("package_transfer.version_description"),
 });
 
 /** Desired tag with the running commit; export decides the exact remote tag. */

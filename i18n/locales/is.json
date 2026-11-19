@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Nánar",
     "secrets.what_the_secret_is_used_for": "Til hvers leyndarmálið er notað.",
     "secrets.usage_package": "Pakki",
-    "secrets.the_package_that_uses_the_secret": "Pakkinn sem notar leyndarmálið."
+    "secrets.the_package_that_uses_the_secret": "Pakkinn sem notar leyndarmálið.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Fyrir einkaforræði veldu staðfestingargeymsla.",
+    "errors.package_has_no_desired_index_metadata": "Pakki hefur ekki óskað eftir vísitölu metadata",
+    "package_transfer.version_description": "Langveitt útgáfa og nú í gangi commit.",
+    "kernel_console.truncated": "Fjarlægð"
   }
 }

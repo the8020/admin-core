@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Detail",
     "secrets.what_the_secret_is_used_for": "Waarvoor het geheim wordt gebruikt.",
     "secrets.usage_package": "Pakket",
-    "secrets.the_package_that_uses_the_secret": "Het pakket dat het geheim gebruikt."
+    "secrets.the_package_that_uses_the_secret": "Het pakket dat het geheim gebruikt.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Voor een privé-repository, kies een authenticatie geheim.",
+    "errors.package_has_no_desired_index_metadata": "Pakket heeft geen gewenste index metadata",
+    "package_transfer.version_description": "De gewenste versie en momenteel running commit.",
+    "kernel_console.truncated": "Verkorst"
   }
 }

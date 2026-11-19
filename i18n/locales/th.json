@@ -415,6 +415,10 @@
     "secrets.usage_detail": "รายละเอียด",
     "secrets.what_the_secret_is_used_for": "ข้อมูลลับนี้ใช้ทำอะไร",
     "secrets.usage_package": "แพ็กเกจ",
-    "secrets.the_package_that_uses_the_secret": "แพ็กเกจที่ใช้ข้อมูลลับ"
+    "secrets.the_package_that_uses_the_secret": "แพ็กเกจที่ใช้ข้อมูลลับ",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1} คน สําหรับสํานักเก็บข้อมูลส่วนตัว เลือกความลับการรับรองความเป็นจริง",
+    "errors.package_has_no_desired_index_metadata": "แพ็คเกจไม่มีเมทาเทพข้อมูลอ индексที่ต้องการ",
+    "package_transfer.version_description": "เวอร์ชั่นที่ต้องการ และกําลังทํางาน commit",
+    "kernel_console.truncated": "ช่องตัด"
   }
 }

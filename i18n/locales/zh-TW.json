@@ -415,6 +415,10 @@
     "secrets.usage_detail": "詳細資料",
     "secrets.what_the_secret_is_used_for": "機密的用途。",
     "secrets.usage_package": "套件",
-    "secrets.the_package_that_uses_the_secret": "使用該機密的套件。"
+    "secrets.the_package_that_uses_the_secret": "使用該機密的套件。",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}。對於私人儲存庫，請選擇驗證用的密鑰。",
+    "errors.package_has_no_desired_index_metadata": "沒有想要的索引元數據",
+    "package_transfer.version_description": "想要的版本和目前正在運行的提交.",
+    "kernel_console.truncated": "截截圖"
   }
 }

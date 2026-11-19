@@ -306,7 +306,7 @@
     "packages.ready": "מוכן",
     "packages.updated": "עודכן",
     "packages.fetched": "אוחזר",
-    "package.description": "תוכניות ניהול הליבה של \u206680|20\u2069",
+    "package.description": "תוכניות ניהול הליבה של ⁦80|20⁩",
     "widgets.kernel-console.title": "קריאות ליבה",
     "widgets.kernel-console.description": "קריאות ליבה",
     "widgets.packages.title": "חבילות",
@@ -415,6 +415,10 @@
     "secrets.usage_detail": "פרטים",
     "secrets.what_the_secret_is_used_for": "למה משמש הסוד.",
     "secrets.usage_package": "חבילה",
-    "secrets.the_package_that_uses_the_secret": "החבילה שמשתמשת בסוד."
+    "secrets.the_package_that_uses_the_secret": "החבילה שמשתמשת בסוד.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. עבור מאגר פרטי, בחר סוד אימות.",
+    "errors.package_has_no_desired_index_metadata": "החבילה אינה מכילה נתונים מטאטאאינדקס הרצויים.",
+    "package_transfer.version_description": "גרסה רצויה ופעילת ההתחייבויות כרגע.",
+    "kernel_console.truncated": "קצץ"
   }
 }

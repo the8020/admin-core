@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Λεπτομέρεια",
     "secrets.what_the_secret_is_used_for": "Για ποιο σκοπό χρησιμοποιείται το απόρρητο.",
     "secrets.usage_package": "Πακέτο",
-    "secrets.the_package_that_uses_the_secret": "Το πακέτο που χρησιμοποιεί το απόρρητο."
+    "secrets.the_package_that_uses_the_secret": "Το πακέτο που χρησιμοποιεί το απόρρητο.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Για ένα ιδιωτικό αποθετήριο, επιλέξτε ένα μυστικό επαλήθευσης.",
+    "errors.package_has_no_desired_index_metadata": "Το πακέτο δεν περιέχει επιθυμητά μεταδεδομένα δείκτη",
+    "package_transfer.version_description": "Επιθυμημένη έκδοση και τρέχοντας τώρα commit.",
+    "kernel_console.truncated": "Τριγωμένα"
   }
 }

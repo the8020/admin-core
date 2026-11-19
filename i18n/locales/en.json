@@ -417,6 +417,8 @@
     "secrets.usage_package": "Package",
     "secrets.the_package_that_uses_the_secret": "The package that uses the secret.",
     "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. For a private repository, choose an authentication secret.",
-    "errors.package_has_no_desired_index_metadata": "Package has no desired index metadata"
+    "errors.package_has_no_desired_index_metadata": "Package has no desired index metadata",
+    "package_transfer.version_description": "Desired version and currently running commit.",
+    "kernel_console.truncated": "Truncated"
   }
 }

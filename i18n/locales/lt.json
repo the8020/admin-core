@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Detalės",
     "secrets.what_the_secret_is_used_for": "Kam naudojama paslaptis.",
     "secrets.usage_package": "Paketas",
-    "secrets.the_package_that_uses_the_secret": "Paketas, kuris naudoja paslaptį."
+    "secrets.the_package_that_uses_the_secret": "Paketas, kuris naudoja paslaptį.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Privatiam saugyklui pasirinkite autentifikavimo paslaptį.",
+    "errors.package_has_no_desired_index_metadata": "Pakeitėje nėra pageidaujamų indeksų metadata",
+    "package_transfer.version_description": "Noriama versija ir šiuo metu vykdomas įsipareigojimas.",
+    "kernel_console.truncated": "Skirti"
   }
 }

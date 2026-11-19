@@ -724,6 +724,8 @@ Deno.test("package selection fetches and updates independently, skips no remote,
       "local",
       "fetch",
       "update",
+      "export",
+      "import",
       "refresh",
     ]);
     const action = async (id: string) => {

@@ -415,6 +415,10 @@
     "secrets.usage_detail": "详情",
     "secrets.what_the_secret_is_used_for": "机密的用途。",
     "secrets.usage_package": "软件包",
-    "secrets.the_package_that_uses_the_secret": "使用该机密的软件包。"
+    "secrets.the_package_that_uses_the_secret": "使用该机密的软件包。",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}。对于私有仓库，请选择身份验证密钥。",
+    "errors.package_has_no_desired_index_metadata": "包装没有所需的索引元数据",
+    "package_transfer.version_description": "预期的版本和目前正在运行的承诺.",
+    "kernel_console.truncated": "切断"
   }
 }

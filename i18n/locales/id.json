@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Detail",
     "secrets.what_the_secret_is_used_for": "Kegunaan rahasia.",
     "secrets.usage_package": "Paket",
-    "secrets.the_package_that_uses_the_secret": "Paket yang menggunakan rahasia."
+    "secrets.the_package_that_uses_the_secret": "Paket yang menggunakan rahasia.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Untuk repositori pribadi, pilih rahasia autentikasi.",
+    "errors.package_has_no_desired_index_metadata": "Paket tidak memiliki metadata indeks yang diinginkan",
+    "package_transfer.version_description": "Versi yang diinginkan dan saat ini berjalan commit.",
+    "kernel_console.truncated": "Dipotong"
   }
 }

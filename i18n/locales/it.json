@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Dettaglio",
     "secrets.what_the_secret_is_used_for": "A cosa serve il segreto.",
     "secrets.usage_package": "Pacchetto",
-    "secrets.the_package_that_uses_the_secret": "Il pacchetto che usa il segreto."
+    "secrets.the_package_that_uses_the_secret": "Il pacchetto che usa il segreto.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Per un deposito privato, scegli un segreto di autenticazione.",
+    "errors.package_has_no_desired_index_metadata": "Il pacchetto non contiene i metadati di indice desiderati",
+    "package_transfer.version_description": "Versione desiderata e commit in esecuzione.",
+    "kernel_console.truncated": "Truncato"
   }
 }

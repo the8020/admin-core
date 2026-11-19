@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Ayrıntı",
     "secrets.what_the_secret_is_used_for": "Gizli bilginin ne için kullanıldığı.",
     "secrets.usage_package": "Paket",
-    "secrets.the_package_that_uses_the_secret": "Gizli bilgiyi kullanan paket."
+    "secrets.the_package_that_uses_the_secret": "Gizli bilgiyi kullanan paket.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Özel bir depo için, kimlik doğrulama sırrını seçin.",
+    "errors.package_has_no_desired_index_metadata": "Paketin istenen indeks metadataları yoktur",
+    "package_transfer.version_description": "İstediğiniz sürüm ve şu anda çalışmakta olan commit.",
+    "kernel_console.truncated": "Kısaltılmış"
   }
 }

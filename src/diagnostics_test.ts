@@ -64,7 +64,9 @@ class Channel {
   }
   async screen(count: number, id?: string) {
     for (let i = 0; i < 100; i++) {
-      const screen = this.screens.slice(count - 1).find((screen) => id === undefined || screen.id === id);
+      const screen = this.screens.slice(count - 1).find((screen) =>
+        id === undefined || screen.id === id
+      );
       if (screen) return screen;
       await new Promise((resolve) => setTimeout(resolve, 0));
     }
@@ -475,6 +477,9 @@ Deno.test("catalog opens a searchable standard modal and Back restores the conso
   const globals = globalThis as unknown as Record<symbol, unknown>;
   const previous = globals[kernelInvokeSymbol];
   globals[kernelInvokeSymbol] = ((operation, input) => {
+    if (operation === "database.execute") {
+      return Promise.resolve({ columns: [], rows: [] });
+    }
     const call = decodeKernelCall(operation, input);
     assertEquals(call.command, "admin.catalog");
     return Promise.resolve(kernelSuccess(call, {

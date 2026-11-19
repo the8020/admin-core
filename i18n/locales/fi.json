@@ -415,6 +415,10 @@
     "secrets.usage_detail": "Tiedot",
     "secrets.what_the_secret_is_used_for": "Mihin salaisuutta käytetään.",
     "secrets.usage_package": "Paketti",
-    "secrets.the_package_that_uses_the_secret": "Paketti, joka käyttää salaisuutta."
+    "secrets.the_package_that_uses_the_secret": "Paketti, joka käyttää salaisuutta.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. Yksityisen säilytyslaitteen osalta valitse todentamissalaisuus.",
+    "errors.package_has_no_desired_index_metadata": "Pakettiin ei ole haluttuja indeksi- metatietoja",
+    "package_transfer.version_description": "Haluttu versio ja tällä hetkellä käynnissä commit.",
+    "kernel_console.truncated": "Korkistettu"
   }
 }
