@@ -77,6 +77,7 @@ class TestChannel {
 }
 
 const commandResults: Record<string, Record<string, unknown>> = {
+  "package.index.list": { packages: [] },
   "package.list": {
     packages: [{ package_id: "the8020/example", valid: true }],
   },
@@ -264,9 +265,11 @@ Deno.test("live list and detail screens refresh their current target", async () 
       commands: [
         "package.list",
         "service.list",
+        "package.index.list",
         "package.repository.inspect",
         "package.list",
         "service.list",
+        "package.index.list",
         "package.repository.inspect",
       ],
     },
@@ -643,6 +646,9 @@ Deno.test("package selection fetches and updates independently, skips no remote,
             valid: true,
           })),
         };
+        break;
+      case "package.index.list":
+        result = { packages: [] };
         break;
       case "service.list":
         result = { services: [] };

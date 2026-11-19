@@ -415,6 +415,8 @@
     "secrets.usage_detail": "Detail",
     "secrets.what_the_secret_is_used_for": "What the secret is used for.",
     "secrets.usage_package": "Package",
-    "secrets.the_package_that_uses_the_secret": "The package that uses the secret."
+    "secrets.the_package_that_uses_the_secret": "The package that uses the secret.",
+    "errors.for_a_private_repository_choose_an_authentication_secret": "{value1}. For a private repository, choose an authentication secret.",
+    "errors.package_has_no_desired_index_metadata": "Package has no desired index metadata"
   }
 }

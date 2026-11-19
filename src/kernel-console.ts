@@ -67,7 +67,7 @@ export function commandRows(catalog: AdminCatalog) {
 export async function kernelConsole(): Promise<void> {
   if (!await allowed(EXECUTE, "")) return;
   const model = new Model({ line: "", output: "" });
-  let status = `Node ${context.nodeId}`;
+  let status = `${localizedText(msg("kernel_logs.node"))} ${context.nodeId}`;
   while (true) {
     const event = await callScreen({
       id: "kernel-console",

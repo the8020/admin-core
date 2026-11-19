@@ -1,3 +1,5 @@
+import { localizedText as resolveMessage } from "/p/the8020/i18n/mod.ts";
+import { msg as messageSymbol } from "/p/the8020/admin-core/i18n/messages.ts";
 import { text as localizedText } from "/p/the8020/i18n/mod.ts";
 import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { packages } from "/p/the8020/packages/src/admin.ts";
@@ -433,12 +435,17 @@ async function inspectSource(
   } catch (error) {
     if (secret !== "") throw error;
     throw new Error(
-      `${
-        errorMessage(
-          error,
-          localizedText(msg("package_management.repository_check_failed")),
-        )
-      }. For a private repository, choose an authentication secret.`,
+      await resolveMessage(
+        messageSymbol(
+          "errors.for_a_private_repository_choose_an_authentication_secret",
+          {
+            value1: String(errorMessage(
+              error,
+              localizedText(msg("package_management.repository_check_failed")),
+            )),
+          },
+        ),
+      ),
     );
   }
 }
