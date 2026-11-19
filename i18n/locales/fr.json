@@ -1,6 +1,12 @@
 {
   "name": "Français",
   "texts": {
+    "packages.sync_selected": "Synchroniser la sélection",
+    "packages.repair_upstream": "Réparer depuis le dépôt amont",
+    "packages.non_dev": "Utilisez les déploiements pour les mises à jour courantes des paquets sur ce système.",
+    "programs.package-sync.description": "Synchroniser les paquets",
+    "widgets.package-sync.title": "Synchroniser les paquets",
+    "widgets.package-sync.description": "Synchroniser la sélection",
     "layout.export": "Exporter",
     "layout.import": "Importer",
     "package_transfer.version": "Version",

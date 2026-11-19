@@ -1,6 +1,12 @@
 {
   "name": "עברית",
   "texts": {
+    "packages.sync_selected": "סנכרון הבחירה",
+    "packages.repair_upstream": "תיקון ממאגר המקור",
+    "packages.non_dev": "לעדכוני חבילות שוטפים במערכת זו יש להשתמש בפריסות.",
+    "programs.package-sync.description": "סנכרון חבילות",
+    "widgets.package-sync.title": "סנכרון חבילות",
+    "widgets.package-sync.description": "סנכרון הבחירה",
     "layout.export": "ייצוא",
     "layout.import": "ייבוא",
     "package_transfer.version": "גרסה",

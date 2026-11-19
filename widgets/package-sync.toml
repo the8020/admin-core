@@ -1,0 +1,12 @@
+schema = 1
+title = "Synchronize packages"
+description = "Synchronize packages on selected application servers"
+icon = "sync"
+category = "administration/packages"
+order = 11
+
+[open]
+program = "the8020/admin-core/package-sync"
+
+[visible]
+permission = "the8020.packages.package.synchronize"

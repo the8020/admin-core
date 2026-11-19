@@ -1,6 +1,12 @@
 {
   "name": "العربية",
   "texts": {
+    "packages.sync_selected": "مزامنة المحدد",
+    "packages.repair_upstream": "إصلاح من المستودع الأصلي",
+    "packages.non_dev": "استخدم عمليات النشر لتحديث الحزم المعتاد في هذا النظام.",
+    "programs.package-sync.description": "مزامنة الحزم",
+    "widgets.package-sync.title": "مزامنة الحزم",
+    "widgets.package-sync.description": "مزامنة المحدد",
     "layout.export": "تصدير",
     "layout.import": "استيراد",
     "package_transfer.version": "الإصدار",

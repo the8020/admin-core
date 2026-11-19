@@ -11,9 +11,7 @@
       "canonicalName",
       "version",
       "updates",
-      "status",
-      "services",
-      "description"
+      "status"
     ],
     "columnOptions": {
       "canonicalName": {
@@ -22,17 +20,6 @@
           "key": "layout.package",
           "fallback": "Package"
         }
-      },
-      "services": {
-        "length": "compact",
-        "shortHeading": {
-          "package": "the8020/admin-core",
-          "key": "layout.s",
-          "fallback": "S"
-        }
-      },
-      "description": {
-        "length": "long"
       }
     },
     "toolbar": [
@@ -67,6 +54,14 @@
           "package": "the8020/admin-core",
           "key": "layout.update",
           "fallback": "Update"
+        }
+      },
+      {
+        "id": "sync",
+        "label": {
+          "package": "the8020/admin-core",
+          "key": "packages.synchronize",
+          "fallback": "Synchronize"
         }
       },
       {

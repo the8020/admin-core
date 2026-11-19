@@ -1,6 +1,12 @@
 {
   "name": "Hrvatski",
   "texts": {
+    "packages.sync_selected": "Sinkroniziraj odabrano",
+    "packages.repair_upstream": "Popravi iz izvornog repozitorija",
+    "packages.non_dev": "Za redovita ažuriranja paketa na ovom sustavu koristite implementacije.",
+    "programs.package-sync.description": "Sinkroniziraj pakete",
+    "widgets.package-sync.title": "Sinkroniziraj pakete",
+    "widgets.package-sync.description": "Sinkroniziraj odabrano",
     "layout.export": "Izvezi",
     "layout.import": "Uvezi",
     "package_transfer.version": "Verzija",

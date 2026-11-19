@@ -1,6 +1,12 @@
 {
   "name": "Dansk",
   "texts": {
+    "packages.sync_selected": "Synkroniser valgte",
+    "packages.repair_upstream": "Reparer fra det oprindelige lager",
+    "packages.non_dev": "Brug udrulninger til almindelige pakkeopdateringer på dette system.",
+    "programs.package-sync.description": "Synkroniser pakker",
+    "widgets.package-sync.title": "Synkroniser pakker",
+    "widgets.package-sync.description": "Synkroniser valgte",
     "layout.export": "Eksportér",
     "layout.import": "Importér",
     "package_transfer.version": "Version",

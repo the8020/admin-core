@@ -1,6 +1,12 @@
 {
   "name": "Català",
   "texts": {
+    "packages.sync_selected": "Sincronitza la selecció",
+    "packages.repair_upstream": "Repara des del repositori d’origen",
+    "packages.non_dev": "Utilitzeu els desplegaments per actualitzar els paquets habitualment en aquest sistema.",
+    "programs.package-sync.description": "Sincronitza els paquets",
+    "widgets.package-sync.title": "Sincronitza els paquets",
+    "widgets.package-sync.description": "Sincronitza la selecció",
     "layout.export": "Exporta",
     "layout.import": "Importa",
     "package_transfer.version": "Versió",

@@ -11,9 +11,9 @@ Parent DOX: [admin-core/src DOX](../AGENTS.md).
 
 # Local Contracts
 
-- List creation, selection-based fetch/update/export, import, version
-  application, refresh, and backend paging belong in the owning list toolbar.
-  Keep related-page navigation and entity/form actions in screen headers.
+- List creation, selection-based fetch/update/export, import, preferred version
+  selection, refresh, and backend paging belong in the owning list toolbar. Keep
+  related-page navigation and entity/form actions in screen headers.
 
 - Authored headings and action labels use serializable package/key message
   references with English fallback. UUI resolves them per session.
@@ -23,9 +23,9 @@ Parent DOX: [admin-core/src DOX](../AGENTS.md).
   widths, and use the repository's two-level heading/card hierarchy.
 - Program layouts put its description and execution kind before the related
   package; source metadata is shown only in the program's Advanced screen.
-- Package detail is a compact overview plus service/program lists. The advanced
-  layout owns full manifest, Git, and file cards; empty main content lists are
-  omitted by the screen.
+- Package detail includes editable upstream settings and service/program lists.
+  The development Git layout owns full manifest, Git, and file cards; empty main
+  content lists are omitted by the screen.
 - Package export is one read-only list ordered package, result, version,
   dependencies.
 - Layout element IDs share one namespace with the screen's header and toolbar
@@ -35,9 +35,9 @@ Parent DOX: [admin-core/src DOX](../AGENTS.md).
   state, version, installed version and source; the screen omits the list until
   a file is loaded.
 - Install prioritizes URL and version; Versions prioritizes the selected version
-  and readable changes. Their field help owns reference selection. Secret
-  editing uses one field group for name and value without redundant section
-  headings.
+  and readable changes. Its Sync action opens the system-wide node selection.
+  Their field help owns reference selection. Secret editing uses one field group
+  for name and value without redundant section headings.
 - Service overview contains Enabled, health, and running capacity. Configure
   starts with one Service group ordered Enabled, Visibility, Public execution
   user, and Service type. Scaling retains Worker threads, Single worker, and

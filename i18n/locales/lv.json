@@ -1,6 +1,12 @@
 {
   "name": "Latviešu",
   "texts": {
+    "packages.sync_selected": "Sinhronizēt atlasītos",
+    "packages.repair_upstream": "Labot no sākotnējās krātuves",
+    "packages.non_dev": "Parastiem pakotņu atjauninājumiem šajā sistēmā izmantojiet izvietošanu.",
+    "programs.package-sync.description": "Sinhronizēt pakotnes",
+    "widgets.package-sync.title": "Sinhronizēt pakotnes",
+    "widgets.package-sync.description": "Sinhronizēt atlasītos",
     "layout.export": "Eksportēt",
     "layout.import": "Importēt",
     "package_transfer.version": "Versija",

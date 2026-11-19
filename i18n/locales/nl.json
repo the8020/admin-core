@@ -1,6 +1,12 @@
 {
   "name": "Nederlands",
   "texts": {
+    "packages.sync_selected": "Selectie synchroniseren",
+    "packages.repair_upstream": "Herstellen vanuit de upstreamrepository",
+    "packages.non_dev": "Gebruik implementaties voor reguliere pakketupdates op dit systeem.",
+    "programs.package-sync.description": "Pakketten synchroniseren",
+    "widgets.package-sync.title": "Pakketten synchroniseren",
+    "widgets.package-sync.description": "Selectie synchroniseren",
     "layout.export": "Exporteren",
     "layout.import": "Importeren",
     "package_transfer.version": "Versie",

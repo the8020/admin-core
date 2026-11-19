@@ -1,6 +1,12 @@
 {
   "name": "Română",
   "texts": {
+    "packages.sync_selected": "Sincronizează selecția",
+    "packages.repair_upstream": "Repară din depozitul sursă",
+    "packages.non_dev": "Folosiți implementările pentru actualizările obișnuite ale pachetelor pe acest sistem.",
+    "programs.package-sync.description": "Sincronizează pachetele",
+    "widgets.package-sync.title": "Sincronizează pachetele",
+    "widgets.package-sync.description": "Sincronizează selecția",
     "layout.export": "Exportă",
     "layout.import": "Importă",
     "package_transfer.version": "Versiune",

@@ -1,6 +1,12 @@
 {
   "name": "فارسی",
   "texts": {
+    "packages.sync_selected": "همگام‌سازی موارد انتخاب‌شده",
+    "packages.repair_upstream": "ترمیم از مخزن بالادست",
+    "packages.non_dev": "برای به‌روزرسانی معمول بسته‌ها در این سامانه از استقرار استفاده کنید.",
+    "programs.package-sync.description": "همگام‌سازی بسته‌ها",
+    "widgets.package-sync.title": "همگام‌سازی بسته‌ها",
+    "widgets.package-sync.description": "همگام‌سازی موارد انتخاب‌شده",
     "layout.export": "صدور",
     "layout.import": "ورود",
     "package_transfer.version": "نسخه",

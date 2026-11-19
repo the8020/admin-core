@@ -1,6 +1,12 @@
 {
   "name": "Bahasa Melayu",
   "texts": {
+    "packages.sync_selected": "Segerakkan pilihan",
+    "packages.repair_upstream": "Baiki daripada repositori asal",
+    "packages.non_dev": "Gunakan pelaksanaan untuk kemas kini pakej rutin pada sistem ini.",
+    "programs.package-sync.description": "Segerakkan pakej",
+    "widgets.package-sync.title": "Segerakkan pakej",
+    "widgets.package-sync.description": "Segerakkan pilihan",
     "layout.export": "Eksport",
     "layout.import": "Import",
     "package_transfer.version": "Versi",

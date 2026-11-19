@@ -1,6 +1,12 @@
 {
   "name": "Suomi",
   "texts": {
+    "packages.sync_selected": "Synkronoi valitut",
+    "packages.repair_upstream": "Korjaa alkuperäisestä tietovarastosta",
+    "packages.non_dev": "Käytä tämän järjestelmän tavallisiin pakettipäivityksiin käyttöönottoja.",
+    "programs.package-sync.description": "Synkronoi paketit",
+    "widgets.package-sync.title": "Synkronoi paketit",
+    "widgets.package-sync.description": "Synkronoi valitut",
     "layout.export": "Vie",
     "layout.import": "Tuo",
     "package_transfer.version": "Versio",

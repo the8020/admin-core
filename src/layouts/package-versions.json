@@ -32,15 +32,12 @@
         ],
         "columnOptions": {
           "subject": {
-            "heading": "Change",
             "length": "long"
           },
           "authoredAt": {
-            "heading": "Date",
             "length": "medium"
           },
           "current": {
-            "heading": "Installed",
             "length": "compact"
           }
         },
@@ -57,10 +54,18 @@
             "id": "save",
             "label": {
               "package": "the8020/admin-core",
-              "key": "layout.apply_version",
-              "fallback": "Apply version"
+              "key": "package_management.save_for_later",
+              "fallback": "Save for later"
             },
             "kind": "primary"
+          },
+          {
+            "id": "sync",
+            "label": {
+              "package": "the8020/admin-core",
+              "key": "packages.synchronize",
+              "fallback": "Synchronize"
+            }
           }
         ]
       }

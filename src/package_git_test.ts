@@ -125,6 +125,9 @@ Deno.test("advanced package detail exposes Git selectors and persists only the s
             files: [],
           },
         },
+        "package.transport.inspect": {
+          source: { default_commit: "b".repeat(40), references: [] },
+        },
         "package.repository.inspect": { repository },
         "service.list": { services: [] },
         "package.repository.fetch": { repository },
@@ -215,6 +218,7 @@ Deno.test("advanced package detail exposes Git selectors and persists only the s
         repository: "example",
         source: "https://github.com/the8020/example.git",
         local: false,
+        commit: "b".repeat(40),
         secret: "github",
       },
     });
@@ -293,6 +297,26 @@ Deno.test("advanced package detail saves the Git remote and rejects a blank URL"
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
       if (operation === "database.execute") {
+        if (String(input.statement).includes("the8020__packages__packages")) {
+          return Promise.resolve({
+            columns: [
+              "author",
+              "repository",
+              "source",
+              "local",
+              "requestedCommit",
+              "secretName",
+            ],
+            rows: [[
+              "the8020",
+              "example",
+              index.source,
+              false,
+              "a".repeat(40),
+              "previous",
+            ]],
+          });
+        }
         return developmentProfileRead(input);
       }
       const call = decodeKernelCall(operation, input);
@@ -312,6 +336,9 @@ Deno.test("advanced package detail saves the Git remote and rejects a blank URL"
         },
         "package.repository.inspect": { repository },
         "package.repository.remote": { repository },
+        "package.index.set": {
+          package: { ...index, source: call.arguments.source },
+        },
         "package.index.inspect": { package: index },
         "service.list": { services: [] },
       }[call.command];
@@ -352,6 +379,13 @@ Deno.test("advanced package detail saves the Git remote and rejects a blank URL"
     const third = await waitForScreen(channel, 3);
     channel.push(screenEvent(third, BACK_EVENT, 3));
     assertEquals(await pending, { view: "back" });
+    const saved = calls.find((call) => call.command === "package.index.set");
+    assertEquals(
+      saved?.arguments.source,
+      "https://gitlab.example.com/group/example.git",
+    );
+    assertEquals(saved?.arguments.commit, "a".repeat(40));
+    assertEquals(saved?.arguments.secret, undefined);
     assertEquals(
       calls.filter((call) => call.command === "package.repository.remote"),
       [{
@@ -459,6 +493,7 @@ Deno.test("package install checks and records a private source with its secret",
             repository: "private",
             package_id: "team/private",
             default_branch: "main",
+            default_commit: "a".repeat(40),
             references: [],
           },
         }));
@@ -515,6 +550,7 @@ Deno.test("package install checks and records a private source with its secret",
       arguments: {
         author: "team",
         repository: "private",
+        commit: "a".repeat(40),
         source,
         secret: "gitlab",
       },
@@ -530,9 +566,9 @@ Deno.test("package install checks and records a private source with its secret",
   }
 });
 
-Deno.test("available versions activate only after Apply version", async () => {
+Deno.test("saving the preferred version leaves the checkout in place", async () => {
   const mutations: Array<{ command: string; arguments: unknown }> = [];
-  const newer = "1234567abcdef00";
+  const newer = "a".repeat(40);
   (globalThis as unknown as Record<symbol, unknown>)[kernelInvokeSymbol] =
     ((operation, input) => {
       if (operation === "database.execute") {
@@ -579,6 +615,10 @@ Deno.test("available versions activate only after Apply version", async () => {
     const pending = packageVersions("the8020/example");
     void pending.catch(() => {});
     const first = await waitForScreen(channel, 1);
+    assertEquals(
+      first.lists[0]?.toolbar?.some((action) => action.id === "sync"),
+      true,
+    );
     channel.push(screenEvent(first, "refresh", 1));
     const refreshed = await waitForScreen(channel, 2);
     assertEquals(mutations, []);
@@ -600,9 +640,6 @@ Deno.test("available versions activate only after Apply version", async () => {
         source: index.source,
         commit: newer,
       },
-    }, {
-      command: "package.synchronize",
-      arguments: { packages: "the8020/example" },
     }]);
   } finally {
     unbind();

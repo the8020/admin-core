@@ -1,6 +1,12 @@
 {
   "name": "Lietuvių",
   "texts": {
+    "packages.sync_selected": "Sinchronizuoti pasirinktus",
+    "packages.repair_upstream": "Taisyti iš pirminės saugyklos",
+    "packages.non_dev": "Įprastiems šios sistemos paketų atnaujinimams naudokite diegimus.",
+    "programs.package-sync.description": "Sinchronizuoti paketus",
+    "widgets.package-sync.title": "Sinchronizuoti paketus",
+    "widgets.package-sync.description": "Sinchronizuoti pasirinktus",
     "layout.export": "Eksportuoti",
     "layout.import": "Importuoti",
     "package_transfer.version": "Versija",

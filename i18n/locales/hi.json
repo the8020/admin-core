@@ -1,6 +1,12 @@
 {
   "name": "हिन्दी",
   "texts": {
+    "packages.sync_selected": "चयनित को सिंक करें",
+    "packages.repair_upstream": "मूल रिपॉज़िटरी से सुधारें",
+    "packages.non_dev": "इस सिस्टम पर नियमित पैकेज अपडेट के लिए डिप्लॉयमेंट का उपयोग करें।",
+    "programs.package-sync.description": "पैकेज सिंक करें",
+    "widgets.package-sync.title": "पैकेज सिंक करें",
+    "widgets.package-sync.description": "चयनित को सिंक करें",
     "layout.export": "निर्यात",
     "layout.import": "आयात",
     "package_transfer.version": "संस्करण",

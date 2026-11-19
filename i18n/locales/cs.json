@@ -1,6 +1,12 @@
 {
   "name": "Čeština",
   "texts": {
+    "packages.sync_selected": "Synchronizovat vybrané",
+    "packages.repair_upstream": "Opravit ze zdrojového repozitáře",
+    "packages.non_dev": "Pro běžné aktualizace balíčků v tomto systému použijte nasazení.",
+    "programs.package-sync.description": "Synchronizovat balíčky",
+    "widgets.package-sync.title": "Synchronizovat balíčky",
+    "widgets.package-sync.description": "Synchronizovat vybrané",
     "layout.export": "Exportovat",
     "layout.import": "Importovat",
     "package_transfer.version": "Verze",

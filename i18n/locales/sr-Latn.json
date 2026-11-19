@@ -1,6 +1,12 @@
 {
   "name": "Srpski (latinica)",
   "texts": {
+    "packages.sync_selected": "Sinhronizuj izabrano",
+    "packages.repair_upstream": "Popravi iz izvornog repozitorijuma",
+    "packages.non_dev": "Za redovno ažuriranje paketa na ovom sistemu koristite postavljanja.",
+    "programs.package-sync.description": "Sinhronizuj pakete",
+    "widgets.package-sync.title": "Sinhronizuj pakete",
+    "widgets.package-sync.description": "Sinhronizuj izabrano",
     "layout.export": "Izvezi",
     "layout.import": "Uvezi",
     "package_transfer.version": "Verzija",

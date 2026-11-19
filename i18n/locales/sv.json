@@ -1,6 +1,12 @@
 {
   "name": "Svenska",
   "texts": {
+    "packages.sync_selected": "Synkronisera markerade",
+    "packages.repair_upstream": "Reparera från ursprungsarkivet",
+    "packages.non_dev": "Använd distributioner för vanliga paketuppdateringar på det här systemet.",
+    "programs.package-sync.description": "Synkronisera paket",
+    "widgets.package-sync.title": "Synkronisera paket",
+    "widgets.package-sync.description": "Synkronisera markerade",
     "layout.export": "Exportera",
     "layout.import": "Importera",
     "package_transfer.version": "Version",

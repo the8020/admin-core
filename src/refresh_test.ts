@@ -262,16 +262,7 @@ Deno.test("live list and detail screens refresh their current target", async () 
     {
       name: "package list",
       run: packageList,
-      commands: [
-        "package.list",
-        "service.list",
-        "package.index.list",
-        "package.repository.inspect",
-        "package.list",
-        "service.list",
-        "package.index.list",
-        "package.repository.inspect",
-      ],
+      commands: ["package.index.list", "package.index.list"],
     },
     {
       name: "package detail",
@@ -615,11 +606,13 @@ Deno.test("package selection fetches and updates independently, skips no remote,
   const mutations: Array<
     { command: string; id: string; arguments: Record<string, unknown> }
   > = [];
+  const reads: string[] = [];
   const runtime = globalThis as unknown as Record<symbol, unknown>;
   const previous = runtime[kernelInvokeSymbol];
   runtime[kernelInvokeSymbol] = ((operation, input) => {
     if (operation === "database.execute") return developmentProfileRead(input);
     const call = decodeKernelCall(operation, input);
+    reads.push(call.command);
     const args = call.arguments;
     const id = String(args.package_id ?? "").split("/")[1]!;
     const repository = () => ({
@@ -648,7 +641,13 @@ Deno.test("package selection fetches and updates independently, skips no remote,
         };
         break;
       case "package.index.list":
-        result = { packages: [] };
+        result = {
+          packages: ids.map((id) => ({
+            package_id: `the8020/${id}`,
+            valid: true,
+            active_commit: heads.get(id),
+          })),
+        };
         break;
       case "service.list":
         result = { services: [] };
@@ -656,7 +655,7 @@ Deno.test("package selection fetches and updates independently, skips no remote,
       case "package.repository.inspect":
         result = { repository: repository() };
         break;
-      case "package.repository.fetch":
+      case "package.version.list":
         mutations.push({ command: call.command, id, arguments: args });
         if (id === "broken") {
           return Promise.resolve(
@@ -667,13 +666,11 @@ Deno.test("package selection fetches and updates independently, skips no remote,
             ),
           );
         }
-        result = { repository: repository() };
-        break;
-      case "package.version.list":
         result = {
           package: {
             package_id: `the8020/${id}`,
             current_commit: heads.get(id),
+            update_commit: "new",
             versions: [
               { commit: "new", parents: ["old"], tags: ["0.9.1"] },
               { commit: "old", parents: [], tags: ["0.9.0"] },
@@ -717,6 +714,7 @@ Deno.test("package selection fetches and updates independently, skips no remote,
     const pending = packageList();
     void pending.catch(() => {});
     let screen = await waitForScreen(channel, 1);
+    assertEquals(reads, ["package.index.list"]);
     let sequence = 0;
     assertEquals(screen.lists[0]!.selection?.bind, "selected");
     assertEquals(screen.lists[0]!.toolbar?.map((action) => action.id), [
@@ -724,6 +722,7 @@ Deno.test("package selection fetches and updates independently, skips no remote,
       "local",
       "fetch",
       "update",
+      "sync",
       "export",
       "import",
       "refresh",
@@ -773,17 +772,7 @@ Deno.test("package selection fetches and updates independently, skips no remote,
         .map((call) => call.id),
       ["alpha"],
     );
-    assertEquals(mutations.at(-1), {
-      command: "package.index.set",
-      id: "alpha",
-      arguments: {
-        author: "the8020",
-        repository: "alpha",
-        source: "https://example.test/the8020/alpha.git",
-        secret: "github",
-        tag: "0.9.1",
-      },
-    });
+    assertEquals(mutations.at(-1)?.command, "package.repository.checkout");
     assertEquals(heads.get("unselected"), "old");
     assertEquals(screen.lists[0]!.selection?.selectedItems, 4);
     assert(

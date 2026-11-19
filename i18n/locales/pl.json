@@ -1,6 +1,12 @@
 {
   "name": "Polski",
   "texts": {
+    "packages.sync_selected": "Synchronizuj zaznaczone",
+    "packages.repair_upstream": "Napraw z repozytorium źródłowego",
+    "packages.non_dev": "Do zwykłych aktualizacji pakietów w tym systemie używaj wdrożeń.",
+    "programs.package-sync.description": "Synchronizuj pakiety",
+    "widgets.package-sync.title": "Synchronizuj pakiety",
+    "widgets.package-sync.description": "Synchronizuj zaznaczone",
     "layout.export": "Eksportuj",
     "layout.import": "Importuj",
     "package_transfer.version": "Wersja",

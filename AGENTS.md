@@ -199,37 +199,14 @@ below.
   Enabled is visible in the overview. Configure edits all service policy on one
   page, including Enabled; Advanced shows version/snapshot diagnostics. Each
   live sandbox stays directly reachable.
-- Package collection combines the generic package catalog with the accepted
-  service index for service counts. Selecting one package combines generic
-  package inspection with that package's indexed services. The main page shows
-  status, description, available documentation/license, and compact service and
-  program links. Empty content groups are omitted. Advanced owns Git inspection,
-  repository controls, full manifest diagnostics, and bounded file inventory.
-  Main-page refresh reads the desired index to offer remote Versions only when
-  applicable; it never inspects Git or lists credentials. Kernel package records
-  contain no service declarations or counts.
-- Package list toolbar actions open ordinary Install package and Create local
-  package screens. Install validates an HTTP or HTTPS Git URL, displays detected
-  identity, writes the desired index, and may install in one action. Its
-  optional authentication secret uses the shared secret-name field; the name is
-  passed to source inspection and stored on the desired index, and a failed
-  check without one suggests choosing it for a private repository. Versions
-  lists readable changes/tags and accepts row or field-help selection before
-  Apply version. The catalog's Fetch and Update act only on checkbox-selected
-  packages, including ordinary Select all. Preserve selection between actions;
-  skip repositories without remotes and finish with one counted notification.
-  Fetch retains installed code; Update advances to the newest fetched numeric
-  release tag, or the current remote branch when no release tags exist. Status
-  icons show the last check, availability, local changes, and unavailable or
-  failed checks. Branch/commit/tag choices use searchable help over bounded
-  reference snapshots through `the8020/packages/types/source.ts`. Advanced
-  retains fetch, push, and checkout. Once the repository is initialized it also
-  edits the remote name and URL; Save remote requires a nonblank URL, defaults
-  the name to `origin`, and calls the authorized packages repository API, which
-  rejects embedded credentials. Its credential field reuses
-  `the8020/secrets/types/secret.ts` and loads names only when help opens. Git
-  operations remain typed kernel calls and refresh only affected services; the
-  existing explicit desired-version synchronization action remains available.
+- Packages opens from the database index alone. Fetch checks selected packages
+  and marks any descendant commit as an update. Update rechecks the reviewed
+  checkout and applies the exact commit. Detail loads the selected package and
+  exposes its upstream URL and credential. Development retains Git tools.
+- Versions saves the preferred commit. Sync opens from Packages, package detail
+  or the standalone tile and selects all differing node/package rows initially.
+  Operators can restrict sync to the replacement server. Test and production
+  recommend deployments and expose confirmed upstream repair.
 - Package list Export opens Export package list with the selected packages as
   Waiting rows, checks them one by one through
   `the8020/packages/src/transfer.ts` and shows each row's result as it finishes,

@@ -1,6 +1,12 @@
 {
   "name": "Eesti",
   "texts": {
+    "packages.sync_selected": "Sünkrooni valitud",
+    "packages.repair_upstream": "Paranda lähtehoidlast",
+    "packages.non_dev": "Kasutage selles süsteemis tavapäraste paketiuuenduste jaoks juurutusi.",
+    "programs.package-sync.description": "Sünkrooni paketid",
+    "widgets.package-sync.title": "Sünkrooni paketid",
+    "widgets.package-sync.description": "Sünkrooni valitud",
     "layout.export": "Ekspordi",
     "layout.import": "Impordi",
     "package_transfer.version": "Versioon",

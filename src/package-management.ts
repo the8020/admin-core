@@ -3,12 +3,13 @@ import { msg as messageSymbol } from "/p/the8020/admin-core/i18n/messages.ts";
 import { text as localizedText } from "/p/the8020/i18n/mod.ts";
 import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { packages } from "/p/the8020/packages/src/admin.ts";
-import { packageInfo } from "/p/the8020/packages/types/package.ts";
+import { packageId, packageInfo } from "/p/the8020/packages/types/package.ts";
 import {
   installedVersion,
   sourceInfo,
   sourceVersion,
 } from "/p/the8020/packages/types/source.ts";
+import { packageSync } from "./package-sync.ts";
 import { ScreenFrame } from "./screen_frame.ts";
 import {
   type PackageIndex,
@@ -20,6 +21,7 @@ import {
   BACK_EVENT,
   callScreen,
   field,
+  presentModal,
   sendMessage,
   z,
 } from "/p/the8020/uui/mod.ts";
@@ -49,7 +51,10 @@ interface InstallModel {
   }>;
 }
 
-export function installSchema(inspection?: PackageSourceInspection) {
+export function installSchema(
+  inspection?: PackageSourceInspection,
+  development = true,
+) {
   const Reference = z.object({
     referenceKey: z.string(),
     kind: sourceInfo.shape.kind,
@@ -57,13 +62,18 @@ export function installSchema(inspection?: PackageSourceInspection) {
     commit: sourceInfo.shape.commit,
   });
   return z.object({
-    source: field(sourceInfo.shape.source, {
+    source: development
+      ? field(sourceInfo.shape.source, {
+        length: "long",
+        placeholder: msg(
+          "package_management.https_github_com_author_repository_git",
+        ),
+      })
+      : field(packageId, { length: "long", placeholder: "namespace/package" }),
+    secretName: field(sourceInfo.shape.secretName, {
       length: "long",
-      placeholder: msg(
-        "package_management.https_github_com_author_repository_git",
-      ),
+      hidden: !development,
     }),
-    secretName: field(sourceInfo.shape.secretName, { length: "long" }),
     author: field(packageInfo.shape.author, {
       length: "medium",
       readOnly: true,
@@ -123,6 +133,7 @@ function versionsSchema(versions: PackageVersions) {
 export async function packageInstall(
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  const development = await packages.isDevelopment();
   const model: InstallModel = {
     source: "",
     secretName: "",
@@ -137,10 +148,12 @@ export async function packageInstall(
     const event = await callScreen({
       id: "core-admin-package-install",
       title: msg("package_management.install_package"),
-      description: msg(
-        "package_management.enter_a_repository_url_and_choose_the",
-      ),
-      schema: installSchema(inspection),
+      description: development
+        ? msg(
+          "package_management.enter_a_repository_url_and_choose_the",
+        )
+        : msg("packages.non_dev"),
+      schema: installSchema(inspection, development),
       model: frame.model(model),
       layout: packageInstallLayout,
       header: {
@@ -157,10 +170,16 @@ export async function packageInstall(
     });
     if (event.action === BACK_EVENT) return { view: "back" };
     try {
+      model.source = requiredText(
+        model.source,
+        localizedText(
+          msg(development ? "package_management.git_source" : "layout.package"),
+        ),
+      );
       if (event.action === "detect") {
-        model.source = requiredText(model.source, "Git URL");
-        inspection = await inspectSource(model);
-        applyInspection(model, inspection);
+        inspection = await inspectSource(model, development);
+        applyInspection(model, inspection, development);
+        model.version = "latest";
         sendMessage(
           localizedText(
             msg("package_management.detected_value1", {
@@ -172,21 +191,28 @@ export async function packageInstall(
         continue;
       }
       if (event.action === "save" || event.action === "save-sync") {
-        model.source = requiredText(model.source, "Git URL");
         if (
           inspection === undefined ||
-          inspection.source !== normalizedURL(model.source)
+          (development
+            ? inspection.source !== normalizedURL(model.source)
+            : inspection.package_id !== model.source)
         ) {
-          inspection = await inspectSource(model);
-          applyInspection(model, inspection);
+          inspection = await inspectSource(model, development);
+          applyInspection(model, inspection, development);
         }
         const selected = desiredVersion(model.version);
+        const version = selected.tag ? { tag: selected.tag } : {
+          commit: selected.commit ?? inspection.default_commit ??
+            inspection.references.find((ref) =>
+              ref.kind === "branch" && ref.name === inspection!.default_branch
+            )?.commit,
+        };
         const secret = model.secretName.trim();
         await packages.index.set({
           author: inspection.author,
           repository: inspection.repository,
           source: inspection.source,
-          ...selected,
+          ...version,
           ...(secret === "" ? {} : { secret }),
         });
         if (event.action === "save") {
@@ -249,7 +275,7 @@ export async function packageVersions(
       );
       return { view: "back" };
     }
-    if (index.local) {
+    if (index.local && await packages.isDevelopment()) {
       sendMessage(
         localizedText(
           msg("package_management.local_packages_do_not_have_a_remote"),
@@ -277,14 +303,15 @@ export async function packageVersions(
       title: msg("package_management.versions_for_packageid", {
         packageId: packageId,
       }),
-      description: msg(
-        "package_management.choose_a_version_from_field_help_or",
-      ),
       schema: versionsSchema(versions),
       model: frame.model(model),
       layout: packageVersionsLayout,
     });
     if (event.action === BACK_EVENT) return { view: "back" };
+    if (event.action === "sync") {
+      await presentModal(packageSync);
+      continue;
+    }
     if (event.action === "refresh") {
       draft = undefined;
       continue;
@@ -297,19 +324,23 @@ export async function packageVersions(
     if (event.action !== "save") continue;
     try {
       const selected = desiredVersion(model.selection);
+      const shownTag = selected.tag &&
+        versions.versions.find((row) => row.tags.includes(selected.tag!));
       await packages.index.set({
         author: index.author,
         repository: index.repository,
         source: index.source,
         secret: index.secret,
-        ...selected,
+        ...(shownTag
+          ? { commit: shownTag.commit }
+          : selected.tag
+          ? { tag: selected.tag }
+          : { commit: selected.commit ?? versions.default_commit }),
       });
-      const synchronized = await packages.synchronize([packageId]);
-      requireSuccessfulSynchronization(synchronized);
       sendMessage(
         localizedText(
-          msg("package_management.synchronized_packageid", {
-            packageId: packageId,
+          msg("package_management.saved_value1", {
+            value1: packageId,
           }),
         ),
         "success",
@@ -414,12 +445,12 @@ function selectedVersion(index: PackageIndex): string {
 function applyInspection(
   model: InstallModel,
   inspection: PackageSourceInspection,
+  development: boolean,
 ): void {
-  model.source = inspection.source;
+  model.source = development ? inspection.source : inspection.package_id;
   model.author = inspection.author;
   model.repository = inspection.repository;
   model.defaultBranch = inspection.default_branch ?? "";
-  model.version = "latest";
   model.references = inspection.references.map((reference) => ({
     referenceKey: `${reference.kind}:${reference.name}`,
     ...reference,
@@ -428,12 +459,13 @@ function applyInspection(
 
 async function inspectSource(
   model: InstallModel,
+  development: boolean,
 ): Promise<PackageSourceInspection> {
   const secret = model.secretName.trim();
   try {
     return await packages.source.inspect(model.source, { secret });
   } catch (error) {
-    if (secret !== "") throw error;
+    if (!development || secret !== "") throw error;
     throw new Error(
       await resolveMessage(
         messageSymbol(

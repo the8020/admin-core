@@ -1,6 +1,12 @@
 {
   "name": "Українська",
   "texts": {
+    "packages.sync_selected": "Синхронізувати вибране",
+    "packages.repair_upstream": "Відновити з вихідного репозиторію",
+    "packages.non_dev": "Для звичайних оновлень пакетів у цій системі використовуйте розгортання.",
+    "programs.package-sync.description": "Синхронізувати пакети",
+    "widgets.package-sync.title": "Синхронізувати пакети",
+    "widgets.package-sync.description": "Синхронізувати вибране",
     "layout.export": "Експорт",
     "layout.import": "Імпорт",
     "package_transfer.version": "Версія",

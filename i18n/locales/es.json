@@ -1,6 +1,12 @@
 {
   "name": "Español",
   "texts": {
+    "packages.sync_selected": "Sincronizar selección",
+    "packages.repair_upstream": "Reparar desde el repositorio de origen",
+    "packages.non_dev": "Utilice los despliegues para las actualizaciones habituales de paquetes en este sistema.",
+    "programs.package-sync.description": "Sincronizar paquetes",
+    "widgets.package-sync.title": "Sincronizar paquetes",
+    "widgets.package-sync.description": "Sincronizar selección",
     "layout.export": "Exportar",
     "layout.import": "Importar",
     "package_transfer.version": "Versión",

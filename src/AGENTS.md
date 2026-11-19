@@ -45,23 +45,18 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 - Use cheap observed snapshots for lists and explicit targeted refreshes for
   live detail. Sandbox detail invokes `sandbox.refresh` on entry and Refresh to
   sample the selected sandbox's runtime and resources before displaying them.
-- Package overview reads package inspection/index and indexed services. Keep
-  Git, file inventory, and technical diagnostics in its separate Advanced
-  navigation frame. Both main content lists open the related entity.
+- Package overview reads package inspection/index and indexed services. Its
+  development Git modal owns file inventory and technical diagnostics. Both main
+  content lists open the related entity.
 - Catalog Fetch and Update use the list's `selected` field and retain selected
   IDs in the navigation frame. No selection performs no work. Process selected
   packages sequentially, skip absent remotes/uninitialized repositories,
   continue after per-package failures, and report fetched/updated, current,
   skipped, and failed counts in one notification with bounded failure details.
-- `package-updates.ts` owns this screen's update choice and status presentation
-  through the authorized packages API. Fetch reads at most 1000 commits and
-  keeps only the checked HEAD and target in the navigation frame. Opening or
-  refreshing the list inspects local repository metadata without fetching;
-  unchecked packages remain explicit. Update prefers the highest numeric
-  `major.minor.patch` tag (optional `v`), otherwise the current remote branch.
-  Require proven ancestry, a clean tree, and the same checked HEAD; skip
-  diverged/incomplete history and never downgrade. Native checkout owns
-  activation; successful remote updates also record their desired selector.
+- Catalog rendering reads the package index. Fetch asks Git for a descendant of
+  the installed commit and retains the reviewed HEAD and target in the
+  navigation frame. Update skips dirty or changed checkouts. Package detail owns
+  repository and service inspection.
 - `package-transfer.ts` owns the Export package list screen (rows checked one at
   a time with `verifyExportEntry`, each short result redrawn through the current
   list call's `nextScreenChannel`, which exits when all are checked; a row
@@ -74,9 +69,11 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   the Import package list screen. Both call the packages repository's transfer
   API; the screen keeps the loaded list and selection in its navigation frame
   and passes explicit overwrite only for user-selected rows.
-- Advanced Fetch refreshes Git references without changing installed code.
-  Versions/Apply and checkout explicitly change the running version, retaining
-  the attached branch. Push uses that branch through the packages API.
+- Install accepts an upstream URL on development and a development package ID on
+  test or production. Versions saves an exact preferred commit. The Sync program
+  presents differing checkouts across nodes in a selectable list.
+  Non-development detail exposes an explicitly confirmed repair source.
+  Development retains Git tools.
 - Package detail owns the Delete package header action and confirmation modal.
   Call the typed deletion API only after confirmation, display errors on the
   detail, and return to the preceding screen after success.

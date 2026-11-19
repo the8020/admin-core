@@ -4,6 +4,9 @@ import { text as localizedText } from "/p/the8020/i18n/mod.ts";
 import { msg } from "/p/the8020/admin-core/i18n/messages.ts";
 import { listServices } from "/p/the8020/services/src/admin.ts";
 import { packages as packageAdmin } from "/p/the8020/packages/src/admin.ts";
+import { getSystemProfile } from "/p/the8020/system/profile.ts";
+import { packageSync } from "./package-sync.ts";
+import { packageRepair } from "./package-repair.ts";
 import { packageInfo } from "/p/the8020/packages/types/package.ts";
 import { programInfo } from "/p/the8020/packages/types/program.ts";
 import {
@@ -27,6 +30,7 @@ import {
   confirmAction,
   field,
   invokeProgram,
+  presentModal,
   sendMessage,
   z,
 } from "/p/the8020/uui/mod.ts";
@@ -41,22 +45,16 @@ import packageAdvancedLayout from "./layouts/package-advanced.json" with {
 };
 import { packageId as packageField } from "/p/the8020/packages/types/package.ts";
 import { programId as programField } from "/p/the8020/packages/types/program.ts";
-import type {
-  PackageInspectResult,
-  PackageListResult,
-  PackageSummary,
-  ServiceSummary,
-} from "./contracts.ts";
+import type { PackageInspectResult, ServiceSummary } from "./contracts.ts";
 import type { ScreenResult } from "./navigation.ts";
 import { versionField, versionLabel } from "./package-transfer.ts";
-import { packageDetailModel, packageRows } from "./view.ts";
+import { packageDetailModel } from "./view.ts";
 import {
   applyPackageUpdate,
   fetchPackageUpdate,
   type PackageUpdate,
   packageUpdateField,
   updateLabels,
-  updateState,
 } from "./package-updates.ts";
 
 const PackageRow = z.object({
@@ -66,8 +64,6 @@ const PackageRow = z.object({
   updates: packageUpdateField,
   version: versionField,
   selected: z.boolean(),
-  services: packageInfo.shape.serviceCount,
-  description: packageInfo.shape.description,
 });
 const PackageList = z.object({ packages: z.array(PackageRow) });
 
@@ -178,46 +174,48 @@ export function packageDetailSchema(
 export async function packageList(
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  const development = (await getSystemProfile()).role === "development";
   const state = frame.context({
     selected: new Set<string>(),
     updates: new Map<string, PackageUpdate>(),
   });
   while (true) {
-    const [packages, services, indexes] = await Promise.all([
-      packageAdmin.list<PackageSummary>(),
-      listServices<ServiceSummary>(),
-      packageAdmin.index.list(),
-    ]);
-    const index = new Map(indexes.map((row) => [row.package_id, row]));
-    const result: PackageListResult = { packages, services };
-    const rows = [];
-    for (const item of packageRows(result)) {
-      let status: PackageUpdate;
-      try {
-        const repository = await packageAdmin.repository.inspect(
-          item.canonicalName,
-        );
-        status = updateState(repository, state.updates.get(item.canonicalName));
-      } catch {
-        status = { state: "failed" };
-      }
-      rows.push({
-        ...item,
-        status: item.valid
-          ? localizedText(msg("packages.ready"))
-          : localizedText(msg("packages.needs_attention")),
-        updates: localizedText(updateLabels[status.state]),
-        version: versionLabel(index.get(item.canonicalName)),
-        selected: state.selected.has(item.canonicalName),
-      });
-    }
+    const indexes = await packageAdmin.index.list();
+    const rows = indexes.map((item) => {
+      const checked = state.updates.get(item.package_id);
+      const status = checked?.target && checked.target === item.active_commit
+        ? "current"
+        : checked?.current && checked.current !== item.active_commit
+        ? "unchecked"
+        : checked?.state ?? "unchecked";
+      return {
+        canonicalName: item.package_id,
+        valid: item.valid,
+        status: item.error || item.validation_error ||
+          (item.active_commit
+            ? localizedText(msg("packages.ready"))
+            : localizedText(msg("packages.needs_attention"))),
+        version: versionLabel(item),
+        updates: localizedText(updateLabels[status]),
+        selected: state.selected.has(item.package_id),
+      };
+    });
     const model = frame.model({ packages: rows });
     const event = await callScreen({
       id: "core-admin-packages",
       title: msg("packages.packages"),
       schema: PackageList,
       model,
-      layout: packageListLayout,
+      description: development ? undefined : msg("packages.non_dev"),
+      layout: development ? packageListLayout : {
+        ...packageListLayout,
+        root: {
+          ...packageListLayout.root,
+          toolbar: packageListLayout.root.toolbar.filter((action) =>
+            action.id !== "local"
+          ),
+        },
+      },
     });
     state.selected = new Set(
       model.data.packages.filter((row) => row.selected)
@@ -225,6 +223,10 @@ export async function packageList(
     );
     if (event.action === BACK_EVENT) return { view: "back" };
     if (event.action === "refresh") continue;
+    if (event.action === "sync") {
+      await presentModal(packageSync);
+      continue;
+    }
     if (event.action === "install") return { view: "packageInstall" };
     if (event.action === "local") return { view: "packageLocal" };
     if (event.action === "import") return { view: "packageImport" };
@@ -300,7 +302,10 @@ export async function packageDetail(
   packageId: string,
   frame = new ScreenFrame(),
 ): Promise<ScreenResult> {
+  const development = (await getSystemProfile()).role === "development";
   const Screen = z.object({
+    source: sourceInfo.shape.source,
+    secret: sourceInfo.shape.secretName,
     description: field(packageInfo.shape.description, {
       readOnly: true,
       length: "long",
@@ -350,6 +355,8 @@ export async function packageDetail(
       ...(inspection.inspection_errors ?? []),
     ].join("\n");
     const model = {
+      source: index?.source ?? "",
+      secret: index?.secret ?? "",
       description: inspection.description ?? "",
       status: inspection.valid
         ? localizedText(msg("packages.ready"))
@@ -377,6 +384,7 @@ export async function packageDetail(
     const event = await callScreen({
       id: "core-admin-package-detail",
       title: msg("packages.package_packageid", { packageId: packageId }),
+      description: development ? undefined : msg("packages.non_dev"),
       schema: Screen,
       model: frame.model(model),
       layout: {
@@ -390,6 +398,8 @@ export async function packageDetail(
         },
       },
       controls: [
+        { bind: "source" },
+        { bind: "secret" },
         { bind: "description", hidden: !model.description },
         { bind: "status" },
         { bind: "license", hidden: !model.license },
@@ -405,7 +415,7 @@ export async function packageDetail(
             label: msg("packages.deploy_version"),
             kind: "primary",
           },
-          ...(index !== undefined && !index.local
+          ...(index !== undefined && (!index.local || !development)
             ? [{
               id: "versions",
               label: msg("packages.versions"),
@@ -413,16 +423,63 @@ export async function packageDetail(
             }]
             : []),
           { id: "refresh", label: msg("kernel_logs.refresh") },
-          { id: "advanced", label: msg("packages.advanced") },
-          {
-            id: "delete",
-            label: msg("packages.delete_package"),
-            kind: "danger",
-          },
+          { id: "save-source", label: msg("packages.save_remote") },
+          { id: "sync", label: msg("packages.synchronize") },
+          ...(development
+            ? [
+              { id: "advanced", label: msg("layout.git_repository") },
+              {
+                id: "delete",
+                label: msg("packages.delete_package"),
+                kind: "danger" as const,
+              },
+            ]
+            : [{ id: "repair", label: msg("packages.repair_upstream") }]),
         ],
       },
     });
     if (event.action === BACK_EVENT) return { view: "back" };
+    if (event.action === "sync") {
+      await presentModal(packageSync);
+      continue;
+    }
+    if (event.action === "repair") {
+      await presentModal(() =>
+        packageRepair(
+          packageId,
+          model.source.includes("/the8020/deployments/peer/git/")
+            ? ""
+            : model.source,
+          model.secret.startsWith("deployments.peer.") ? "" : model.secret,
+        )
+      );
+      continue;
+    }
+    if (event.action === "save-source") {
+      try {
+        const [author, repository] = packageId.split("/");
+        await packageAdmin.index.set({
+          author: author!,
+          repository: repository!,
+          source: requiredSelection(model.source, "Git URL"),
+          secret: model.secret,
+          commit: index?.commit,
+          tag: index?.tag,
+        });
+        sendMessage(
+          localizedText(
+            msg("package_management.saved_value1", { value1: packageId }),
+          ),
+          "success",
+        );
+      } catch (cause) {
+        sendMessage(
+          cause instanceof Error ? cause.message : String(cause),
+          "error",
+        );
+      }
+      continue;
+    }
     if (event.action === "deploy") {
       await invokeProgram("the8020/deployments/deployments", [packageId]);
       continue;
@@ -458,7 +515,9 @@ export async function packageDetail(
       continue;
     }
     if (event.action === "advanced") {
-      return { view: "packageAdvanced", packageId };
+      const result = await presentModal(() => packageAdvanced(packageId));
+      if (result.view !== "back") return result;
+      continue;
     }
     if (event.action === "versions") {
       return { view: "packageVersions", packageId };
@@ -493,7 +552,7 @@ export async function packageAdvanced(
     );
     const event = await callScreen({
       id: "core-admin-package-advanced",
-      title: msg("packages.advanced_packageid", { packageId: packageId }),
+      title: `${localizedText(msg("layout.git_repository"))} · ${packageId}`,
       schema: packageDetailSchema(
         repository,
         index !== undefined,
@@ -512,8 +571,6 @@ export async function packageAdvanced(
           ...(repository.activation_ready
             ? [{ id: "save-remote", label: msg("packages.save_remote") }]
             : []),
-          { id: "versions", label: msg("packages.versions") },
-          { id: "synchronize", label: msg("packages.synchronize") },
           {
             id: "refresh",
             label: msg("packages.refresh"),
@@ -531,9 +588,6 @@ export async function packageAdvanced(
       typeof event.value === "string"
     ) {
       return { view: "program", programId: event.value };
-    }
-    if (event.action === "versions") {
-      return { view: "packageVersions", packageId };
     }
     if (event.action === "refresh") continue;
     try {
@@ -613,28 +667,6 @@ export async function packageAdvanced(
             localizedText(
               msg("packages.saved_remote_name_for_packageid", {
                 name: name,
-                packageId: packageId,
-              }),
-            ),
-            "success",
-          );
-          break;
-        }
-        case "synchronize": {
-          const results = await packageAdmin.synchronize([packageId]);
-          const failure = results.find((result) => !result.success);
-          if (failure !== undefined) {
-            throw new Error(
-              localizedText(
-                msg("ui.could_not_synchronize_value1", {
-                  value1: failure.package_id,
-                }),
-              ),
-            );
-          }
-          sendMessage(
-            localizedText(
-              msg("package_management.synchronized_packageid", {
                 packageId: packageId,
               }),
             ),

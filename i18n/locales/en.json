@@ -1,6 +1,12 @@
 {
   "name": "English",
   "texts": {
+    "packages.sync_selected": "Sync selected",
+    "packages.repair_upstream": "Repair from upstream",
+    "packages.non_dev": "Use Deployments for routine package updates on this system.",
+    "programs.package-sync.description": "Synchronize packages",
+    "widgets.package-sync.title": "Synchronize packages",
+    "widgets.package-sync.description": "Sync selected",
     "layout.export": "Export",
     "layout.import": "Import",
     "package_transfer.version": "Version",

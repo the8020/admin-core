@@ -1,6 +1,12 @@
 {
   "name": "Ελληνικά",
   "texts": {
+    "packages.sync_selected": "Συγχρονισμός επιλεγμένων",
+    "packages.repair_upstream": "Επιδιόρθωση από το αρχικό αποθετήριο",
+    "packages.non_dev": "Χρησιμοποιήστε τις αναπτύξεις για τις συνήθεις ενημερώσεις πακέτων σε αυτό το σύστημα.",
+    "programs.package-sync.description": "Συγχρονισμός πακέτων",
+    "widgets.package-sync.title": "Συγχρονισμός πακέτων",
+    "widgets.package-sync.description": "Συγχρονισμός επιλεγμένων",
     "layout.export": "Εξαγωγή",
     "layout.import": "Εισαγωγή",
     "package_transfer.version": "Έκδοση",

@@ -1,6 +1,12 @@
 {
   "name": "繁體中文（台灣）",
   "texts": {
+    "packages.sync_selected": "同步所選項目",
+    "packages.repair_upstream": "從上游儲存庫修復",
+    "packages.non_dev": "此系統的一般套件更新請使用部署功能。",
+    "programs.package-sync.description": "同步套件",
+    "widgets.package-sync.title": "同步套件",
+    "widgets.package-sync.description": "同步所選項目",
     "layout.export": "匯出",
     "layout.import": "匯入",
     "package_transfer.version": "版本",

@@ -1,6 +1,12 @@
 {
   "name": "Íslenska",
   "texts": {
+    "packages.sync_selected": "Samstilla valið",
+    "packages.repair_upstream": "Gera við úr upprunalegu safni",
+    "packages.non_dev": "Notaðu dreifingar fyrir venjulegar pakkauppfærslur í þessu kerfi.",
+    "programs.package-sync.description": "Samstilla pakka",
+    "widgets.package-sync.title": "Samstilla pakka",
+    "widgets.package-sync.description": "Samstilla valið",
     "layout.export": "Flytja út",
     "layout.import": "Flytja inn",
     "package_transfer.version": "Útgáfa",

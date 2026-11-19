@@ -1,6 +1,12 @@
 {
   "name": "Slovenčina",
   "texts": {
+    "packages.sync_selected": "Synchronizovať vybrané",
+    "packages.repair_upstream": "Opraviť zo zdrojového repozitára",
+    "packages.non_dev": "Na bežné aktualizácie balíkov v tomto systéme použite nasadenia.",
+    "programs.package-sync.description": "Synchronizovať balíky",
+    "widgets.package-sync.title": "Synchronizovať balíky",
+    "widgets.package-sync.description": "Synchronizovať vybrané",
     "layout.export": "Exportovať",
     "layout.import": "Importovať",
     "package_transfer.version": "Verzia",

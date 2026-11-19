@@ -1,0 +1,4 @@
+schema = 1
+uui = true
+description = "Synchronize packages on selected application servers"
+shortcut = "PKGSYNC"

@@ -1,6 +1,12 @@
 {
   "name": "Norsk bokmål",
   "texts": {
+    "packages.sync_selected": "Synkroniser valgte",
+    "packages.repair_upstream": "Reparer fra opprinnelig kodelager",
+    "packages.non_dev": "Bruk utrullinger til vanlige pakkeoppdateringer på dette systemet.",
+    "programs.package-sync.description": "Synkroniser pakker",
+    "widgets.package-sync.title": "Synkroniser pakker",
+    "widgets.package-sync.description": "Synkroniser valgte",
     "layout.export": "Eksporter",
     "layout.import": "Importer",
     "package_transfer.version": "Versjon",

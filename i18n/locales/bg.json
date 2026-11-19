@@ -1,6 +1,12 @@
 {
   "name": "Български",
   "texts": {
+    "packages.sync_selected": "Синхронизирай избраните",
+    "packages.repair_upstream": "Поправка от външното хранилище",
+    "packages.non_dev": "Използвайте внедрявания за обичайните актуализации на пакети в тази система.",
+    "programs.package-sync.description": "Синхронизиране на пакети",
+    "widgets.package-sync.title": "Синхронизиране на пакети",
+    "widgets.package-sync.description": "Синхронизирай избраните",
     "layout.export": "Експорт",
     "layout.import": "Импорт",
     "package_transfer.version": "Версия",

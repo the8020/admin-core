@@ -1,6 +1,12 @@
 {
   "name": "ไทย",
   "texts": {
+    "packages.sync_selected": "ซิงค์รายการที่เลือก",
+    "packages.repair_upstream": "ซ่อมแซมจากคลังต้นทาง",
+    "packages.non_dev": "ใช้การปรับใช้สำหรับการอัปเดตแพ็กเกจตามปกติในระบบนี้",
+    "programs.package-sync.description": "ซิงค์แพ็กเกจ",
+    "widgets.package-sync.title": "ซิงค์แพ็กเกจ",
+    "widgets.package-sync.description": "ซิงค์รายการที่เลือก",
     "layout.export": "ส่งออก",
     "layout.import": "นำเข้า",
     "package_transfer.version": "เวอร์ชัน",

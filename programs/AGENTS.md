@@ -19,6 +19,8 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 - Interactive manifests declare `uui = true`. Calling without arguments opens
   the catalog; Programs, Packages, Secrets, Services, Sandboxes, and Workers
   accept an optional selected identifier.
+- `package-sync` (PKGSYNC) opens the same node/package selection as the
+  Synchronize action in Packages.
 - Route entrypoints through the shared admin navigation; the Programs catalog
   hands execution inputs to the Jobs package.
 - `services-status` is the non-interactive data program of the Home Services

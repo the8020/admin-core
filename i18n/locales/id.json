@@ -1,6 +1,12 @@
 {
   "name": "Bahasa Indonesia",
   "texts": {
+    "packages.sync_selected": "Sinkronkan pilihan",
+    "packages.repair_upstream": "Perbaiki dari repositori asal",
+    "packages.non_dev": "Gunakan penerapan untuk pembaruan paket rutin pada sistem ini.",
+    "programs.package-sync.description": "Sinkronkan paket",
+    "widgets.package-sync.title": "Sinkronkan paket",
+    "widgets.package-sync.description": "Sinkronkan pilihan",
     "layout.export": "Ekspor",
     "layout.import": "Impor",
     "package_transfer.version": "Versi",

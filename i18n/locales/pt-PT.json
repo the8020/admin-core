@@ -1,6 +1,12 @@
 {
   "name": "Português (Portugal)",
   "texts": {
+    "packages.sync_selected": "Sincronizar selecionados",
+    "packages.repair_upstream": "Reparar a partir do repositório de origem",
+    "packages.non_dev": "Utilize implementações para as atualizações habituais de pacotes neste sistema.",
+    "programs.package-sync.description": "Sincronizar pacotes",
+    "widgets.package-sync.title": "Sincronizar pacotes",
+    "widgets.package-sync.description": "Sincronizar selecionados",
     "layout.export": "Exportar",
     "layout.import": "Importar",
     "package_transfer.version": "Versão",

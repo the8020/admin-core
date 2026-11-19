@@ -1,6 +1,12 @@
 {
   "name": "简体中文",
   "texts": {
+    "packages.sync_selected": "同步所选项",
+    "packages.repair_upstream": "从上游仓库修复",
+    "packages.non_dev": "此系统的常规软件包更新请使用部署功能。",
+    "programs.package-sync.description": "同步软件包",
+    "widgets.package-sync.title": "同步软件包",
+    "widgets.package-sync.description": "同步所选项",
     "layout.export": "导出",
     "layout.import": "导入",
     "package_transfer.version": "版本",

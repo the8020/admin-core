@@ -1,6 +1,12 @@
 {
   "name": "한국어",
   "texts": {
+    "packages.sync_selected": "선택 항목 동기화",
+    "packages.repair_upstream": "업스트림 저장소에서 복구",
+    "packages.non_dev": "이 시스템의 일반 패키지 업데이트에는 배포를 사용하세요.",
+    "programs.package-sync.description": "패키지 동기화",
+    "widgets.package-sync.title": "패키지 동기화",
+    "widgets.package-sync.description": "선택 항목 동기화",
     "layout.export": "내보내기",
     "layout.import": "가져오기",
     "package_transfer.version": "버전",

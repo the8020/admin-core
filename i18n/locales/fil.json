@@ -1,6 +1,12 @@
 {
   "name": "Filipino",
   "texts": {
+    "packages.sync_selected": "I-sync ang napili",
+    "packages.repair_upstream": "Ayusin mula sa pinagmulang repository",
+    "packages.non_dev": "Gamitin ang mga deployment para sa karaniwang pag-update ng mga package sa sistemang ito.",
+    "programs.package-sync.description": "I-sync ang mga package",
+    "widgets.package-sync.title": "I-sync ang mga package",
+    "widgets.package-sync.description": "I-sync ang napili",
     "layout.export": "I-export",
     "layout.import": "I-import",
     "package_transfer.version": "Bersyon",

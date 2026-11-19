@@ -1,6 +1,12 @@
 {
   "name": "Русский",
   "texts": {
+    "packages.sync_selected": "Синхронизировать выбранное",
+    "packages.repair_upstream": "Восстановить из исходного репозитория",
+    "packages.non_dev": "Для обычных обновлений пакетов в этой системе используйте развёртывания.",
+    "programs.package-sync.description": "Синхронизировать пакеты",
+    "widgets.package-sync.title": "Синхронизировать пакеты",
+    "widgets.package-sync.description": "Синхронизировать выбранное",
     "layout.export": "Экспорт",
     "layout.import": "Импорт",
     "package_transfer.version": "Версия",

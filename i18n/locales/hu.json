@@ -1,6 +1,12 @@
 {
   "name": "Magyar",
   "texts": {
+    "packages.sync_selected": "Kijelöltek szinkronizálása",
+    "packages.repair_upstream": "Javítás a forrástárolóból",
+    "packages.non_dev": "A rendszer szokásos csomagfrissítéseihez használja a telepítéseket.",
+    "programs.package-sync.description": "Csomagok szinkronizálása",
+    "widgets.package-sync.title": "Csomagok szinkronizálása",
+    "widgets.package-sync.description": "Kijelöltek szinkronizálása",
     "layout.export": "Exportálás",
     "layout.import": "Importálás",
     "package_transfer.version": "Verzió",

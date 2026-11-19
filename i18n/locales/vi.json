@@ -1,6 +1,12 @@
 {
   "name": "Tiếng Việt",
   "texts": {
+    "packages.sync_selected": "Đồng bộ mục đã chọn",
+    "packages.repair_upstream": "Sửa từ kho nguồn",
+    "packages.non_dev": "Hãy dùng triển khai cho các lần cập nhật gói thông thường trên hệ thống này.",
+    "programs.package-sync.description": "Đồng bộ gói",
+    "widgets.package-sync.title": "Đồng bộ gói",
+    "widgets.package-sync.description": "Đồng bộ mục đã chọn",
     "layout.export": "Xuất",
     "layout.import": "Nhập",
     "package_transfer.version": "Phiên bản",

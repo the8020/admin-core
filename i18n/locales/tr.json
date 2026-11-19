@@ -1,6 +1,12 @@
 {
   "name": "Türkçe",
   "texts": {
+    "packages.sync_selected": "Seçilenleri eşitle",
+    "packages.repair_upstream": "Kaynak depodan onar",
+    "packages.non_dev": "Bu sistemde olağan paket güncellemeleri için dağıtımları kullanın.",
+    "programs.package-sync.description": "Paketleri eşitle",
+    "widgets.package-sync.title": "Paketleri eşitle",
+    "widgets.package-sync.description": "Seçilenleri eşitle",
     "layout.export": "Dışa aktar",
     "layout.import": "İçe aktar",
     "package_transfer.version": "Sürüm",

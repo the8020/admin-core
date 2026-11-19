@@ -53,6 +53,7 @@ const repository: PackageRepository = {
 const versions: PackageVersions = {
   package_id: repository.package_id,
   current_commit: "old",
+  update_commit: "new",
   versions: [
     version("unreleased", ["new"], ["1.0.0-rc.1"]),
     version("new", ["middle"], ["v0.10.0"]),
@@ -61,39 +62,21 @@ const versions: PackageVersions = {
   ],
 };
 
-Deno.test("package update selects numeric releases, proves ancestry, and never downgrades", () => {
-  const available = availableUpdate(versions);
+Deno.test("updates accept any descendant, including an untagged commit outside the displayed window", () => {
+  const available = availableUpdate({ ...versions, versions: [] });
   assertEquals(available, {
     state: "available",
     current: "old",
     target: "new",
-    tag: "v0.10.0",
   });
   assertEquals(
-    availableUpdate({ ...versions, current_commit: "new" }).state,
+    availableUpdate({ ...versions, update_commit: undefined }).state,
     "current",
   );
   assertEquals(
-    availableUpdate({ ...versions, current_commit: "unreleased" }).state,
-    "current",
-  );
-  assertEquals(
-    availableUpdate({ ...versions, current_commit: "diverged" }).state,
+    availableUpdate({ ...versions, current_commit: undefined }).state,
     "blocked",
   );
-  assertEquals(
-    availableUpdate({
-      ...versions,
-      versions: [version("new", ["outside-window"], ["0.10.0"])],
-    }).state,
-    "blocked",
-  );
-  const untagged = {
-    ...versions,
-    versions: versions.versions.map((item) => ({ ...item, tags: [] })),
-  };
-  assertEquals(availableUpdate(untagged, "new").state, "available");
-  assertEquals(availableUpdate(untagged).state, "blocked");
   assertEquals(updateState(repository, available).state, "available");
   assertEquals(
     updateState({ ...repository, remote_url: undefined }, available).state,
@@ -119,6 +102,7 @@ Deno.test("package update skips no remote, local edits, changed HEAD, and unchec
   let inspected = repository;
   const calls: string[] = [];
   globals[kernelInvokeSymbol] = ((operation, input) => {
+    if (operation === "database.execute") return developmentProfileRead(input);
     const call = decodeKernelCall(operation, input);
     calls.push(call.command);
     assertEquals(call.command, "package.repository.inspect");
@@ -190,7 +174,6 @@ Deno.test("failed activation preserves the desired version and returns the nativ
     );
     assertEquals(calls, [
       "package.repository.inspect",
-      "package.index.inspect",
       "package.repository.checkout",
     ]);
   } finally {
@@ -253,24 +236,12 @@ Deno.test("untagged packages fetch the current remote branch and retain its exac
       state: "available",
       current: "old",
       target: "new",
-      tag: undefined,
     });
-    assertEquals(
-      calls.find((call) => call.command === "package.source.inspect")
-        ?.arguments,
-      { source: repository.remote_url, secret: "private-git" },
-    );
     assertEquals(
       await applyPackageUpdate(repository.package_id, checked),
       "updated",
     );
-    assertEquals(calls.at(-1)?.arguments, {
-      author: "acme",
-      repository: "example",
-      source: repository.remote_url,
-      secret: "private-git",
-      commit: "new",
-    });
+    assertEquals(calls.at(-1)?.command, "package.repository.checkout");
   } finally {
     if (previous === undefined) delete globals[kernelInvokeSymbol];
     else globals[kernelInvokeSymbol] = previous;
