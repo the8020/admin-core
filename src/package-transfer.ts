@@ -16,7 +16,6 @@ import {
   previewImport,
   verifyExportEntry,
 } from "/p/the8020/packages/src/transfer.ts";
-import type { PackageIndex } from "@the8020/kernel";
 import {
   BACK_EVENT,
   callScreen,
@@ -41,18 +40,16 @@ import type { ScreenResult } from "./navigation.ts";
 const MAX_FILE_BYTES = 262144;
 const MAX_ERRORS = 10;
 
-export const versionField = field(z.string(), {
+export const versionField = field(sourceInfo.shape.commit, {
   label: msg("package_transfer.version"),
-  description: msg("package_transfer.version_description"),
 });
 
-/** Desired tag with the running commit; export decides the exact remote tag. */
-export function versionLabel(index?: PackageIndex): string {
-  const commit = index?.active_commit?.slice(0, 7) ?? "";
-  return index?.tag ? `${index.tag} (${commit})` : commit;
-}
-
 const short = (commit: string) => commit.slice(0, 7);
+
+export function versionLabel(commit?: string, tag?: string): string {
+  if (!commit) return "";
+  return tag ? `${tag} (${short(commit)})` : short(commit);
+}
 
 /** Short row result and the full explanation with the suggested next step. */
 function checkResult(
@@ -273,9 +270,7 @@ export async function packageExport(
       showDependencies();
       if (!("code" in entry)) {
         entries.set(row.package, entry);
-        row.version = entry.tag
-          ? `${entry.tag} (${short(entry.commit)})`
-          : short(entry.commit);
+        row.version = versionLabel(entry.commit, entry.tag);
       }
       channel.redraw();
     }

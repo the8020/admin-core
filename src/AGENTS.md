@@ -55,8 +55,9 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
   skipped, and failed counts in one notification with bounded failure details.
 - Catalog rendering reads the package index. Fetch asks Git for a descendant of
   the installed commit and retains the reviewed HEAD and target in the
-  navigation frame. Update skips dirty or changed checkouts. Package detail owns
-  repository and service inspection.
+  navigation frame. The installed version shows its short commit and a tag when
+  Fetch verified it against that commit. Update skips dirty or changed
+  checkouts. Package detail owns repository and service inspection.
 - `package-transfer.ts` owns the Export package list screen (rows checked one at
   a time with `verifyExportEntry`, each short result redrawn through the current
   list call's `nextScreenChannel`, which exits when all are checked; a row

@@ -646,6 +646,7 @@ Deno.test("package selection fetches and updates independently, skips no remote,
             package_id: `the8020/${id}`,
             valid: true,
             active_commit: heads.get(id),
+            tag: "0.9.0",
           })),
         };
         break;
@@ -715,6 +716,11 @@ Deno.test("package selection fetches and updates independently, skips no remote,
     void pending.catch(() => {});
     let screen = await waitForScreen(channel, 1);
     assertEquals(reads, ["package.index.list"]);
+    const version = (name: string) =>
+      screen.lists[0]!.rows.find((row) =>
+        (row as { canonicalName: string }).canonicalName === `the8020/${name}`
+      ) as { version: string; updates: string } | undefined;
+    assertEquals(version("alpha")?.version, "old");
     let sequence = 0;
     assertEquals(screen.lists[0]!.selection?.bind, "selected");
     assertEquals(screen.lists[0]!.toolbar?.map((action) => action.id), [
@@ -751,12 +757,16 @@ Deno.test("package selection fetches and updates independently, skips no remote,
       ++sequence,
     );
     screen = channel.screens().at(-1)!;
+    assertEquals(version("beta")?.version, "new");
     await selection(true);
     await selection(false, { from: 4, to: 4 });
     await action("fetch");
     assertEquals(mutations.map((call) => call.id), ["alpha", "broken", "beta"]);
     assertEquals(screen.lists[0]!.selection?.selectedItems, 4);
     const labels = JSON.stringify(screen.lists[0]);
+    assertEquals(version("alpha")?.version, "0.9.0 (old)");
+    assertEquals(version("beta")?.version, "0.9.1 (new)");
+    assert(version("beta")?.updates.endsWith("Up to date"));
     assert(labels.includes("Update available"));
     assert(labels.includes("Up to date"));
     assert(labels.includes("No remote"));
@@ -773,6 +783,7 @@ Deno.test("package selection fetches and updates independently, skips no remote,
       ["alpha"],
     );
     assertEquals(mutations.at(-1)?.command, "package.repository.checkout");
+    assertEquals(version("alpha")?.version, "0.9.1 (new)");
     assertEquals(heads.get("unselected"), "old");
     assertEquals(screen.lists[0]!.selection?.selectedItems, 4);
     assert(

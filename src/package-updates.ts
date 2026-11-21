@@ -26,8 +26,9 @@ export const packageUpdateField = field(sourceInfo.shape.repositoryStatus, {
 export interface PackageUpdate {
   state: keyof typeof updateLabels;
   current?: string;
+  currentTag?: string;
   target?: string;
-  tag?: string;
+  targetTag?: string;
 }
 
 export function updateState(
@@ -52,9 +53,16 @@ export function availableUpdate(versions: PackageVersions): PackageUpdate {
   const current = versions.current_commit;
   if (!current) return { state: "blocked" };
   const target = versions.update_commit || current;
+  const currentTag = versions.versions.find((item) => item.commit === current)
+    ?.tags[0];
+  const targetTag = current === target
+    ? currentTag
+    : versions.versions.find((item) => item.commit === target)?.tags[0];
   return {
     current,
     target,
+    ...(currentTag ? { currentTag } : {}),
+    ...(targetTag ? { targetTag } : {}),
     state: current === target ? "current" : "available",
   };
 }

@@ -183,6 +183,11 @@ export async function packageList(
     const indexes = await packageAdmin.index.list();
     const rows = indexes.map((item) => {
       const checked = state.updates.get(item.package_id);
+      const tag = checked?.current === item.active_commit
+        ? checked?.currentTag
+        : checked?.target === item.active_commit
+        ? checked?.targetTag
+        : undefined;
       const status = checked?.target && checked.target === item.active_commit
         ? "current"
         : checked?.current && checked.current !== item.active_commit
@@ -195,7 +200,7 @@ export async function packageList(
           (item.active_commit
             ? localizedText(msg("packages.ready"))
             : localizedText(msg("packages.needs_attention"))),
-        version: versionLabel(item),
+        version: versionLabel(item.active_commit, tag),
         updates: localizedText(updateLabels[status]),
         selected: state.selected.has(item.package_id),
       };
