@@ -1,6 +1,18 @@
 {
   "name": "Nederlands",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "Bekijk gearchiveerde programmacrashrapporten van alle gebruikers.",
+    "program_dumps.title": "Programmacrashrapporten",
+    "program_dumps.today": "Vandaag",
+    "program_dumps.yesterday": "Gisteren",
+    "program_dumps.from_utc": "Vanaf (UTC)",
+    "program_dumps.through_utc": "Tot en met (UTC)",
+    "program_dumps.time_utc": "Tijdstip (UTC)",
+    "program_dumps.heading": "Kop",
+    "program_dumps.invalid_date": "Voer een geldige datum in.",
+    "programs.program-dumps.description": "Programmacrashrapporten",
+    "widgets.program-dumps.title": "Programmacrashrapporten",
+    "widgets.program-dumps.description": "Programmacrashrapporten",
     "packages.sync_selected": "Selectie synchroniseren",
     "packages.repair_upstream": "Herstellen vanuit de upstreamrepository",
     "packages.non_dev": "Gebruik implementaties voor reguliere pakketupdates op dit systeem.",

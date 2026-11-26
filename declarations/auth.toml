@@ -3,3 +3,5 @@
 
 "the8020.admin-core.kernel.execute" = { description = "Execute the native administrative command catalog, including state changes and system package commands; value is empty. Grant only to kernel administrators.", value = false }
 "the8020.admin-core.logs.view" = "Read kernel and execution logs; value is the exact node ID."
+
+"the8020.admin-core.program-dumps.view" = { description = "Read captured interactive program dumps for all users, including exception and source details; value is empty.", value = false }

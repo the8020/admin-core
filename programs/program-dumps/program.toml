@@ -1,0 +1,4 @@
+schema = 1
+uui = true
+description = "Program dumps"
+entrypoint = "program.ts"

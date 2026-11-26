@@ -1,6 +1,18 @@
 {
   "name": "Português (Portugal)",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "Consulte os relatórios de falhas arquivados de todos os utilizadores.",
+    "program_dumps.title": "Relatórios de falhas de programas",
+    "program_dumps.today": "Hoje",
+    "program_dumps.yesterday": "Ontem",
+    "program_dumps.from_utc": "Desde (UTC)",
+    "program_dumps.through_utc": "Até (UTC)",
+    "program_dumps.time_utc": "Data e hora (UTC)",
+    "program_dumps.heading": "Cabeçalho",
+    "program_dumps.invalid_date": "Introduza uma data válida.",
+    "programs.program-dumps.description": "Relatórios de falhas de programas",
+    "widgets.program-dumps.title": "Relatórios de falhas de programas",
+    "widgets.program-dumps.description": "Relatórios de falhas de programas",
     "packages.sync_selected": "Sincronizar selecionados",
     "packages.repair_upstream": "Reparar a partir do repositório de origem",
     "packages.non_dev": "Utilize implementações para as atualizações habituais de pacotes neste sistema.",

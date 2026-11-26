@@ -1,6 +1,18 @@
 {
   "name": "Slovenščina",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "Oglejte si arhivirana poročila o zrušitvah programov vseh uporabnikov.",
+    "program_dumps.title": "Poročila o zrušitvah programov",
+    "program_dumps.today": "Danes",
+    "program_dumps.yesterday": "Včeraj",
+    "program_dumps.from_utc": "Od (UTC)",
+    "program_dumps.through_utc": "Do vključno (UTC)",
+    "program_dumps.time_utc": "Čas (UTC)",
+    "program_dumps.heading": "Naslov",
+    "program_dumps.invalid_date": "Vnesite veljaven datum.",
+    "programs.program-dumps.description": "Poročila o zrušitvah programov",
+    "widgets.program-dumps.title": "Poročila o zrušitvah programov",
+    "widgets.program-dumps.description": "Poročila o zrušitvah programov",
     "packages.sync_selected": "Sinhroniziraj izbrano",
     "packages.repair_upstream": "Popravi iz izvornega repozitorija",
     "packages.non_dev": "Za redne posodobitve paketov tega sistema uporabite uvajanja.",

@@ -116,6 +116,8 @@ below.
   package, secret, service, sandbox, and Worker administration entrypoints.
 - [src/AGENTS.md](src/AGENTS.md): Implement shared administration screens,
   navigation, and typed result models.
+- [tables/AGENTS.md](tables/AGENTS.md): Own the interactive program dump
+  archive.
 - [types/AGENTS.md](types/AGENTS.md): Share runtime references, status,
   capacity, diagnostics, and archive fields.
 
@@ -142,6 +144,11 @@ below.
 
 # Local Contracts
 
+- Program dumps records interactive UUI terminations in this package's database
+  table. The Home tile, list and full-report reads require
+  `the8020.admin-core.program-dumps.view` with an empty value. Selection
+  supports exact username and program ID, inclusive UTC date bounds, Today, and
+  Yesterday.
 - Kernel calls and Kernel logs are separate Home programs. `kernel.execute`
   (full key `the8020.admin-core.kernel.execute`, empty value) grants native CBus
   administration, including mutations and package commands executed as system;
@@ -329,6 +336,11 @@ below.
   explicitly asks for onboarding help.
 
 # Verification
+
+- `program_dumps_native_fixture.ts` runs through the UUI native browser harness
+  with `--fixture=../admin-core/program_dumps_native_fixture.ts`. It triggers an
+  interactive exception and verifies the saved heading and report, tabular
+  selection by day and identity, detail navigation, and legacy report display.
 
 - `diagnostics_native_fixture.ts` runs through the sibling UUI native browser
   harness (`--fixture=../admin-core/diagnostics_native_fixture.ts`). It stages

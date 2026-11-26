@@ -1,0 +1,12 @@
+schema = 1
+title = "Program dumps"
+description = "Program dumps"
+icon = "error"
+category = "operations"
+order = 52
+
+[open]
+program = "the8020/admin-core/program-dumps"
+
+[visible]
+permission = "the8020.admin-core.program-dumps.view"

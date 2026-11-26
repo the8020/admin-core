@@ -1,6 +1,18 @@
 {
   "name": "Русский",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "Просмотр архивных дампов сбоев программ всех пользователей.",
+    "program_dumps.title": "Дампы сбоев программ",
+    "program_dumps.today": "Сегодня",
+    "program_dumps.yesterday": "Вчера",
+    "program_dumps.from_utc": "С (UTC)",
+    "program_dumps.through_utc": "По включительно (UTC)",
+    "program_dumps.time_utc": "Время (UTC)",
+    "program_dumps.heading": "Заголовок",
+    "program_dumps.invalid_date": "Введите допустимую дату.",
+    "programs.program-dumps.description": "Дампы сбоев программ",
+    "widgets.program-dumps.title": "Дампы сбоев программ",
+    "widgets.program-dumps.description": "Дампы сбоев программ",
     "packages.sync_selected": "Синхронизировать выбранное",
     "packages.repair_upstream": "Восстановить из исходного репозитория",
     "packages.non_dev": "Для обычных обновлений пакетов в этой системе используйте развёртывания.",

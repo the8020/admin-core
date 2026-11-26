@@ -1,6 +1,18 @@
 {
   "name": "日本語",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "すべてのユーザーのプログラムダンプのアーカイブを表示します。",
+    "program_dumps.title": "プログラムダンプ",
+    "program_dumps.today": "今日",
+    "program_dumps.yesterday": "昨日",
+    "program_dumps.from_utc": "開始日 (UTC)",
+    "program_dumps.through_utc": "終了日 (UTC)",
+    "program_dumps.time_utc": "日時 (UTC)",
+    "program_dumps.heading": "見出し",
+    "program_dumps.invalid_date": "有効な日付を入力してください。",
+    "programs.program-dumps.description": "プログラムダンプ",
+    "widgets.program-dumps.title": "プログラムダンプ",
+    "widgets.program-dumps.description": "プログラムダンプ",
     "packages.sync_selected": "選択項目を同期",
     "packages.repair_upstream": "上流リポジトリから修復",
     "packages.non_dev": "このシステムで通常のパッケージ更新を行うには、デプロイを使用してください。",

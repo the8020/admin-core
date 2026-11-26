@@ -1,6 +1,18 @@
 {
   "name": "Filipino",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "Tingnan ang naka-archive na mga ulat ng pag-crash ng lahat ng user.",
+    "program_dumps.title": "Mga ulat ng pag-crash ng programa",
+    "program_dumps.today": "Ngayong araw",
+    "program_dumps.yesterday": "Kahapon",
+    "program_dumps.from_utc": "Mula (UTC)",
+    "program_dumps.through_utc": "Hanggang (UTC)",
+    "program_dumps.time_utc": "Oras (UTC)",
+    "program_dumps.heading": "Pamagat",
+    "program_dumps.invalid_date": "Maglagay ng wastong petsa.",
+    "programs.program-dumps.description": "Mga ulat ng pag-crash ng programa",
+    "widgets.program-dumps.title": "Mga ulat ng pag-crash ng programa",
+    "widgets.program-dumps.description": "Mga ulat ng pag-crash ng programa",
     "packages.sync_selected": "I-sync ang napili",
     "packages.repair_upstream": "Ayusin mula sa pinagmulang repository",
     "packages.non_dev": "Gamitin ang mga deployment para sa karaniwang pag-update ng mga package sa sistemang ito.",

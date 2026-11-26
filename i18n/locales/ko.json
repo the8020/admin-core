@@ -1,6 +1,18 @@
 {
   "name": "한국어",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "모든 사용자의 보관된 프로그램 덤프를 봅니다.",
+    "program_dumps.title": "프로그램 덤프",
+    "program_dumps.today": "오늘",
+    "program_dumps.yesterday": "어제",
+    "program_dumps.from_utc": "시작일 (UTC)",
+    "program_dumps.through_utc": "종료일 (UTC)",
+    "program_dumps.time_utc": "일시 (UTC)",
+    "program_dumps.heading": "제목",
+    "program_dumps.invalid_date": "유효한 날짜를 입력하세요.",
+    "programs.program-dumps.description": "프로그램 덤프",
+    "widgets.program-dumps.title": "프로그램 덤프",
+    "widgets.program-dumps.description": "프로그램 덤프",
     "packages.sync_selected": "선택 항목 동기화",
     "packages.repair_upstream": "업스트림 저장소에서 복구",
     "packages.non_dev": "이 시스템의 일반 패키지 업데이트에는 배포를 사용하세요.",

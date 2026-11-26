@@ -1,6 +1,18 @@
 {
   "name": "Eesti",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "Vaata kõigi kasutajate arhiveeritud programmide tõrkearuandeid.",
+    "program_dumps.title": "Programmide tõrkearuanded",
+    "program_dumps.today": "Täna",
+    "program_dumps.yesterday": "Eile",
+    "program_dumps.from_utc": "Alates (UTC)",
+    "program_dumps.through_utc": "Kuni (k.a, UTC)",
+    "program_dumps.time_utc": "Aeg (UTC)",
+    "program_dumps.heading": "Pealkiri",
+    "program_dumps.invalid_date": "Sisesta kehtiv kuupäev.",
+    "programs.program-dumps.description": "Programmide tõrkearuanded",
+    "widgets.program-dumps.title": "Programmide tõrkearuanded",
+    "widgets.program-dumps.description": "Programmide tõrkearuanded",
     "packages.sync_selected": "Sünkrooni valitud",
     "packages.repair_upstream": "Paranda lähtehoidlast",
     "packages.non_dev": "Kasutage selles süsteemis tavapäraste paketiuuenduste jaoks juurutusi.",

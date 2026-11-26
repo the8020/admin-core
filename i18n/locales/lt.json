@@ -1,6 +1,18 @@
 {
   "name": "Lietuvių",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "Peržiūrėti visų naudotojų archyvuotas programų strigčių ataskaitas.",
+    "program_dumps.title": "Programų strigčių ataskaitos",
+    "program_dumps.today": "Šiandien",
+    "program_dumps.yesterday": "Vakar",
+    "program_dumps.from_utc": "Nuo (UTC)",
+    "program_dumps.through_utc": "Iki imtinai (UTC)",
+    "program_dumps.time_utc": "Laikas (UTC)",
+    "program_dumps.heading": "Antraštė",
+    "program_dumps.invalid_date": "Įveskite tinkamą datą.",
+    "programs.program-dumps.description": "Programų strigčių ataskaitos",
+    "widgets.program-dumps.title": "Programų strigčių ataskaitos",
+    "widgets.program-dumps.description": "Programų strigčių ataskaitos",
     "packages.sync_selected": "Sinchronizuoti pasirinktus",
     "packages.repair_upstream": "Taisyti iš pirminės saugyklos",
     "packages.non_dev": "Įprastiems šios sistemos paketų atnaujinimams naudokite diegimus.",

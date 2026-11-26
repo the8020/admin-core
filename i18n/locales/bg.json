@@ -1,6 +1,18 @@
 {
   "name": "Български",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "Преглед на архивираните отчети за сривове на всички потребители.",
+    "program_dumps.title": "Отчети за сривове на програми",
+    "program_dumps.today": "Днес",
+    "program_dumps.yesterday": "Вчера",
+    "program_dumps.from_utc": "От (UTC)",
+    "program_dumps.through_utc": "До включително (UTC)",
+    "program_dumps.time_utc": "Час (UTC)",
+    "program_dumps.heading": "Заглавие",
+    "program_dumps.invalid_date": "Въведете валидна дата.",
+    "programs.program-dumps.description": "Отчети за сривове на програми",
+    "widgets.program-dumps.title": "Отчети за сривове на програми",
+    "widgets.program-dumps.description": "Отчети за сривове на програми",
     "packages.sync_selected": "Синхронизирай избраните",
     "packages.repair_upstream": "Поправка от външното хранилище",
     "packages.non_dev": "Използвайте внедрявания за обичайните актуализации на пакети в тази система.",

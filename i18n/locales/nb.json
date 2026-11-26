@@ -1,6 +1,18 @@
 {
   "name": "Norsk bokmål",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "Vis arkiverte programkrasjrapporter for alle brukere.",
+    "program_dumps.title": "Programkrasjrapporter",
+    "program_dumps.today": "I dag",
+    "program_dumps.yesterday": "I går",
+    "program_dumps.from_utc": "Fra (UTC)",
+    "program_dumps.through_utc": "Til og med (UTC)",
+    "program_dumps.time_utc": "Tidspunkt (UTC)",
+    "program_dumps.heading": "Overskrift",
+    "program_dumps.invalid_date": "Skriv inn en gyldig dato.",
+    "programs.program-dumps.description": "Programkrasjrapporter",
+    "widgets.program-dumps.title": "Programkrasjrapporter",
+    "widgets.program-dumps.description": "Programkrasjrapporter",
     "packages.sync_selected": "Synkroniser valgte",
     "packages.repair_upstream": "Reparer fra opprinnelig kodelager",
     "packages.non_dev": "Bruk utrullinger til vanlige pakkeoppdateringer på dette systemet.",

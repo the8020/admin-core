@@ -1,6 +1,18 @@
 {
   "name": "हिन्दी",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "सभी उपयोगकर्ताओं की संग्रहीत प्रोग्राम क्रैश रिपोर्ट देखें।",
+    "program_dumps.title": "प्रोग्राम क्रैश रिपोर्ट",
+    "program_dumps.today": "आज",
+    "program_dumps.yesterday": "कल",
+    "program_dumps.from_utc": "इस तारीख से (UTC)",
+    "program_dumps.through_utc": "इस तारीख तक (UTC)",
+    "program_dumps.time_utc": "समय (UTC)",
+    "program_dumps.heading": "शीर्षक",
+    "program_dumps.invalid_date": "मान्य तारीख दर्ज करें।",
+    "programs.program-dumps.description": "प्रोग्राम क्रैश रिपोर्ट",
+    "widgets.program-dumps.title": "प्रोग्राम क्रैश रिपोर्ट",
+    "widgets.program-dumps.description": "प्रोग्राम क्रैश रिपोर्ट",
     "packages.sync_selected": "चयनित को सिंक करें",
     "packages.repair_upstream": "मूल रिपॉज़िटरी से सुधारें",
     "packages.non_dev": "इस सिस्टम पर नियमित पैकेज अपडेट के लिए डिप्लॉयमेंट का उपयोग करें।",

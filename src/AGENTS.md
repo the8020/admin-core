@@ -13,6 +13,10 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 
 # Local Contracts
 
+- `record-program-dump.ts` accepts the captured UUI username, heading and
+  formatted short dump and writes one bounded transaction. `program-dumps.ts`
+  owns the selection, metadata list and read-only report.
+
 - `kernel-console.ts` and `kernel-logs.ts` own independent diagnostic screen
   loops using shell Back, ordinary UUI fields/lists, authorized actions, and the
   shared native catalog/log SDK. Console output is plain text and replaces the

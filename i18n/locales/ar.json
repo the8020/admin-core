@@ -1,6 +1,18 @@
 {
   "name": "العربية",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "عرض تقارير تعطل البرامج المؤرشفة لجميع المستخدمين.",
+    "program_dumps.title": "تقارير تعطل البرامج",
+    "program_dumps.today": "اليوم",
+    "program_dumps.yesterday": "أمس",
+    "program_dumps.from_utc": "من (UTC)",
+    "program_dumps.through_utc": "حتى (UTC)",
+    "program_dumps.time_utc": "الوقت (UTC)",
+    "program_dumps.heading": "العنوان",
+    "program_dumps.invalid_date": "أدخل تاريخًا صالحًا.",
+    "programs.program-dumps.description": "تقارير تعطل البرامج",
+    "widgets.program-dumps.title": "تقارير تعطل البرامج",
+    "widgets.program-dumps.description": "تقارير تعطل البرامج",
     "packages.sync_selected": "مزامنة المحدد",
     "packages.repair_upstream": "إصلاح من المستودع الأصلي",
     "packages.non_dev": "استخدم عمليات النشر لتحديث الحزم المعتاد في هذا النظام.",

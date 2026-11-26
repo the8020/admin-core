@@ -1,6 +1,18 @@
 {
   "name": "Bahasa Melayu",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "Lihat laporan kerosakan program yang diarkibkan untuk semua pengguna.",
+    "program_dumps.title": "Laporan kerosakan program",
+    "program_dumps.today": "Hari ini",
+    "program_dumps.yesterday": "Semalam",
+    "program_dumps.from_utc": "Dari (UTC)",
+    "program_dumps.through_utc": "Hingga (UTC)",
+    "program_dumps.time_utc": "Masa (UTC)",
+    "program_dumps.heading": "Tajuk",
+    "program_dumps.invalid_date": "Masukkan tarikh yang sah.",
+    "programs.program-dumps.description": "Laporan kerosakan program",
+    "widgets.program-dumps.title": "Laporan kerosakan program",
+    "widgets.program-dumps.description": "Laporan kerosakan program",
     "packages.sync_selected": "Segerakkan pilihan",
     "packages.repair_upstream": "Baiki daripada repositori asal",
     "packages.non_dev": "Gunakan pelaksanaan untuk kemas kini pakej rutin pada sistem ini.",

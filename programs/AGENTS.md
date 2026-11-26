@@ -12,6 +12,8 @@ Parent DOX: [admin-core DOX](../AGENTS.md).
 
 # Local Contracts
 
+- `program-dumps` opens the permission-gated interactive dump archive selection.
+
 - `kernel-console` and `kernel-logs` are separate interactive diagnostics
   entrypoints with their own bounded screen loops. They use ordinary shell Back;
   they have no retained entity list/detail stack requiring a navigation frame.

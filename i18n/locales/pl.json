@@ -1,6 +1,18 @@
 {
   "name": "Polski",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "Wyświetl archiwalne zrzuty awarii programów wszystkich użytkowników.",
+    "program_dumps.title": "Zrzuty awarii programów",
+    "program_dumps.today": "Dzisiaj",
+    "program_dumps.yesterday": "Wczoraj",
+    "program_dumps.from_utc": "Od (UTC)",
+    "program_dumps.through_utc": "Do włącznie (UTC)",
+    "program_dumps.time_utc": "Czas (UTC)",
+    "program_dumps.heading": "Nagłówek",
+    "program_dumps.invalid_date": "Wprowadź prawidłową datę.",
+    "programs.program-dumps.description": "Zrzuty awarii programów",
+    "widgets.program-dumps.title": "Zrzuty awarii programów",
+    "widgets.program-dumps.description": "Zrzuty awarii programów",
     "packages.sync_selected": "Synchronizuj zaznaczone",
     "packages.repair_upstream": "Napraw z repozytorium źródłowego",
     "packages.non_dev": "Do zwykłych aktualizacji pakietów w tym systemie używaj wdrożeń.",

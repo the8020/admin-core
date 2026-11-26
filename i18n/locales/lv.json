@@ -1,6 +1,18 @@
 {
   "name": "Latviešu",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "Skatīt visu lietotāju arhivētos programmu avāriju pārskatus.",
+    "program_dumps.title": "Programmu avāriju pārskati",
+    "program_dumps.today": "Šodien",
+    "program_dumps.yesterday": "Vakar",
+    "program_dumps.from_utc": "No (UTC)",
+    "program_dumps.through_utc": "Līdz ieskaitot (UTC)",
+    "program_dumps.time_utc": "Laiks (UTC)",
+    "program_dumps.heading": "Virsraksts",
+    "program_dumps.invalid_date": "Ievadiet derīgu datumu.",
+    "programs.program-dumps.description": "Programmu avāriju pārskati",
+    "widgets.program-dumps.title": "Programmu avāriju pārskati",
+    "widgets.program-dumps.description": "Programmu avāriju pārskati",
     "packages.sync_selected": "Sinhronizēt atlasītos",
     "packages.repair_upstream": "Labot no sākotnējās krātuves",
     "packages.non_dev": "Parastiem pakotņu atjauninājumiem šajā sistēmā izmantojiet izvietošanu.",

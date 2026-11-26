@@ -1,6 +1,18 @@
 {
   "name": "Čeština",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "Zobrazit archivované výpisy pádů programů všech uživatelů.",
+    "program_dumps.title": "Výpisy pádů programů",
+    "program_dumps.today": "Dnes",
+    "program_dumps.yesterday": "Včera",
+    "program_dumps.from_utc": "Od (UTC)",
+    "program_dumps.through_utc": "Do včetně (UTC)",
+    "program_dumps.time_utc": "Čas (UTC)",
+    "program_dumps.heading": "Nadpis",
+    "program_dumps.invalid_date": "Zadejte platné datum.",
+    "programs.program-dumps.description": "Výpisy pádů programů",
+    "widgets.program-dumps.title": "Výpisy pádů programů",
+    "widgets.program-dumps.description": "Výpisy pádů programů",
     "packages.sync_selected": "Synchronizovat vybrané",
     "packages.repair_upstream": "Opravit ze zdrojového repozitáře",
     "packages.non_dev": "Pro běžné aktualizace balíčků v tomto systému použijte nasazení.",

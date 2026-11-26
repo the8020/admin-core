@@ -1,6 +1,18 @@
 {
   "name": "繁體中文（台灣）",
   "texts": {
+    "declarations.auth.the8020.admin-core.program-dumps.view": "檢視所有使用者的已封存程式傾印。",
+    "program_dumps.title": "程式傾印",
+    "program_dumps.today": "今天",
+    "program_dumps.yesterday": "昨天",
+    "program_dumps.from_utc": "起始日期 (UTC)",
+    "program_dumps.through_utc": "截止日期 (UTC)",
+    "program_dumps.time_utc": "時間 (UTC)",
+    "program_dumps.heading": "標題",
+    "program_dumps.invalid_date": "請輸入有效日期。",
+    "programs.program-dumps.description": "程式傾印",
+    "widgets.program-dumps.title": "程式傾印",
+    "widgets.program-dumps.description": "程式傾印",
     "packages.sync_selected": "同步所選項目",
     "packages.repair_upstream": "從上游儲存庫修復",
     "packages.non_dev": "此系統的一般套件更新請使用部署功能。",
